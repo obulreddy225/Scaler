@@ -1,5 +1,3 @@
-
-
 package com.jmp.dsa.binarySearch;
 
 import org.w3c.dom.Node;
