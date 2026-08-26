@@ -10,6 +10,9 @@ Linked in problems
 8. https://leetcode.com/problems/palindrome-linked-list/description/?envType=problem-list-v2&envId=linked-list
 9.https://leetcode.com/problems/replace-elements-with-greatest-element-on-right-side/ 
 
+2-Pointer
+=======================================================
+
 
 1. Reverse string without changiacng position of special char
    s = "ab#cd,e@f" output= fe#dc,b@a
