@@ -10,7 +10,7 @@ public class RemoveNthFromEnd {
         Node fast = dummy;
 
         // Move fast n+1 steps ahead
-        for (int i = 0; i <= n; i++) {
+        for (int i = 0; i < n; i++) {
             fast = fast.next;
         }
 
