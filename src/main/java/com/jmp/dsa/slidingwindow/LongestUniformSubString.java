@@ -10,28 +10,34 @@ public class LongestUniformSubString {
     //    Output: index = 5 and length = 5 ("hhhhh")
     public static void longestUniformSubstring(String str) {
 
-        int start = 0;
+        if (str == null || str.isEmpty()) {
+            return;
+        }
+
+        int currentStart = 0;
+        int currentLength = 1;
+
         int maxStart = 0;
         int maxLength = 1;
 
         for (int i = 1; i < str.length(); i++) {
 
-            // Character changed → start a new group
-            if (str.charAt(i) != str.charAt(i - 1)) {
-                start = i;
+            if (str.charAt(i) == str.charAt(i - 1)) {
+                currentLength++;
+            } else {
+                currentStart = i;
+                currentLength = 1;
             }
 
-            // Current group's length
-            int currentLength = i - start + 1;
-
-            // Update maximum
             if (currentLength > maxLength) {
                 maxLength = currentLength;
-                maxStart = start;
+                maxStart = currentStart;
             }
         }
 
         System.out.println("index = " + maxStart);
         System.out.println("length = " + maxLength);
+        System.out.println("substring = " +
+                str.substring(maxStart, maxStart + maxLength));
     }
 }

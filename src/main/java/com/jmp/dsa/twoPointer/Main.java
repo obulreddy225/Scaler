@@ -6,145 +6,98 @@ import java.lang.management.ManagementFactory;
 import java.util.*;
 
 public class Main {
-    //Reverse string without changiacng position of special char
-    //s = "ab#cd,e@f" output= fe#dc,b@a
-    public static String revString(String str){
-        char[] arr = str.toCharArray();
-        int left =0;
-        int right = arr.length-1;
-        while (left<right){
-            if(!Character.isLetterOrDigit(arr[left])){
+    //10. Merge Two Sorted Arrays (With Extra Space)
+    public static int[] mergeSortedArrays(int[] arr1, int[] arr2) {
+        int m = arr1.length;
+        int n = arr2.length;
+        int[] result = new int[m + n];
+
+        int i = 0;
+        int j = 0;
+        int k = 0;
+        while (i < m && j < n) {
+            if (arr1[i] < arr2[j]) {
+                result[k++] = arr1[i++];
+            } else
+                result[k++] = arr2[j++];
+        }
+        while (i < m) {
+            result[k++] = arr1[i++];
+        }
+        while (j < n) {
+            result[k++] = arr2[j++];
+        }
+        return result;
+    }
+
+    //9. sort colours
+    public static int[] sortColours(int[] arr) {
+        int low = 0;
+        int mid = 0;
+        int high = arr.length - 1;
+
+        while (mid < high) {
+            if (arr[mid] == 0) {
+                int temp = arr[mid];
+                arr[mid] = arr[low];
+                arr[low] = temp;
+                low++;
+                mid++;
+            } else if (arr[mid] == 1) {
+                mid++;
+            } else {
+                int temp = arr[high];
+                arr[high] = arr[mid];
+                arr[mid] = temp;
+                high--;
+            }
+        }
+
+        return arr;
+    }
+    // 8.Move Zeros
+
+    //[0,1,3,2,0,5]
+
+    public static int[] moveZerosToRight(int[] arr) {
+        int left = 0;
+        for (int right = 0; right < arr.length; right++) {
+            if (arr[right] != 0) {
+                int temp = arr[right];
+                arr[right] = arr[left];
+                arr[left] = temp;
                 left++;
-            }else if(!Character.isLetterOrDigit(arr[right])){
-                right--;
-            }else {
-                char temp = arr[left];
-                arr[left]=arr[right];
-                arr[right]=temp;
-                left++;
-                right--;
-
             }
         }
-        return new String(arr);
+        return arr;
     }
 
-    //Two Sum II - Input Array Is not Sorted
-    public static int[] sum(int[] arr, int target){
-        Map<Integer,Integer> map = new HashMap<>();
-
-        for(int i=0;i<arr.length-1;i++){
-            int needed = target-arr[i];
-            if(map.containsKey(needed)){
-                return new int[] {map.get(needed),i};
+    public static int[] moveZerosToLeft(int[] arr){
+        int left = arr.length-1;
+        for(int right= arr.length-1;right>=0;right--){
+            if(arr[right]!=0){
+                int temp = arr[right];
+                arr[right]=arr[left];
+                arr[left]=temp;
+                left--;
             }
-            map.put(arr[i],i);
         }
-        return new int[] {-1,-1};
+        return arr;
     }
-
-    //Two Sum II - Input Array Is not Sorted
-    public static int[] sumTwo(int[] arr, int target){
-        int left =0;
-        int right =arr.length-1;
-        while (left<right){
-            int sum =arr[left]+arr[right];
-            if(sum==target){
-                return new int[] {left,right};
-            } else if (sum>target) {
-                right=right-1;
-            }else {
-                left=left+1;
+    //Remove Duplicates from Sorted Array
+    public static int removeDuplicates(int[] arr){
+        int i=0;
+        for (int j=1;j<arr.length;j++){
+            if(arr[i]!=arr[j]){
+                i++;
+                arr[i]=arr[j];
             }
         }
-        return new int[] {-1,-1};
-    }
-
-    //Valid Palindrome
-    //
-    //Given a string s, return true if it is a palindrome, or false otherwise.
-    //
-    //A string is considered a palindrome if, after converting all uppercase letters to lowercase and removing
-    // all non-alphanumeric characters, it reads the same forward and backward.
-    //Alphanumeric characters include letters (a-z, A-Z) and digits (0-9).
-    //Example 1
-    //Input:
-    //s = "A man, a plan, a canal: Panama"
-    //Output:
-    //true
-    public static boolean isValidPalindrome(String str){
-        str=str.toLowerCase();
-        int left =0;
-        int right = str.length()-1;
-        while (left<right){
-            if(!Character.isLetterOrDigit(str.charAt(left))){
-                left++;
-            } else if (!Character.isLetterOrDigit(str.charAt(right))) {
-                right--;
-            }else {
-                if(str.charAt(left)!=str.charAt(right)){
-                    return false;
-                }
-                left++;
-                right--;
-            }
-        }
-        return true;
-    }
-
-    public static List<List<Integer>> ThreeSum(int[] arr){
-        List<List<Integer>> triplet = new ArrayList<>();
-        Arrays.sort(arr);
-        for(int i=0;i<arr.length;i++){
-            if(i>0&&arr[i-1]==arr[i]){
-                continue;
-            }
-            if(arr[i]>0){
-                break;
-            }
-
-            int left = i+1;
-            int right = arr.length-1;
-            while (left<right){
-                int sum =arr[i]+arr[left]+arr[right];
-                if (sum==0){
-                    triplet.add(Arrays.asList(arr[i],arr[left],arr[right]));
-                    while (left<right&&arr[left]==arr[left+1]){
-                        left++;
-                    }
-                    while (left<right&&arr[right]==arr[right-1]){
-                        right--;
-                    }
-                    left++;
-                    right--;
-
-                }else if (sum>0){
-                    right--;
-                }else left++;
-            }
-        }
-        return triplet;
-    }
-    //Container With Most Water
-    public static int containerWater(int[] arr){
-        int left =0;
-        int right =arr.length-1;
-        int width = right-left;
-        int height= Math.min(arr[left],arr[right]);
-        int area = width*height;
-        int maxArea = 0;
-        while (left<right){
-            maxArea =Math.max(area,maxArea);
-            if(arr[left]<arr[right]){
-                left++;
-            }else right--;
-        }
-        return maxArea;
+        return i+1;
     }
 
 
-
-    public static void main(String[] args){
+    public static void main(String[] args) {
 
     }
 }
