@@ -31,4 +31,29 @@ public class MaxActivities {
 
         return count;
     }
+
+
+    public static int maxActivities(int[][] activities) {
+
+        int n = activities.length;
+
+        // Sort by end time
+        Arrays.sort(activities,
+                (a, b) -> Integer.compare(a[1], b[1]));
+
+        int count = 1;
+        int lastEnd = activities[0][1];
+
+        for (int i = 1; i < n; i++) {
+
+            if (activities[i][0] > lastEnd) {
+                count++;
+                lastEnd = activities[i][1];
+            }
+        }
+
+        return count;
+    }
+
+
 }

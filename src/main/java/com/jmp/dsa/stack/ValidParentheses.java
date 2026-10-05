@@ -8,10 +8,7 @@ public class ValidParentheses {
 
         Stack<Character> stack = new Stack<>();
 
-        for (int i = 0; i < str.length(); i++) {
-
-            char ch = str.charAt(i);
-
+        for (char ch :str.toCharArray()) {
             // Opening bracket
             if (ch == '(' || ch == '[' || ch == '{') {
 
