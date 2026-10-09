@@ -40,7 +40,7 @@ public class StreamsTest {
          3. Write a program to filter out all the even numbers from a list using Java Stream API
          */
 
-        int[] evens = Arrays.stream(arr).filter(x -> x % 2 == 0).toArray();
+        int[] evens = Arrays.stream(arrr(x ->).filte x % 2 == 0).toArray();
         List<Integer> evenList = numbers.stream().filter(x -> x % 2 == 0).toList();
         System.out.println("3. " + Arrays.toString(evens));
         System.out.println("3. " + evenList);
@@ -162,7 +162,7 @@ public class StreamsTest {
         System.out.println("19. " + numbers2.stream().filter(x -> x % 3 == 0 && x % 5 == 0).toList());
 
         /*
-        20. Given a list of strings, write a program to find and print the strings with the maximum length using Java Stream API.
+        20. Given a list of strings, write a program to find and print the string with the maximum length using Java Stream API.
          */
 
         System.out.println("20. " + strings.stream().max((x, y) -> x.length() - y.length()).orElseThrow());
@@ -407,7 +407,7 @@ public class StreamsTest {
         System.out.println("48. " + strings.stream().filter(x -> x.matches("\\d+")).toList());
 
         /*
-         Write a program to find the kth largest element in a list of integers using Java Stream API.
+         49. Write a program to find the kth largest element in a list of integers using Java Stream API.
          */
 
         k = 3;

@@ -1,0 +1,1357 @@
+1. @Transaction
+| Propagation       | If transaction exists | If no transaction |
+| ----------------- | --------------------- | ----------------- |
+| **REQUIRED**      | Join                  | Create new        |
+| **REQUIRES_NEW**  | Suspend + create new  | Create new        |
+| **SUPPORTS**      | Join                  | No transaction    |
+| **MANDATORY**     | Join                  | ❌ Exception       |
+| **NESTED**        | Create savepoint      | New transaction*  |
+| **NOT_SUPPORTED** | Suspend               | No transaction    |
+| **NEVER**         | ❌ Exception           | No transaction    |
+
+2. Notification system
+Retry + DLQ + Idempotency + Monitoring
+
+
+Absolutely. For UBS, S&P, and Goldman Sachs client rounds, I would prepare Microservices in a progression from fundamentals → design → distributed systems → production problems → hard architecture scenarios.
+
+Since you have a Java/Spring background, I’d especially focus on Spring Boot, REST, Kafka, DB, transactions, resilience, security, observability, and deployment.
+
+🟢 Level 1 — Microservices Basics
+1. What is Microservices Architecture?
+"Microservices Architecture is an architectural style where a large application is divided into small, loosely coupled, independently deployable services. In a banking application, for example, we can have separate Customer, Account, Payment, Loan, and Notification services. Each service is responsible for a specific business capability, can be developed and deployed independently, and typically owns its own data. These services communicate with each other using mechanisms such as REST, gRPC, or Kafka."
+
+2. What is the difference between Monolith and Microservices?
+| Monolith                                | Microservices                              |
+| --------------------------------------- | ------------------------------------------ |
+| One large application                   | Multiple independent services              |
+| Usually one deployment unit             | Each service can be deployed independently |
+| Modules are tightly coupled             | Services are loosely coupled               |
+| Usually one shared DB                   | Usually database per service               |
+| Scale entire application                | Scale individual services                  |
+| Failure can affect entire application   | Better fault isolation                     |
+| Simple to develop initially             | More complex operationally                 |
+| Simple communication inside application | Network communication between services     |
+| Simple deployment                       | More complex deployment                    |
+| Easier transaction management           | Distributed transactions are challenging   |
+
+3. What are the advantages of Microservices?
+"The main advantages of Microservices are scalability, loose coupling, independent development, independent deployment, and technology flexibility.
+
+For example, in a banking application, if the Payment Service receives high traffic, we can scale only that service without scaling the entire application. Services are loosely coupled because they communicate through well-defined contracts. Different teams can independently develop Account, Payment, and Loan services, and each service can be deployed independently. Microservices also provide technology flexibility, so different services can use different technologies when required. Additionally, they provide better fault isolation and allow faster release cycles."
+
+4. What are the disadvantages/challenges of Microservices?
+Microservices Challenges
+
+1. Infrastructure complexity
+2. Multiple databases → Data consistency
+3. Network failures
+4. Distributed transactions
+5. Debugging & monitoring
+6. Deployment complexity
+7. Security between services
+8. More distributed-system patterns
+
+
+5. When would you choose Microservices over a Monolith?
+"I would choose Microservices over a Monolith when the application is large and has multiple independent business capabilities, and when we need independent scaling, deployment, and development. For example, in a banking application, Payment, Account, Loan, and Notification can be separate services. If Payment receives high traffic, we can scale only the Payment Service. Multiple teams can also develop and deploy services independently. Microservices also provide technology flexibility and loose coupling between services. Additionally, with proper fault isolation and deployment strategies, we can improve availability and reduce the impact of failures or deployments."
+
+6. What is Service Decomposition?
+"Service decomposition is the process of breaking a large application into smaller, independently manageable services based on business capabilities. For example, in a banking application, instead of having one large application handling customers, accounts, payments, and loans, we can create separate Customer, Account, Payment, and Loan services. Each service owns its business logic and can be developed, deployed, and scaled independently."
+
+7. How do you decide the boundaries of a microservice?
+Important rule
+
+A good microservice should generally have:
+
+High Cohesion
+      +
+Loose Coupling
+      +
+Clear Data Ownership
+      +
+Clear Business Responsibility
+
+"I decide microservice boundaries primarily based on business capabilities and bounded contexts. First, I identify independent business domains such as Account, Payment, Loan, and Customer Management. Within each service, I keep highly related functionality together to maintain high cohesion. I also ensure loose coupling between services and clear ownership of data. I consider whether a business capability needs to change, deploy, or scale independently. Finally, I consider transaction boundaries so that we don't unnecessarily create distributed transactions. The goal is to create services that are cohesive, loosely coupled, independently deployable, and have clear business and data ownership."
+
+8. What is Bounded Context?----------------------------------check again
+"A Bounded Context is a clearly defined boundary within a business domain where a particular domain model, terminology, and business rules have a specific meaning. For example, in a banking system, Account Management, Payment Processing, and Loan Management can be different bounded contexts. The term Account may have different meanings and rules in each context. Bounded Contexts help us avoid a large shared domain model and help us identify appropriate boundaries for microservices."
+
+
+9. What is Domain-Driven Design (DDD)?
+   Domain-Driven Design, or DDD, is a software design approach where we design the application around the business domain, business concepts, and business rules.
+For example, in a banking application, concepts such as Customer, Account, Transaction, Payment, and Loan represent different parts of the business domain.
+In microservices, DDD helps us identify business boundaries called bounded contexts. Each bounded context can become a separate microservice with its own business logic and data ownership.
+The main goal is to keep the software model closely aligned with the actual business requirements and make the system easier to understand and evolve.
+
+
+10. What is the difference between Microservices and SOA?
+
+11. What is a stateless service?
+A stateless service is a service that does not store client/session information between requests.
+Each request contains all the information needed to process it.
+
+
+12. Why should microservices generally be stateless?
+Microservices are generally made stateless because it makes them easier to scale, recover, and load balance.
+1. Easy horizontal scaling
+2. If one instance crashes
+3. Better load balancing
+4. Easier deployment
+5. Easier auto-scaling
+
+
+13. Can two microservices share the same database?
+Generally, two microservices should not share the same database. Each microservice should own its data and database. This provides loose coupling, independent deployment, independent scaling, and better service autonomy.
+
+14. Why avoid a shared database?
+
+If PaymentService directly accesses AccountService's tables:
+
+PaymentService → Account DB
+
+then PaymentService becomes tightly coupled to AccountService's database schema.
+
+If AccountService changes:
+
+account_table
+
+PaymentService may break.
+
+How should they communicate?
+
+Use APIs or events:
+
+PaymentService
+      |
+      | REST/gRPC
+      ↓
+AccountService
+      |
+      ↓
+Account DB
+
+or asynchronously:
+
+PaymentService
+      |
+    Kafka
+      |
+      ↓
+AccountService
+      |
+      ↓
+Account DB
+
+
+14. Why is a database per service recommended?
+Database per service is recommended because it gives each microservice ownership of its data, reduces coupling, enables independent deployment and scaling, provides better failure isolation, and allows each service to choose the appropriate persistence technology. Other services should access that data through APIs or events rather than directly accessing another service's database.
+
+15. What is API Gateway?
+API Gateway is a single entry point for clients to access multiple microservices in a microservices architecture.
+
+It routes client requests to the appropriate microservice and is a good place to implement cross-cutting concerns such as authentication, authorization, rate limiting, logging, monitoring, and request validation.
+
+Since a single API Gateway instance could become a single point of failure, in production we typically run multiple API Gateway instances behind a load balancer. If one instance fails, the load balancer routes traffic to another healthy instance.
+
+16. Why do we need an API Gateway?
+API Gateway provides a single entry point for clients to access multiple microservices. It routes client requests to the appropriate microservice and centralizes cross-cutting concerns such as authentication, authorization, rate limiting, logging, monitoring, and request/response transformation. It also hides the internal microservice architecture from clients.
+
+In production, we typically deploy multiple API Gateway instances behind a load balancer for high availability and scalability. If one Gateway instance goes down, the load balancer routes traffic to another healthy instance.
+
+
+17. API Gateway vs Load Balancer?
+“An API Gateway is responsible for API-level concerns such as routing requests to the appropriate microservice, authentication, authorization, rate limiting, logging, and transformation.
+ A load balancer distributes traffic across healthy instances of a service or gateway to provide scalability and high availability.”
+
+
+18. What is Service Discovery?
+“Service Discovery allows services to dynamically find each other without hardcoding IP addresses and port numbers. Each service registers itself with a Service Registry such as Eureka Server. When the API Gateway or another service needs to communicate with a service, it queries the registry to get the available instances and routes the request accordingly.”
+
+
+19. Why do we need Service Discovery?
+We need Service Discovery so that microservices can communicate with each other without hardcoding IP addresses and port numbers. Services register themselves with a Service Registry, and when another service needs to communicate with them, it can discover the available instances dynamically.
+
+
+20. What is the difference between client-side and server-side service discovery?
+
+In client-side service discovery, the client queries the service registry, gets the available service instances, and selects one itself. In server-side service discovery, the client sends the request to a load balancer or gateway, and that component queries the registry and routes the request to an appropriate service instance.
+
+|                          | Client-Side | Server-Side             |
+| ------------------------ | ----------- | ----------------------- |
+| Who discovers service?   | Client      | Load Balancer / Gateway |
+| Client knows registry?   | Yes         | No                      |
+| Client chooses instance? | Yes         | No                      |
+| Load balancing           | Client-side | Server-side             |
+| Client complexity        | Higher      | Lower                   |
+
+
+🟢 Level 2 — REST & Communication
+1. How do microservices communicate with each other?
+“Microservices can communicate synchronously or asynchronously. For synchronous communication, we commonly use REST APIs or gRPC, where the caller waits for a response. For asynchronous communication, we use messaging systems such as Kafka or RabbitMQ, where services communicate through events or messages without requiring an immediate response.”
+
+2.Difference between:  ------------------------check again
+REST
+gRPC
+Kafka
+RabbitMQ
+|                     | REST                              | gRPC                                   | Kafka                            | RabbitMQ                             |
+| ------------------- | --------------------------------- | -------------------------------------- | -------------------------------- | ------------------------------------ |
+| Type                | API communication                 | RPC communication                      | Event streaming                  | Message broker                       |
+| Communication       | Usually synchronous               | Usually synchronous                    | Asynchronous                     | Asynchronous                         |
+| Protocol            | HTTP                              | HTTP/2                                 | Kafka protocol over TCP          | AMQP / other protocols               |
+| Data format         | Usually JSON                      | Protocol Buffers                       | Binary/serialized messages       | Messages                             |
+| Best for            | Public APIs, simple service calls | Fast internal service-to-service calls | Event streaming, high throughput | Task queues, reliable messaging      |
+| Communication model | Request → Response                | Request → Response                     | Producer → Topic → Consumer      | Producer → Queue/Exchange → Consumer |
+| Coupling            | Request/response                  | Request/response                       | Event-based                      | Message-based                        |
+
+1. RestTemplate
+
+Common methods:
+
+restTemplate.getForObject()
+restTemplate.getForEntity()
+
+restTemplate.postForObject()
+restTemplate.postForEntity()
+
+restTemplate.put()
+
+restTemplate.delete()
+
+restTemplate.exchange()
+2. WebClient
+
+Common methods:
+
+webClient.get()
+webClient.post()
+webClient.put()
+webClient.patch()
+webClient.delete()
+
+Then:
+
+.retrieve()
+
+is used to retrieve the response.
+
+3. OpenFeign
+
+With Feign Client, you normally define the HTTP method using annotations:
+
+@GetMapping
+@PostMapping
+@PutMapping
+@PatchMapping
+@DeleteMapping
+
+We can use RestTemplate, WebClient, or OpenFeign for synchronous service-to-service communication. In newer Spring Boot applications, WebClient or OpenFeign are commonly preferred depending on the requirement."
+
+
+
+3.When would you use synchronous communication?
+We use synchronous communication when the calling service needs an immediate response from another service to continue its processing. For example, during a transaction, the Transaction Service may synchronously call the Account Service to fetch the current balance. After receiving the balance, it can validate the transaction and proceed with the debit or credit operation.”
+
+4.When would you use asynchronous communication?
+We use asynchronous communication when the calling service does not need an immediate response from the other service and we want to reduce tight coupling. The calling service can publish an event/message and continue its processing without waiting for the consumer to finish.
+
+
+5.REST vs Kafka — when would you choose which?
+|                    | REST                                   | Kafka                                    |
+| ------------------ | -------------------------------------- | ---------------------------------------- |
+| Communication      | Synchronous request/response           | Asynchronous event/message               |
+| Caller waits?      | Usually yes                            | No                                       |
+| Coupling           | Higher                                 | Lower                                    |
+| Best for           | Getting data / performing an operation | Publishing events                        |
+| Example            | Get account balance                    | Transaction completed event              |
+| Multiple consumers | Caller must call each service          | Multiple consumers can consume the event |
+
+6.What happens if Service A calls Service B and Service B is down?
+“If Service A synchronously calls Service B and B is down, the request will fail or timeout. We handle this using resilience patterns such as timeouts, limited retries, circuit breakers, and fallbacks where appropriate. For asynchronous communication using Kafka, Service A can publish an event without waiting for Service B, and Service B can process the event when it becomes available.”
+
+7. How do you prevent cascading failures?
+“To prevent cascading failures, we use resilience patterns such as Circuit Breaker, timeouts, controlled retries with backoff, bulkheads, rate limiting, and fallbacks. The Circuit Breaker is particularly important because it stops calling an unhealthy downstream service after repeated failures, allowing the rest of the system to remain available.”
+
+8.What is a timeout?
+A timeout is a maximum amount of time that a service waits for a response from a downstream service. If the response is not received within that configured time, the request is terminated and treated as a failure.
+
+9.What is connection timeout vs read timeout?------------------------check again
+“Connection timeout is the maximum time allowed to establish a connection with a downstream service. Read timeout is the maximum time the client waits for data or a response after the connection has been established.”
+
+10.What is retry?
+Retry means attempting the same request again when a downstream service call fails, usually because of a temporary failure such as a network issue or brief service unavailability. We should configure a limited number of retries with a delay/backoff between attempts.
+
+11.When should you NOT retry?
+"I would not retry permanent failures such as validation errors, authentication failures, authorization failures, or business failures like insufficient funds. I would generally retry only transient failures such as timeouts, temporary network errors, or temporary 5xx errors, and for payment operations I would use idempotency to prevent duplicate transactions."
+
+
+12.What is exponential backoff?---------check again
+Exponential backoff means increasing the time gap between each retry attempt instead of retrying immediately.
+
+13. What is jitter?
+"Jitter adds randomness to the exponential backoff delay so that multiple clients or service instances don't retry simultaneously. This prevents synchronized retry spikes and reduces additional load on an unhealthy service
+
+What is Circuit Breaker?
+Explain Circuit Breaker states:
+CLOSED
+OPEN
+HALF_OPEN
+What is Bulkhead Pattern?====================chceck again
+What is Rate Limiting?
+Where would you implement Rate Limiting?
+API Gateway vs Application-level Rate Limiting?
+What is Idempotency?
+An operation is idempotent if performing the same operation multiple times has the same final effect as performing it once.
+
+
+🟡 Level 3 — Spring Boot Microservices
+1. How do you create a Microservice using Spring Boot?
+"I create an independent Spring Boot application for each bounded business capability. Each service owns its business logic and preferably its own database. I expose REST APIs for synchronous communication and Kafka for asynchronous communication. Then I add cross-cutting components such as API Gateway, service discovery, security, timeout, retry, circuit breaker, centralized configuration, logging, and monitoring based on the enterprise requirements."
+
+
+2. How do services communicate using RestTemplate?
+"RestTemplate allows one Spring Boot microservice to communicate synchronously with another over HTTP. We configure a RestTemplate bean and use methods such as getForObject() or postForObject() to call the downstream service. Since it's blocking, we should configure appropriate timeouts and resilience mechanisms such as retry and circuit breaker."
+
+
+3. Why is WebClient preferred over RestTemplate in modern Spring applications?
+"WebClient is preferred over RestTemplate in modern Spring applications because WebClient supports non-blocking and reactive communication. It allows the application to handle many concurrent requests without blocking a thread while waiting for the downstream service response. It also supports streaming and reactive programming through Project Reactor."
+
+"WebClient is preferred because it provides non-blocking HTTP communication and integrates with Spring WebFlux and Project Reactor. This improves resource utilization and scalability when handling many concurrent requests. RestTemplate is synchronous and blocking, so it is mainly seen in existing Spring MVC applications."
+
+
+4. What is OpenFeign?
+
+OpenFeign is a declarative HTTP client used in Spring Boot microservices to simplify communication between services.
+
+Instead of writing RestTemplate or WebClient code manually, you define an interface, and Feign generates the HTTP client implementation for you.
+
+
+5. Feign Client vs RestTemplate vs WebClient?
+| Feature                  | RestTemplate             | WebClient                      | OpenFeign                                 |
+| ------------------------ | ------------------------ | ------------------------------ | ----------------------------------------- |
+| Style                    | Imperative               | Reactive                       | Declarative                               |
+| Blocking                 | Yes                      | Non-blocking by design         | Typically blocking                        |
+| Code                     | More boilerplate         | Moderate                       | Very little                               |
+| Reactive support         | ❌                        | ✅                              | ❌                                         |
+| Easy to use              | Yes                      | Moderate                       | **Very easy**                             |
+| Best for                 | Existing/simple MVC apps | High concurrency/reactive apps | Simple microservice-to-microservice calls |
+| Spring Cloud integration | Limited                  | Good                           | **Excellent**                             |
+
+
+6. How do you configure timeout for Feign?
+Per-service configuration
+spring:
+  cloud:
+    openfeign:
+      client:
+        config:
+          payment-service:
+            connectTimeout: 2000
+            readTimeout: 5000
+          inventory-service:
+            connectTimeout: 1000
+            readTimeout: 3000
+Interview answer
+
+"For OpenFeign, I configure connectTimeout and readTimeout under spring.cloud.openfeign.client.config. Connect timeout controls how long we wait to establish the connection, while read timeout controls how long we wait for the response."
+===========================================================================================================
+7.  How do you implement retry in Spring Boot?
+In Spring Boot, a common approach is Spring Retry or Resilience4j. For modern microservices, Resilience4j is commonly used, especially when you also need Circuit Breaker, Timeout, and Rate Limiter.
+
+Using Resilience4j
+@Retry(name = "paymentService")
+public PaymentResponse callPayment() {
+    return paymentClient.getPayment();
+}
+
+Configuration:
+
+resilience4j:
+  retry:
+    instances:
+      paymentService:
+        maxAttempts: 3
+        waitDuration: 2s
+
+This means:
+
+Call Payment
+    ↓
+Failure
+    ↓
+Wait 2 sec
+    ↓
+Retry 1
+    ↓
+Failure
+    ↓
+Wait 2 sec
+    ↓
+Retry 2
+
+maxAttempts: 3 means 3 total attempts, including the initial call.
+
+Exponential backoff
+
+For exponential backoff, configure an interval function, for example:
+
+resilience4j:
+  retry:
+    instances:
+      paymentService:
+        maxAttempts: 3
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+        waitDuration: 500ms
+
+Conceptually:
+
+Attempt 1 → immediate
+Attempt 2 → ~500ms
+Attempt 3 → ~1000ms
+Interview answer
+
+"I can implement retries in Spring Boot using Resilience4j. I configure the maximum number of attempts and wait duration, and for transient failures I can enable exponential backoff. I would avoid retrying permanent errors, and for payment operations I would combine retries with idempotency to prevent duplicate transactions
+
+
+8. How do you implement Circuit Breaker using Resilience4j?
+In Spring Boot, we can use Resilience4j's @CircuitBreaker annotation.
+
+1. Add Resilience4j dependency
+
+For Spring Boot 3:
+
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+</dependency>
+2. Add @CircuitBreaker
+@CircuitBreaker(name = "paymentService", fallbackMethod = "paymentFallback")
+public PaymentResponse callPayment() {
+    return paymentClient.getPayment();
+}
+
+Fallback:
+
+public PaymentResponse paymentFallback(Exception ex) {
+    return new PaymentResponse("PAYMENT_PENDING");
+}
+3. Configure it
+resilience4j:
+  circuitbreaker:
+    instances:
+      paymentService:
+        failureRateThreshold: 50
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        waitDurationInOpenState: 10s
+
+Meaning:
+
+failureRateThreshold: 50 → circuit opens when failure rate reaches 50%.
+minimumNumberOfCalls: 5 → start calculating failure rate after at least 5 calls.
+slidingWindowSize: 10 → monitor the latest 10 calls.
+waitDurationInOpenState: 10s → stay OPEN for 10 seconds before moving toward HALF_OPEN.
+Flow
+Order Service
+     ↓
+Payment Service
+     ↓
+Failures increase
+     ↓
+Circuit Breaker OPEN
+     ↓
+Don't call Payment
+     ↓
+Fallback
+
+After the wait period:
+
+OPEN
+ ↓
+HALF_OPEN
+ ↓
+Test call
+ ├── SUCCESS → CLOSED
+ └── FAILURE → OPEN
+⭐ Interview answer
+
+"I implement Circuit Breaker using Resilience4j's @CircuitBreaker annotation. I configure the failure threshold, sliding window, minimum number of calls, and wait duration. When failures cross the threshold, the circuit changes from CLOSED to OPEN and calls fail fast instead of hitting the unhealthy service. After the configured wait period, it moves to HALF_OPEN and allows test calls. If the service recovers, it returns to CLOSED; otherwise, it goes back to OPEN. I can also configure a fallback for graceful handling."
+
+9. How do you implement Rate Limiting in Spring Boot?
+"I would implement rate limiting at the API Gateway so that excessive traffic is rejected before it reaches the downstream services. In Spring Cloud Gateway, we can use the RequestRateLimiter filter, commonly backed by Redis, to maintain the request count in a distributed environment."
+
+⭐ Remember
+
+Rate Limiting → API Gateway
+
+Distributed Rate Limiting → API Gateway + Redis
+
+Too many requests → HTTP 429
+
+10. How do you handle exceptions consistently across microservices?
+"I would use a global exception-handling mechanism in each microservice using @RestControllerAdvice and @ExceptionHandler. I would define a common error-response format so all services return errors consistently. For distributed tracing, I would also include a correlation ID and log the exception centrally."
+
+"I use @RestControllerAdvice with @ExceptionHandler in each microservice to handle exceptions globally. I define a standard error-response structure containing fields like error code, message, timestamp, and correlation ID. I also use centralized logging and distributed tracing so exceptions can be tracked across services. For business exceptions, I return appropriate 4xx responses, while unexpected technical exceptions return 5xx responses."
+
+
+11. What is @ControllerAdvice?
+"@ControllerAdvice is a class-level annotation in Spring MVC used to provide centralized exception handling across multiple controllers. We define exception handler methods inside it using @ExceptionHandler."
+
+12. How do you implement centralized configuration?
+"In a microservices architecture, instead of keeping configuration separately in every service, we can use Spring Cloud Config Server as a centralized configuration server. All microservices retrieve their configuration from the Config Server."
+
+13. What is Spring Cloud Config?
+"Spring Cloud Config provides centralized and externalized configuration management for microservices. Instead of keeping configuration inside each microservice, we store it in a central configuration repository and let services retrieve their configuration from the Config Server. It can provide both common and service-specific, environment-specific configuration."
+
+14. How do you manage environment-specific configuration?
+"We manage environment-specific configuration using Spring Profiles. We maintain separate configuration files for each environment, such as application-dev.yml, application-test.yml, and application-prod.yml. At runtime, we activate the required profile."
+
+How do you secure microservices?
+How does JWT work?
+OAuth2 vs JWT?
+Where should authentication happen?
+Should every microservice validate JWT?
+How do you propagate authentication information between services?
+
+
+🟡 Level 4 — Database & Transactions
+
+This is very important for client rounds.
+
+1. Why should each microservice have its own database?
+"Each microservice should ideally have its own database to maintain data ownership and loose coupling. This allows services to be independently developed, deployed, and scaled, and prevents one service from becoming tightly coupled to another service's database schema. If one service needs another service's data, it should communicate through APIs or events rather than directly accessing the other service's database."
+
+2. What problems occur when multiple services share one database?
+"When multiple microservices share the same database, they become tightly coupled to the database schema. Schema changes require coordination between multiple teams and can prevent independent deployments. It also creates a shared scalability and performance bottleneck because all services compete for the same database resources. In addition, one service's heavy queries or failures can affect other services, and services have less flexibility to choose the appropriate database technology."
+
+3.  do you maintain consistency between two databases?
+"When two microservices have separate databases, we can maintain consistency using the Saga pattern. We divide the business transaction into multiple local transactions. If one transaction fails, we execute compensating transactions to undo the effects of previously successful transactions. For reliable event delivery between the services, we can use the Outbox Pattern with Kafka. This gives us eventual consistency rather than a traditional distributed ACID transaction.
+
+4. What is a distributed transaction?
+A distributed transaction is a transaction that involves operations across multiple independent resources, such as databases or services, and requires those operations to be coordinated as part of one logical transaction.
+
+"A distributed transaction is a transaction where a single logical business operation involves multiple independent services or databases. Since the operations span multiple resources, they need to be coordinated to maintain consistency. In microservices, instead of traditional distributed transactions, we commonly use patterns such as Saga and eventual consistency."
+
+
+What is 2-Phase Commit (2PC)?
+2-Phase Commit (2PC) is a distributed transaction protocol used when one transaction involves multiple databases/services and we want all participants to either commit or rollback together.
+
+Why is 2PC generally avoided in Microservices?
+What is the Saga Pattern?
+Saga Orchestration vs Choreography?
+Give a real-world example of Saga.
+Suppose:
+Order Service
+     ↓
+Payment Service
+     ↓
+Inventory Service
+
+Payment succeeds but Inventory fails.
+
+How do you handle this?
+
+What is a compensating transaction?
+
+How do you achieve eventual consistency? What happens if the compensation itself fails?
+
+What is CQRS?
+"Yes, in a CQRS architecture with separate read and write stores, we can synchronize the read model using events. After a successful write transaction, the system publishes a domain event to Kafka. A consumer processes that event and updates the read database. This allows the read side to be independently scaled and optimized, but it introduces eventual consistency between the write and read models.
+
+CQRS vs normal CRUD?
+"In normal CRUD, the same application model and usually the same database are used for both read and write operations. In CQRS, we separate commands that modify data from queries that only read data. The read and write models can be optimized and scaled independently, and in larger systems they can use separate data stores synchronized through events."
+
+When would you use CQRS?
+"I would use CQRS when the read and write requirements are significantly different, especially in read-heavy systems where we need to scale and optimize the read side independently. It is also useful when read models require different data structures or when the system is already event-driven. I wouldn't use CQRS for simple CRUD applications because it introduces additional complexity and eventual consistency."
+
+What is Event Sourcing?
+CQRS:
+
+Separates commands (writes) and queries (reads).
+
+Event Sourcing:
+
+Stores the state changes as events instead of storing only the current state.
+
+Event Sourcing vs CQRS?
+CQRS:
+
+Separates commands (writes) and queries (reads).
+
+Event Sourcing:
+
+Stores the state changes as events instead of storing only the current state.
+
+
+
+🔥 Level 5 — Kafka & Event-Driven Microservices
+
+For UBS/S&P/Goldman-type interviews, I would consider this an important area.
+
+Why use Kafka in Microservices?
+Kafka vs REST?
+What is a Kafka Topic?
+A Kafka Topic is a logical category used to store and organize messages or events in Kafka.
+What is a Partition?
+A Kafka Partition is a sub-unit of a Kafka Topic where messages are stored in an ordered sequence.
+What is Consumer Group?
+A Consumer Group is a group of consumer instances that work together to consume messages from a Kafka topic.
+How does Kafka achieve scalability?
+How does Kafka achieve fault tolerance?
+What is an Offset?
+An offset is the sequential position or number assigned to each message within a Kafka partition.
+It helps Kafka consumers keep track of which messages they have already processed and where they should continue reading.
+
+What happens if a consumer crashes?
+What is Consumer Rebalancing?
+What is At-most-once delivery?
+What is At-least-once delivery?
+What is Exactly-once semantics?
+acks?
+Can Kafka guarantee exactly-once processing?
+How do you avoid duplicate message processing?
+What is an Idempotent Consumer?
+What happens if:
+Kafka message received
+       ↓
+DB update
+       ↓
+Application crashes
+       ↓
+Offset not committed
+
+What happens when the message is consumed again?
+
+How would you make DB + Kafka processing reliable?
+What is the Transactional Outbox Pattern?
+What is CDC?
+
+Kafka vs RabbitMQ?
+Kafka → Distributed event streaming platform
+RabbitMQ → Message broker / message queue
+Kafka → Messages are stored in topics and partitions and can be retained for a configured period.
+RabbitMQ → Messages are typically delivered from queues to consumers and removed after successful processing/acknowledgement.
+Kafka → Designed for high throughput, scalability, and event streaming.
+RabbitMQ → Good for traditional message-based communication and routing.
+Kafka → Multiple consumer groups can independently consume the same events.
+RabbitMQ → Messages in a queue are generally distributed among competing consumers.
+
+How do you handle poison messages?
+What is Dead Letter Topic/Queue?
+How do you handle message ordering?
+Does Kafka guarantee ordering?
+How do you scale Kafka consumers?
+What happens if consumers > partitions?
+consumer lag?
+Default retention time of Kafka is 7days
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+🔥 Level 6 — Distributed Systems
+
+These are where senior-level client interviews become difficult.
+
+1. What is CAP Theorem?
+CAP theorem states that in a distributed system, when a network partition occurs, you cannot simultaneously guarantee both strong Consistency and Availability.
+
+Explain:
+Consistency:--- Every read receives the most recent successful write (or an error).
+Availability:-- The system remains available to clients even if one database node is down.
+Partition Tolerance:--
+
+
+2. Why can't we achieve all three simultaneously?
+Because during a network partition, Consistency and Availability conflict with each other.
+"We cannot guarantee all three because when a network partition occurs, the system has to choose between consistency and availability. If we continue accepting requests, we may return or create conflicting data, sacrificing consistency. If we reject or wait for requests until the nodes can communicate, we preserve consistency but sacrifice availability. Therefore, during a partition, we choose either CP or AP."
+
+3. What is Eventual Consistency?
+Eventual consistency means that after a data update, different replicas may temporarily have different values, but if no new updates occur and the system continues operating, all replicas will eventually become consistent.
+
+4. Strong Consistency vs Eventual Consistency?
+After a successful write, any subsequent read returns the latest value--Strong Consistency
+Eventual Consistency
+After a write, some replicas may temporarily return an older value, but eventually all replicas converge to the latest value.
+
+5. What is Distributed Lock?
+6. When would you need distributed locking?
+7. What is Leader Election?
+8. What is Split Brain?
+9. What is Distributed Cache?
+
+10. Redis vs Database?
+| Redis                                                        | Database                                        |
+| ------------------------------------------------------------ | ----------------------------------------------- |
+| Primarily an **in-memory data store/cache**                  | **Persistent data store**                       |
+| Very fast because data is mainly kept in RAM                 | Generally slower than Redis                     |
+| Used for frequently accessed/temporary data                  | Used for permanent business data                |
+| Data can be lost depending on configuration/failure          | Designed for durable storage                    |
+| Commonly used for caching, sessions, counters, rate limiting | Used for transactions and core application data |
+
+
+11. How do you maintain cache consistency?
+12. What is Cache Aside Pattern?
+13. What is Write Through Cache?
+14. What is Write Behind Cache?
+15. What happens if Redis goes down?
+16. How do you prevent Cache Stampede?
+17. What is the Thundering Herd problem?
+
+18. What is Distributed Tracing?
+Distributed tracing is used to track a single request as it travels across multiple microservices. A trace is made up of spans representing individual operations in different services. It helps us identify where failures or performance bottlenecks occur. We propagate a Trace ID across service calls so that all the spans belonging to the same request can be correlated."
+
+19. Why is correlation ID important?
+"In a distributed system, a single client request can travel through multiple microservices, making it difficult to trace the request when an issue occurs. We generate a unique Correlation ID and propagate it through the request, usually using an HTTP header. Each service includes this ID in its logs. We can then search for that ID across centralized logs and trace the complete request flow and identify where the failure occurred."
+
+A Correlation ID is a unique identifier assigned to a client request and propagated across multiple services so that we can trace the entire request flow through the distributed system.
+
+
+🔥 Level 7 — Observability & Production
+
+Very common for experienced candidates.
+
+How do you monitor Microservices?
+What are the three pillars of observability?
+Logs
+Metrics
+Traces
+What is distributed tracing?
+What is a Correlation ID?
+How do you trace:
+Client
+ ↓
+API Gateway
+ ↓
+Order Service
+ ↓
+Payment Service
+ ↓
+Kafka
+ ↓
+Notification Service
+What tools have you used for monitoring?
+Prometheus vs Grafana?
+What is ELK?
+How do you centralize logs?
+What should you log in a Microservice?
+What should you not log?
+How do you troubleshoot a slow API?
+How do you identify which microservice is causing latency?
+What metrics would you monitor?
+What is health check?
+Liveness vs Readiness?
+
+🔴 Level 8 — Deployment & Kubernetes
+Why use Docker for Microservices?
+What is a Docker container?
+Container vs VM?
+Why is Kubernetes used with Microservices?
+What is a Pod?
+What is a Deployment?
+What is a Service in Kubernetes?
+What is Horizontal Pod Autoscaling?
+How do you scale a microservice?
+What happens if one pod crashes?
+How does Kubernetes perform service discovery?
+What is Rolling Deployment?
+Blue-Green vs Canary Deployment?
+How do you perform zero-downtime deployment?
+How do you handle backward compatibility during deployment?
+
+🔴 Level 9 — Hard Client-Round Scenarios
+
+These are the most important ones to practice.
+
+Scenario 1 — Payment failure
+Order Service
+      ↓
+Payment Service
+      ↓
+Inventory Service
+
+Payment succeeds.
+
+Inventory fails.
+
+1. Question: How do you maintain consistency?
+
+"This is a distributed data consistency problem because Order, Payment, and Inventory are separate microservices, each with its own database. I would use the Saga Pattern to maintain business consistency."
+
+"For this scenario, if Payment succeeds and Inventory fails, we need a compensating transaction. For example, Inventory Service publishes an InventoryFailed event. Payment Service consumes that event and performs a compensation, such as refunding the successful payment. Then the Order Service should be updated to CANCELLED."
+
+"We can implement the Saga using either Choreography or Orchestration. In Choreography, services communicate through events. In Orchestration, a central Saga Orchestrator controls the workflow and compensation. For a complex enterprise or banking workflow, I would generally prefer orchestration because it provides better control, monitoring, and failure handling."
+
+"Also, to make event publishing reliable, I would consider the Transactional Outbox Pattern so that a database update and the corresponding event are reliably persisted."
+
+
+
+Scenario 2 — Duplicate payment
+
+Client sends:
+
+POST /payment
+
+twice because of network timeout.
+
+Both requests reach Payment Service.
+
+How do you prevent double payment?
+
+"This is an idempotency problem. To prevent double payment, I would use an Idempotency Key.
+
+The client generates a unique idempotency key for each business payment operation, not for every HTTP request. If the request times out and the client retries the same payment, it must send the same idempotency key again.
+
+Payment Service stores the idempotency key along with the payment status and result in its database, with a unique constraint on the key.
+
+For the first request, the key doesn't exist, so we process the payment and store the result. When the retry arrives with the same key, Payment Service finds that the payment has already been processed and returns the existing result instead of charging the customer again.
+
+I would also use the same idempotency key when calling an external payment gateway, if the gateway supports idempotency.
+
+3. Scenario 3 — Service Down
+Order → Payment
+
+Payment Service is unavailable for 5 minutes.
+
+How should Order Service behave?
+
+Expected discussion:
+
+Timeout
+Retry
+Exponential Backoff
+Circuit Breaker
+Fallback
+Kafka
+Eventual Processing
+
+"If Payment Service is unavailable, Order Service should first have a timeout so it doesn't wait indefinitely. For temporary failures, it can perform a limited number of retries with exponential backoff. If Payment continues to fail, the Circuit Breaker opens and prevents further calls, avoiding cascading failures.
+
+As a fallback, we can either return 503 Service Unavailable or mark the order as PAYMENT_PENDING, depending on the business requirement. If delayed processing is acceptable, we can use Kafka for asynchronous communication and process the payment later, achieving eventual consistency."
+
+Flow
+Order → Payment ❌
+          ↓
+       Timeout
+          ↓
+   Retry + Backoff
+          ↓
+   Still failing
+          ↓
+ Circuit Breaker OPEN
+          ↓
+Fallback
+  ↓
+503 OR PAYMENT_PENDING
+          ↓
+Kafka → Process Later
+
+Key point: For a payment system, retries should be combined with idempotency to prevent duplicate payments.
+
+4. Scenario 4 — Kafka duplicate
+
+Kafka sends the same payment event twice.
+
+PaymentCompleted
+PaymentCompleted
+
+How do you make the consumer idempotent?
+"Kafka consumers should be idempotent because the same event can be delivered more than once. I would include a unique eventId or transactionId in the event. The consumer stores the processed event ID in its database. Before processing an event, it checks whether that ID has already been processed. If it exists, it ignores the duplicate; otherwise, it processes the event and records the ID."
+
+
+5. Scenario 5 — DB + Kafka consistency
+
+You need to:
+
+1. Update DB
+2. Publish Kafka event
+
+DB succeeds but Kafka publishing fails.
+
+How do you solve it?
+
+This should lead you toward:
+
+Transactional Outbox
+"I would use the Transactional Outbox Pattern. The business DB update and insertion of the Kafka event into the Outbox table happen in the same DB transaction. A separate Outbox Publisher reads pending events and publishes them to Kafka. If Kafka is unavailable, the event remains in the Outbox and is retried later. After successful publishing, we mark the event as processed."
+
+
+6. Scenario 6 — High traffic
+
+Your API normally receives:
+
+1,000 requests/sec
+
+Suddenly:
+
+100,000 requests/sec
+
+How would you design the system?
+
+Discuss:
+
+Load Balancer
+API Gateway
+Rate Limiting
+Horizontal Scaling
+Caching
+Kafka
+Database Scaling
+Backpressure
+
+"If traffic increases from 1,000 to 100,000 requests/sec, I would first put an API Gateway and Load Balancer in front of the services. I would use horizontal scaling to increase the number of service instances and distribute traffic across them.
+
+I would apply rate limiting to protect the system from overload. For read-heavy GET requests, I would use caching to reduce database load. Wherever immediate response is not required, I would use asynchronous processing with Kafka.
+
+I would also scale the database using techniques such as read replicas, connection pooling, and appropriate partitioning/sharding where required. Finally, I would implement backpressure so that when downstream services cannot handle the traffic, the system slows or buffers requests instead of crashing."
+
+7. Scenario 7 — Database bottleneck
+
+Your microservice has:
+
+10 application instances
+        ↓
+   One Database
+
+Application scales, but DB becomes the bottleneck.
+
+What would you do?
+
+Scenario 8 — Cache failure
+Application → Redis → DB
+
+Redis goes down.
+
+Millions of requests hit DB.
+
+How do you prevent database overload?
+
+Scenario 9 — Distributed transaction
+Order DB
+Payment DB
+Inventory DB
+
+You need all three operations to succeed.
+
+Would you use a distributed transaction? Why/why not?
+
+Scenario 10 — Zero downtime
+
+You have:
+
+Order Service v1
+
+and need to deploy:
+
+Order Service v2
+
+without stopping traffic.
+
+How would you do it?
+
+
+
+🔴 Level 10 — Architect-Level Questions
+
+These are excellent for a 10-year Java developer.
+
+1. How would you design an Order Management Microservice architecture?
+"I would first identify the business capabilities and create separate services such as Transfer, Payment, Account, and Notification. The client request would enter through an API Gateway and reach the Transfer Service. The Transfer Service would coordinate the transaction with the Payment and Account services. For operations such as notifications and auditing that don't need to block the transaction, I would publish events to Kafka and let Notification and Audit services consume those events asynchronously. I would also consider idempotency, retries, circuit breakers, the Saga pattern, and the Transactional Outbox pattern to handle failures and maintain consistency."
+                 Customer
+                    |
+                    ↓
+               API Gateway
+                    |
+                    ↓
+             Transfer Service
+                    |
+                    ↓
+             Payment Service
+                    |
+                    ↓
+              Account Service
+                    |
+                    ↓
+              Publish Event
+                    |
+                  Kafka
+                    |
+          --------------------
+          |                  |
+          ↓                  ↓
+ Notification Service    Audit Service
+
+
+2. How would you design a Payment Microservice?
+
+Client
+  |
+  ↓
+API Gateway
+  |
+  ↓
+Payment Service
+  |
+  ↓
+Account Service
+  |
+  ↓
+Account DB
+  |
+  ├── Account Table
+  |
+  └── Outbox Table
+          |
+          ↓
+   Outbox Publisher
+          |
+          ↓
+        Kafka
+       /     \
+      ↓       ↓
+Notification  Audit
+ Service      Service
+
+
+3. How would you design a Banking Transaction System?
+                         Client
+                           |
+                           ↓
+                      API Gateway
+                           |
+                           ↓
+                  Transaction Service
+                           |
+                    ----------------
+                    |              |
+                    ↓              ↓
+              Fraud Service    Account Service
+                                  |
+                                  ↓
+                              Account DB
+                                  |
+                           ----------------
+                           |              |
+                           ↓              ↓
+                    Account Table    Outbox Table
+                                          |
+                                          ↓
+                                  Outbox Publisher
+                                          |
+                                          ↓
+                                        Kafka
+                                      /   |    \
+                                     ↓    ↓     ↓
+                              Notification Audit Fraud/Analytics
+                                Service   Service
+
+
+4. How would you design a Notification System?
+                    Transaction Service
+                           |
+                           ↓
+                    Transaction Event
+                           |
+                           ↓
+                         Kafka
+                           |
+                  -------------------
+                  |        |        |
+                  ↓        ↓        ↓
+          Notification   Audit   Analytics
+             Service     Service   Service
+                  |
+          ----------------
+          |              |
+          ↓              ↓
+        SMS             Email
+       Provider        Provider
+
+5. How would you design an Audit Logging System?
+Client
+  |
+  ↓
+API Gateway
+  |
+  ↓
+Business Services
+(Account / Payment / Loan / Customer)
+  |
+  ↓
+Publish Audit Event
+  |
+  ↓
+Kafka
+  |
+  ↓
+Audit Service
+  |
+  ↓
+Audit Database / Storage
+
+6. How would you design a high-volume Transaction Processing System?
+                         Clients
+                            |
+                            ↓
+                       API Gateway
+                            |
+                            ↓
+                    Load Balancer
+                            |
+             -----------------------------
+             |            |              |
+             ↓            ↓              ↓
+        Transaction   Transaction   Transaction
+        Service-1     Service-2     Service-3
+             |            |              |
+             -------------+--------------
+                         |
+                         ↓
+                       Kafka
+                         |
+              ----------------------
+              |                    |
+              ↓                    ↓
+        Transaction           Account Service
+        Processing                 |
+                                   ↓
+                              Account DB
+                                   |
+                             --------------
+                             |            |
+                             ↓            ↓
+                          Account       Outbox
+                           Data          Table
+                                         |
+                                         ↓
+                                  Outbox Publisher
+                                         |
+                                         ↓
+                                       Kafka
+                                      /     \
+                                     ↓       ↓
+                              Notification   Audit
+The 6 things the interviewer is looking for
+1. High throughput     → Kafka + partitions + consumers
+2. Scalability         → Horizontal scaling
+3. No duplicates       → Idempotency
+4. Correctness         → DB transactions + ordering
+5. Reliability         → Outbox + retry + DLQ
+6. Observability       → Metrics + logs + tracing
+
+
+
+7. How would you design a system supporting 1 million transactions/minute?
+                        Client
+                           |
+                           ↓
+                      API Gateway
+                           |
+                      Rate Limiter
+                           |
+                           ↓
+                      Load Balancer
+                           |
+             ---------------------------
+             |            |            |
+             ↓            ↓            ↓
+       Transaction   Transaction   Transaction
+        Service 1     Service 2     Service 3
+             |            |            |
+             ----------- Kafka ----------
+                          |
+                   Multiple Partitions
+                          |
+             ---------------------------
+             |            |            |
+             ↓            ↓            ↓
+         Consumer 1   Consumer 2   Consumer 3
+             |            |            |
+             ------------+-------------
+                          |
+                          ↓
+                   Account Service
+                          |
+                          ↓
+                      Account DB
+                          |
+                ---------------------
+                |                   |
+                ↓                   ↓
+         Account/Transaction     Outbox
+               Data              Table
+                                   |
+                                   ↓
+                            Outbox Publisher
+                                   |
+                                   ↓
+                                 Kafka
+                               /       \
+                              ↓         ↓
+                       Notification    Audit
+                          Service      Service
+
+8. How would you guarantee no duplicate financial transactions?
+
+How would you guarantee auditability of financial transactions?
+How would you design a system where downstream systems are frequently unavailable?
+How would you migrate a Monolith to Microservices?
+How would you split a large monolith into services?
+How do you decide whether something should become a separate microservice?
+How do you prevent a Microservices architecture from becoming a distributed monolith?
+How do you handle versioning between services?
+How do you handle backward-compatible API changes?
+How do you handle schema evolution in Kafka?
+How do you handle failure across 10+ microservices?
+How do you identify and eliminate a cascading failure?
+How would you design Microservices for a banking/financial system?
+⭐ Priority for Your Interviews
+
+I would not try to memorize all 160 questions equally.
+
+For your client rounds, prioritize these:
+
+Must Know
+
+1. Microservices fundamentals
+
+Monolith vs Microservices
+Service decomposition
+Bounded Context
+Database per service
+API Gateway
+Service Discovery
+
+2. Communication
+
+REST
+Feign
+WebClient
+Synchronous vs asynchronous
+Kafka
+
+3. Resilience
+
+Timeout
+Retry
+Exponential backoff
+Circuit Breaker
+Bulkhead
+Rate Limiting
+Idempotency
+
+4. Transactions
+
+Distributed transactions
+Saga
+Orchestration vs Choreography
+Eventual consistency
+Compensating transactions
+Outbox Pattern
+
+5. Kafka
+
+Partition
+Consumer Group
+Offset
+At-least-once
+Exactly-once
+Idempotent consumer
+Duplicate messages
+Ordering
+DLQ
+Schema evolution
+
+6. Production
+
+Logging
+Metrics
+Tracing
+Correlation ID
+Prometheus/Grafana
+Health checks
+
+7. Security
+
+JWT
+OAuth2
+Authentication vs Authorization
+API Gateway security
+
+8. System Design
+
+Scaling
+Caching
+Load balancing
+Database bottleneck
+Failure handling
+Zero downtime deployment
+🎯 The interview pattern I recommend for you
+
+Don't just study questions individually. Learn the Microservices problem-solving pattern:
+
+                 Client
+                   ↓
+              API Gateway
+                   ↓
+             Load Balancer
+                   ↓
+        ┌──────────┼──────────┐
+        ↓          ↓          ↓
+     Order      Payment    Inventory
+        ↓          ↓          ↓
+       DB         DB         DB
+        │          │
+        └────── Kafka ────────┘
+                   ↓
+              Consumers
+
+
+Cross-cutting:
+──────────────────────────────
+Security
+  ↓
+JWT / OAuth2
+
+
+Resilience
+  ↓
+Timeout / Retry / Circuit Breaker
+/ Bulkhead / Rate Limiting
+
+
+Reliability
+  ↓
+Idempotency / Outbox / Saga
+
+
+Observability
+  ↓
+Logs / Metrics / Tracing
+
+
+Deployment
+  ↓
+Docker / Kubernetes
+
+If you can
+explain this architecture and defend why each component is there, you'll be in a much stronger position for the UBS/S&P/Goldman client rounds.
+
+I can also take these one by one as an interview simulation, starting from Question 1 (basic) and gradually moving you to hard scenario-based questions, without giving the answer until you attempt it.

@@ -1,0 +1,1237 @@
+1.--->Spring vs SpringBoot
+->Less Boilerplate Configuration
+->Auto-Configuration
+->Embedded Servers
+->Starter Dependencies
+->production ready features.
+->Easy Integration
+->Faster Development and Deployment
+
+| Your point              | Interview version                                  |
+| ----------------------- | -------------------------------------------------- |
+| More annotation support | **Convention-based configuration and annotations** |
+| Reduce boilerplate      | ✅ **Less configuration/boilerplate**               |
+| AOP, Actuator, JPA      | **Easy integration + production-ready Actuator**   |
+| Inbuilt server          | ✅ **Embedded server**                              |
+| Production ready        | ✅ **Actuator and monitoring features**             |
+
+2.--->Bean LifeCycle
+      The simple flow is
+	  Bean Creation → Dependency Injection → @PostConstruct → Bean is Ready → @PreDestroy → Bean Destroyed
+
+    Bean Definition
+       ↓
+    Bean Instantiation (constructor)
+       ↓
+    Dependency Injection
+       ↓
+    BeanPostProcessor - before initialization
+       ↓
+    @PostConstruct
+       ↓
+    InitializingBean.afterPropertiesSet()
+       ↓
+    Custom init method
+       ↓
+    BeanPostProcessor - after initialization
+       ↓
+    Bean is ready for use
+       ↓
+    @PreDestroy
+       ↓
+    DisposableBean.destroy()
+       ↓
+    Custom destroy method
+
+	**Spring Bean lifecycle is the sequence through which Spring creates, initializes, uses, and destroys a bean.**
+
+    The main steps are:
+
+    1. Spring creates the bean instance.
+    2. Dependencies are injected.
+    3. `BeanPostProcessor` performs pre-initialization processing.
+    4. `@PostConstruct` initialization method is called.
+    5. `InitializingBean.afterPropertiesSet()` and custom initialization methods can run.
+    6. `BeanPostProcessor` performs post-initialization processing.
+    7. The bean is ready to be used by the application.
+    8. When the application context is shutting down, `@PreDestroy` is called.
+    9. Destroy callbacks such as `DisposableBean.destroy()` and custom destroy methods can run.
+
+    For a simple interview explanation, I remember it as:
+
+    **Create → Inject → Initialize → Use → Destroy**
+
+    `@PostConstruct` is mainly used for initialization logic, and `@PreDestroy` is mainly used for cleanup logic.
+
+3. scopes:- Spring Bean Scope defines how long a bean lives and how many instances Spring creates.
+   The important scopes are:
+     Singleton – Only one instance of the bean per Spring container. This is the default scope.
+     Prototype – A new instance is created every time the bean is requested.
+     Request – One instance per HTTP request. Mainly used in web applications.
+     Session – One instance per HTTP session.
+     Application – One instance per web application context.
+4. what is Dirty checking
+   Dirty checking is a feature of JPA/Hibernate that automatically detects changes made to a managed entity and updates the database during transaction commit.
+   For example:
+
+   @Transactional
+   public void updateUser(Long id) {
+       User user = entityManager.find(User.class, id);
+       user.setName("Obul");
+   }
+
+   We don't need to explicitly call save() for the change.
+
+   Hibernate detects that the name was changed and generates an UPDATE query when the transaction is committed.
+
+   Flow:
+
+   Fetch Entity → Modify Entity → Hibernate Detects Change → UPDATE DB
+
+   Memory:
+
+   Dirty Checking = Hibernate automatically detects changes in managed entities and synchronizes them with the database.
+
+5. Entity states in JPA
+   There are 4 main JPA entity states:
+   1. New / Transient → Object is created but is not yet managed by JPA.
+   Object is created using new, but JPA is not managing it.
+   User user = new User();
+   State: New
+   2. Persistent / Managed → Entity is managed by the persistence context. Changes are automatically tracked by Hibernate.
+   3. Detached → Entity was previously managed, but is no longer attached to the persistence context.
+   4. Removed → Entity is marked for deletion from the database.
+
+   Memory:
+   persist() → Managed
+   detach() → Detached
+   merge() → Managed
+   remove() → Removed
+
+6. Application context and BeanFactory difference?
+   BeanFactory is the basic Spring container that manages beans and dependency injection.
+   ApplicationContext extends BeanFactory and provides additional features such as event publishing, internationalization, and easier integration with Spring applications.
+   Spring Boot commonly uses ApplicationContext
+
+7. was PUT operation is Idempotent?
+   Yes, PUT is idempotent.
+   An operation is idempotent if calling it multiple times with the same request produces the same intended result as calling it once.
+
+8. why constructor Injection is preferred?
+   Constructor injection is preferred because:
+   1. Required dependencies: Dependencies are provided when the object is created.
+   2. Immutability: We can declare dependencies as final
+   3. Easy unit testing: We can pass mock dependencies directly through the constructor.
+   4. Fail-fast behavior: Missing required dependencies are detected during object creation
+   5. Better design: It makes dependencies explicit and avoids field injection.
+
+9. why we will avoid the field and setter injection?
+   We generally avoid field injection because it makes unit testing harder, hides dependencies, and does not support final fields. Setter injection is useful for
+   optional dependencies, but required dependencies may remain uninitialized if the setter is not called. Therefore, constructor injection is preferred for required
+   dependencies because it makes them explicit and supports immutability and easy testing.
+
+   Remember: Constructor injection for required dependencies; setter injection can be useful for optional dependencies.
+
+10. maven clean package
+    1. clean — removes the previous build output, usually the target directory, including previously compiled .class files and packaged artifacts.
+    2. package — compiles the source code, runs tests as configured, and packages the application into a JAR or WAR file.
+
+
+
+👇
+
+🔹 Core Spring Boot Annotations
+
+	1.	What is @SpringBootApplication?
+
+	2.	What annotations does @SpringBootApplication contain?
+
+	3.	Difference between @SpringBootApplication and @Configuration?
+
+	4.	What is @EnableAutoConfiguration?
+
+	5.	How does auto-configuration work internally?
+
+	6.	How can you exclude auto-configuration classes?
+
+	7.	What is @ComponentScan?
+
+	8.	How do you change the base package of component scanning?
+
+	9.	Difference between @SpringBootApplication and @EnableAutoConfiguration?
+
+	10.	What happens if @ComponentScan is not present?
+
+If @ComponentScan is not present, Spring will not automatically scan for Spring-managed beans such as @Component, @Service, @Repository, @Controller, and @RestController. As a result, these beans are not registered in the Spring IoC container, and dependency injection (@Autowired) may fail with exceptions like NoSuchBeanDefinitionException or UnsatisfiedDependencyException.
+
+
+🔹 Stereotype Annotations
+
+	11.	What is @Component?
+
+	12.	Difference between @Component and @Bean?
+
+@Bean is a method-level annotation used inside a @Configuration class. It tells the Spring IoC container that the object returned by the method should be registered as a Spring bean. It is commonly used to create beans for third-party libraries where we cannot modify the source code, but it can also be used for our own classes when we need custom bean creation logic.
+
+	13.	What is @Service?
+
+	14.	What is @Repository?
+
+	15.	What is @Controller?
+
+	16.	Difference between @Controller and @RestController?
+
+	17.	What is @RestController?
+
+	18.	Why do we use stereotype annotations?
+
+	19.	Can we create a custom stereotype annotation?
+
+	20.	What happens if multiple beans of same type exist?
+
+🔹 Web / REST Annotations
+
+	21.	What is @RequestMapping?
+	    `@RequestMapping` is a Spring MVC annotation used to map incoming HTTP requests to a controller class or handler method.
+         It can be used at both class level and method level, and we can specify attributes such as URL path, HTTP method, `consumes`, `produces`, headers, and parameters.
+         For example, `@RequestMapping("/users")` at class level can define a common base path for all the endpoints in that controller.
+
+	    @RestController
+        @RequestMapping("/users")
+        public class UserController {
+
+           @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+           public User getUser(@PathVariable Long id) {
+               return userService.getUser(id);
+           }
+        }
+
+	22.	Difference between @GetMapping and @PostMapping?
+	    @GetMapping:-Used to handle HTTP GET requests, typically to retrieve resources.
+
+        @GetMapping("/users/{id}")
+        public User getUser(@PathVariable Long id) {
+            return userService.getUser(id);
+        }
+
+        You can pass search/filter information using:
+        @PathVariable → /users/101
+        @RequestParam → /users?id=101
+
+		@PostMapping:-Used to handle HTTP POST requests, typically to create a new resource or submit data to the server.
+
+        @PostMapping("/users")
+        public User createUser(@RequestBody User user) {
+           return userService.createUser(user);
+        }
+
+	23.	What is @PathVariable?
+	    @PathVariable is a Spring annotation used to extract a value from the URI path and bind it to a controller method parameter.
+
+		@GetMapping("/users/{id}")
+        public User getUser(@PathVariable Long id) {
+          return userService.getUser(id);
+        }
+
+	24. what is @RequestParam?
+	    @RequestParam is used to extract a query parameter from the URL and map it to a controller method parameter.
+		@GetMapping("/users")
+        public User getUser(@RequestParam Long id) {
+          return userService.getUser(id);
+        }
+
+	24.	Difference between @PathVariable and @RequestParam?
+	    @PathVariable is used to extract a value from the URI path and bind it to a controller method parameter.
+        @RequestParam is used to extract a query parameter from the URL and bind it to a controller method parameter.
+
+        For example:
+        /users/101 → @PathVariable
+        /users?id=101 → @RequestParam
+        Generally, @PathVariable is used to identify a specific resource, while @RequestParam is commonly used for filtering, searching, sorting, or pagination.
+
+	25.	What is @RequestBody?
+	    @RequestBody is used to read the HTTP request body and map/deserialise it to a Java method parameter.
+
+	26.	What is @ResponseBody?
+	    @ResponseBody is used to tell Spring that the return value of a controller method should be written directly to the HTTP response body, rather than being treated as a view name.
+
+	27.	What is @ResponseEntity?
+	    ResponseEntity is a class used to represent the complete HTTP response, including:
+
+        HTTP status code
+        Response body
+        HTTP headers
+		Ex:-
+		@GetMapping("/users/{id}")
+        public ResponseEntity<User> getUser(@PathVariable Long id) {
+          User user = userService.getUser(id);
+            return ResponseEntity.ok(user);
+	    }
+		It returns
+		HTTP Status: 200 OK
+        Body: User object
+
+		Returning different status:-
+
+		if (user == null) {
+        return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(user);
+
+	28.	What is @CrossOrigin?
+	    @CrossOrigin is used to enable Cross-Origin Resource Sharing (CORS) for a Spring controller or specific API method.
+		Why do we need it?
+		Suppose your frontend and backend are running on different origins:
+		Frontend → http://localhost:3000
+        Backend  → http://localhost:8080
+		The browser's same-origin policy may block the frontend from calling the backend.
+
+		@CrossOrigin(origins = "http://localhost:3000")
+        @RestController
+        public class UserController {
+
+          @GetMapping("/users")
+          public List<User> getUsers() {
+           return userService.getUsers();
+          }
+        }
+
+	29.	What is @RequestHeader?
+	    @RequestHeader is a Spring annotation used to extract an HTTP request header and bind its value to a controller method parameter.
+		For example, we can use @RequestHeader("Authorization") to extract the Authorization header containing a Bearer token.
+		It can also be used to retrieve headers such as correlation IDs, content types, client information, and custom headers.
+
+	30.	How does Spring convert JSON to Java object?
+	    Spring Boot typically uses Jackson to convert JSON into a Java object.
+
+🔹 Validation Annotations
+
+	31.	What is @Valid?
+	@Valid is used to trigger validation of a Java object based on validation annotations such as @NotNull, @NotBlank, @Size, @Email, etc.
+
+	32.	Difference between @Valid and @Validated?
+	    | `@Valid`                                        | `@Validated`                                         |
+        | ----------------------------------------------- | ---------------------------------------------------- |
+        | Comes from **Jakarta Bean Validation**          | Comes from **Spring**                                |
+        | Used to trigger validation                      | Used to trigger validation                           |
+        | Does **not directly support validation groups** | Supports **validation groups**                       |
+        | Commonly used with `@RequestBody`               | Commonly used for groups and method-level validation |
+
+		@Valid
+        @PostMapping("/users")
+        public User createUser(@Valid @RequestBody UserRequest request) {
+          return userService.createUser(request);
+        }
+
+		It triggers constraints such as:@NotBlank,@Email,@Size,@Min
+
+		@Validated with groups
+        Suppose you want different validation rules for create and update.
+        public interface CreateGroup {}
+        public interface UpdateGroup {}
+
+		public class UserRequest {
+
+        @NotBlank(groups = CreateGroup.class)
+        private String name;
+
+        @NotNull(groups = UpdateGroup.class)
+        private Long id;
+        }
+
+		Then:
+		@PostMapping("/users")
+        public User create(
+              @Validated(CreateGroup.class) @RequestBody UserRequest request) {
+           return userService.createUser(request);
+        }
+		Here only the validations belonging to CreateGroup are applied.
+
+		@Valid is a standard Jakarta Bean Validation annotation used to trigger validation of an object based on constraints such as @NotNull, @NotBlank, and @Size.
+
+		@Validated is a Spring-specific annotation. It also triggers validation but provides additional features such as support for validation groups and is commonly used for Spring method-level validation.
+
+		So, for simple DTO validation, we commonly use @Valid. When we need validation groups or Spring's method-level validation, we can use @Validated.
+
+
+	33.	What is @NotNull?
+	    @NotNull is a Bean Validation constraint used to ensure that a field or parameter is not null
+
+	34.	What is @Size?
+	    @Size is a Bean Validation constraint used to check the size/length of a value.
+
+		Bean Validation constraint used to to ensure that field parameter
+		@NotNull → Is it null?
+        @Size → How big/long is it?
+
+	35.	What is @Pattern?
+	    @Pattern is a Bean Validation annotation used to validate a String against a regular expression (regex).
+		public class UserRequest {
+           @Pattern(regexp = "^[A-Za-z]+$")
+           private String name;
+        }
+
+	36.	How validation errors are handled in Spring Boot?
+	    Client Request
+              ↓
+        @Valid / @Validated
+              ↓
+        Bean Validation
+              ↓
+        Validation fails
+              ↓
+        MethodArgumentNotValidException
+              ↓
+        @ControllerAdvice
+              ↓
+        @ExceptionHandler
+              ↓
+        Proper error response to client
+
+	37.	What is MethodArgumentNotValidException?
+	    MethodArgumentNotValidException is an exception thrown by Spring when a request object fails Bean Validation triggered by @Valid.
+
+	38.	Can we create custom validation annotations?
+	    Yes. Spring Boot supports custom validation annotations using Jakarta Bean Validation.
+
+		1. Create the annotation
+		@Documented
+        @Constraint(validatedBy = PasswordValidator.class)
+        @Target({ElementType.FIELD, ElementType.PARAMETER})
+        @Retention(RetentionPolicy.RUNTIME)
+        public @interface ValidPassword {
+
+        String message() default "Password must contain uppercase, lowercase and digit";
+
+        Class<?>[] groups() default {};
+
+        Class<? extends Payload>[] payload() default {};
+        }
+
+		2. Create the validator
+		public class PasswordValidator
+        implements ConstraintValidator<ValidPassword, String> {
+
+        @Override
+        public boolean isValid(String password,
+                           ConstraintValidatorContext context) {
+
+        if (password == null) {
+            return true;
+        }
+
+           return password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).+$");
+       }
+      }
+
+	  3. Use it in DTO
+	  public class UserRequest {
+
+      @ValidPassword
+      private String password;
+      }
+
+
+
+	39.	Where does validation happen – controller or service?
+	    Yes, for request/input validation, your answer is correct: it usually happens at the controller boundary using @Valid or @Validated.
+
+
+	40.	What happens if validation fails?
+	    Also, the exception doesn't exactly "occur at the controller." Spring performs validation before the controller method executes. If validation fails, the controller method is not called.
+	    Client Request
+              ↓
+        @Valid @RequestBody
+              ↓
+        Spring performs validation
+              ↓
+        Validation fails
+              ↓
+        MethodArgumentNotValidException
+              ↓
+        @ControllerAdvice / @RestControllerAdvice
+              ↓
+        @ExceptionHandler
+              ↓
+        ErrorResponse
+              ↓
+        Client
+🔹 Spring Data JPA Annotations
+
+	41.	What is @Entity?
+	@Entity is a JPA annotation used to mark a Java class as a persistent entity.
+	A class annotated with @Entity is mapped to a database table, and its fields are mapped to table columns by default. Every entity must have a unique identifier, usually defined using @Id.
+	For example, we can use @Entity on a User class to map it to a users table. JPA/Hibernate manages the persistence of these entity objects in the database.
+
+	42.	What is @Id?
+	    @Id is a JPA annotation used to identify the field or property of an entity that represents its primary key.
+	    It tells JPA/Hibernate which field uniquely identifies each entity record in the database.
+
+		For example, if we annotate the id field with @Id, the corresponding database column will be treated as the primary key.
+		If we want the ID to be generated automatically, we can use @GeneratedValue along with @Id.
+
+
+
+	43.	What is @GeneratedValue?
+
+        @GeneratedValue is a JPA annotation used along with @Id to specify how the primary key value should be automatically generated. It allows Hibernate/JPA to generate unique identifier values when a new entity is persisted into the database.
+		Ex:-
+		@Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+
+		types:-
+		@GeneratedValue(strategy = GenerationType.IDENTITY):-Database generates the ID, typically using an auto-increment/identity column.
+		@GeneratedValue(strategy = GenerationType.SEQUENCE):-Uses a database sequence to generate IDs.
+		@GeneratedValue(strategy = GenerationType.TABLE):-Uses a separate database table to maintain ID values
+		@GeneratedValue(strategy = GenerationType.AUTO):-JPA provider chooses the appropriate strategy based on the database/provider.
+
+	44.	What is @Table?
+        @Table is a JPA annotation used to customize the mapping between an entity class and a database table. By default, JPA maps the entity class name to the table name, but using @Table we can specify a custom table name, schema, indexes, and unique constraints.
+
+	45.	What is @OneToOne, @OneToMany, @ManyToOne?
+        @OneToOne, @OneToMany, and @ManyToOne are JPA relationship annotations used to define associations between two entity classes. They tell Hibernate how entities are related and how to map those relationships between Java objects and database tables.
+
+	46.	What is owning side and inverse side?
+
+        In a bidirectional relationship, the owning side is the entity that controls the relationship and contains the foreign key mapping. The inverse side is the entity that only refers to the relationship and uses the mappedBy attribute to indicate that the relationship is managed by the owning side. Hibernate uses the owning side to update the relationship in the database.
+
+        The owning side is the side that contains the foreign key and controls the relationship updates in the database. The inverse side is the side that uses mappedBy and does not maintain the foreign key. In a bidirectional OneToMany and ManyToOne relationship, the ManyToOne side is usually the owning side.
+
+	47.	What is @JoinColumn?
+	    @JoinColumn is a JPA annotation used on the owning side of an entity relationship to specify the column used for joining the related entities.
+		In a typical @ManyToOne relationship, it is placed on the many side because the many-side table usually contains the foreign key.
+		@JoinColumn → Owning side → FK/Join column
+
+
+	48.	What is @MappedBy?
+	    @MappedBy is a JPA annotation used on the inverse or non-owning side of a bidirectional relationship between two entities.
+		It tells JPA that the relationship is already managed by the field specified in mappedBy on the owning entity.
+
+		For example, if Employee has:
+
+        @ManyToOne @JoinColumn(name = "department_id")
+        then Department can have:
+        @OneToMany(mappedBy = "department")
+
+	    Here, Employee is the owning side because it contains the foreign key, and Department is the inverse side.
+        mappedBy refers to the Java field name in the owning entity, not the database column name.
+
+	49.	What is @Transactional?
+	    @Transactional is a Spring Framework annotation used to define a transaction boundary around a method or class.
+		A transaction is a unit of work that should be completed successfully as a whole. If all operations succeed, the transaction is committed. If an exception occurs and the transaction is rolled back according to the rollback rules, the changes are rolled back.
+		It can be applied at the class level or method level.
+
+		For example:
+
+        @Transactional
+        public void transferMoney(Long fromAccount, Long toAccount, BigDecimal amount) {
+           debit(fromAccount, amount);
+           credit(toAccount, amount);
+        }
+
+		If the debit succeeds but the credit fails, the transaction can roll back the debit, so the database does not remain in an inconsistent state.
+		@Transactional is generally not effective when called through a private method because Spring typically manages transactions using proxies. Also, self-invocation within the same class bypasses the Spring proxy, so the transactional behavior may not be applied.
+
+		By default, Spring rolls back on unchecked exceptions such as RuntimeException and Error, but not checked exceptions unless configured.
+		@Transactional(rollbackFor = Exception.class)
+		public void process() throws Exception
+		{
+		// database operations
+		}
+
+	50.	What is @Version?
+	    @Version is a JPA annotation used for optimistic locking.
+		It is used to prevent lost updates when multiple users or transactions try to update the same database record at the same time.
+		JPA maintains a version number for the entity. Whenever the entity is updated, the version is incremented.
+		Example:-
+
+		@Entity
+		public class Account {
+		@Id
+		private Long id;
+		private BigDecimal balance;
+		@Version
+		private Integer version;
+		}
+
+		Suppose two users read the same record with version 1.
+		User A updates the record first. The database changes the version from 1 to 2.
+		When User B tries to update the old version 1, JPA detects that the version has changed and the update fails, typically with an OptimisticLockException.
+		This prevents User B from accidentally overwriting User A's changes.
+
+		Catch the exception at the appropriate service/API boundary.
+        Rollback the current transaction.
+        Reload the latest entity from the database.
+        Decide whether to:
+           retry the operation using the latest data, or
+           return a conflict response such as HTTP 409 Conflict and ask the client to retry/review.
+
+
+🔹 Caching Annotations
+
+    	51.	What is @EnableCaching?
+            @EnableCaching is used to enable Spring's caching support. It allows Spring to process annotations like @Cacheable, @CachePut, and @CacheEvict. If no external cache provider is configured, Spring Boot uses an in-memory ConcurrentMapCacheManager, which internally uses a ConcurrentHashMap to store cached data.
+
+    	52.	What is @Cacheable and @CachePut?
+            @Cacheable is used to cache the result of a method. When the method is called for the first time, Spring executes the method, retrieves the data (typically from the database), and stores the result in the cache. On subsequent calls with the same key, Spring returns the cached value instead of executing the method again, which improves performance and reduces database load.
+    		| Attribute              | Production use                               | Example                      |
+            | ---------------------- | -------------------------------------------- | ---------------------------- |
+            | `cacheNames` / `value` | Which cache to use(Specifies the cache name.)| `@Cacheable("users")`        |
+            | `key`                  | Control how cache entries are identified     | `key = "#userId"`            |
+            | `condition`            | Cache only when condition is true            | `condition = "#userId > 0"`  |
+            | `unless`               | Don't cache certain results                  | `unless = "#result == null"` |
+
+    		🧠 Interview priority
+            Remember only this:
+            cacheNames → key → condition → unless
+            And:
+            condition = BEFORE method
+            unless = AFTER method
+
+
+            @CachePut is used to update the cache whenever a method is executed. Unlike @Cacheable, it does not skip the method execution. It always executes the method and stores or updates the returned value in the cache. It is commonly used for update (PUT) operations.
+
+    	53.	Difference between @Cacheable and @CachePut?
+    	    @Cacheable
+            Cache HIT  → Return cached value → Method NOT executed
+            Cache MISS → Execute method → Store result
+
+            @CachePut
+            Always execute method → Store/update result in cache
+
+
+    	54.	What is @CacheEvict?
+            @CacheEvict is used to remove one or more entries from the cache. It is typically used after delete or update operations to remove stale data from the cache,
+             ensuring that the next request retrieves the latest data from the database.
+
+    	55.	What is default cache manager in Spring Boot?
+
+            By default, if no cache provider is configured, Spring Boot uses ConcurrentMapCacheManager as the default cache manager. It stores cache entries in memory
+            using a ConcurrentHashMap.
+
+    	56.	How to use Redis with caching?
+            To use Redis as a cache in Spring Boot, we need to add the Redis dependency, configure the Redis server connection, enable caching using @EnableCaching,
+            and use caching annotations such as @Cacheable, @CachePut, and @CacheEvict. Spring Boot then uses RedisCacheManager instead of the default
+            ConcurrentMapCacheManager.
+
+    	Hazelcast vs Redish
+        | Feature           | Redis                                                  | Hazelcast                                                           |
+        | ----------------- | ------------------------------------------------------ | ------------------------------------------------------------------- |
+        | Type              | Distributed in-memory data store                       | Distributed in-memory data grid                                     |
+        | Architecture      | Primarily client-server                                | Distributed cluster / data grid                                     |
+        | Data structures   | String, Hash, List, Set, Sorted Set, Streams, etc.     | Distributed maps, sets, queues, topics, etc.                        |
+        | Persistence       | Supports persistence                                   | Primarily in-memory, with persistence options                       |
+        | Java integration  | Very good                                              | Excellent, especially Java/Spring                                   |
+        | Distributed cache | ✅                                                      | ✅                                                                |
+        | Pub/Sub           | ✅                                                      | ✅                                                                |
+        | Clustering        | Strong                                                 | Strong                                                              |
+        | Best suited for   | Distributed cache, fast data store, counters, sessions | Distributed Java applications, caching, distributed data structures |
+        | External system   | Usually separate Redis cluster                         | Can be embedded/client-based depending on setup                     |
+
+    	In simple terms
+        Redis is generally chosen when you want a fast distributed data store/cache that can also be used independently of your Java application.
+    	Hazelcast is especially useful when you want a distributed in-memory data grid tightly integrated with Java applications, with distributed collections and
+    	computation capabilities.
+
+    	57.	When should caching not be used?
+            Caching should not be used when the data changes frequently, when data consistency is critical, or when the cost of maintaining the cache is higher than the
+             performance benefit. In such cases, returning stale data can lead to incorrect application behavior.
+
+    	58.	How does Spring decide cache key?
+            Spring generates a cache key based on the method parameters. By default, if the method has a single parameter, that parameter is used as the cache key.
+             If there are multiple parameters, Spring generates a composite key (SimpleKey) using all the parameters. We can also define a custom cache key using the key
+              attribute with a Spring Expression Language (SpEL) expression.
+
+    	59.	Can we customize cache keys?
+            Yes, we can customize cache keys using the key attribute of caching annotations such as @Cacheable, @CachePut, and @CacheEvict. The key attribute uses Spring
+             Expression Language (SpEL) to define how the cache key should be generated.
+    		| Requirement              | Approach              |
+            | ------------------------ | --------------------- |
+            | Simple custom key        | `key = "#userId"`     |
+            | Multiple parameters      | SpEL expression       |
+            | Complex/common key logic | Custom `KeyGenerator` |
+
+    	60.	What happens if cache is not found?
+           If the requested data is not found in the cache, it is called a cache miss. Spring executes the target method, retrieves the data (typically from the database),
+            stores the result in the cache, and then returns it to the client. Subsequent requests with the same key are served directly from the cache.
+
+🔹 Security / JWT Related
+
+        	61.	What is @EnableWebSecurity?:- Enables Spring Security for web applications.
+
+        	62.	What is @PreAuthorize?:- is used to check authorization before executing a method.
+
+        	63.	What is @PostAuthorize?:- checks authorization after the method has executed, based on the method's return value.
+        	    For example, if a method returns a user's data, we can check whether the logged-in user is authorized to access that returned data.
+        		If the authorization check fails, the result is not returned to the client, and an authorization exception is thrown.
+
+        		Memory:
+        		@PreAuthorize → Check BEFORE method execution
+        		@PostAuthorize → Check AFTER method execution
+
+        	64.	What is @Secured?--is used for method-level authorization.
+        	    It checks whether the user has a specific role before allowing the method to execute.
+               Example:
+               @Secured("ROLE_ADMIN")
+               public void assignRole() {
+                 // assign role
+               }
+              If the user does not have ROLE_ADMIN, the method will not be executed.
+
+              Memory:
+              @Secured → Check role before method execution
+
+        	  | Annotation       | When check happens | Main use                         |
+              | ---------------- | ------------------ | -------------------------------- |
+              | `@PreAuthorize`  | **Before** method  | Role/permission/expression check |
+              | `@PostAuthorize` | **After** method   | Check based on returned result   |
+              | `@Secured`       | **Before** method  | Simple role-based check          |
+
+
+        	65.	What is @AuthenticationPrincipal?
+        	    @AuthenticationPrincipal is used to get the currently logged-in/authenticated user from Spring Security.
+        		For example, after the user is authenticated using a JWT, we can use @AuthenticationPrincipal in a controller to access the authenticated user's details without manually extracting them from the request.
+
+        		Memory:
+        	    @AuthenticationPrincipal → Get currently authenticated user
+
+        	66.	What is JWT?
+        	    JWT stands for JSON Web Token. It is a compact token commonly used for authentication and authorization.
+        		A JWT has three parts:
+        		Header.Payload.Signature
+
+        		Header → Contains the token type and signing algorithm.
+        		Payload → Contains claims such as user ID, roles, and other token information.
+        		Signature → Created using the header, payload, and a signing key. It is used to verify that the token has not been modified.
+
+        		JWT is encoded, not encrypted by default. So sensitive information should not be placed in the payload unless you are using appropriate encryption/protection.
+
+        	67.	Where do we validate JWT in Spring Security?
+        	    In Spring Security, JWT is usually validated in the Spring Security filter chain, using a JWT authentication filter or Spring Security's OAuth2 Resource Server JWT support.
+        		The filter extracts the JWT from the Authorization header, validates the signature and claims, and if valid, creates an authenticated user in the SecurityContext.
+        		Simple flow:
+        		Request → Security Filter → Extract JWT → Validate JWT → SecurityContext → Controller
+
+        		If the JWT is invalid or expired, Spring Security rejects the request, usually with 401 Unauthorized.
+
+        	***	Filter:-A Filter is a component that intercepts an HTTP request before it reaches the controller.
+        		In Spring Security, filters are used for security-related tasks such as:
+        		Validating JWT
+        		Authentication
+        		Autherization
+        		Checking security headers
+
+        		For example:Client → Filter → Controller
+        		The JWT security filter checks the JWT before allowing the request to reach the controller.
+        		Logging
+        		Checking Headers
+        		Auditing
+        		Common request validations
+        		****************
+        		Filter → Before DispatcherServlet
+                Interceptor → Inside Spring MVC, before Controller
+        		****************
+            *** Interceptor:-An Interceptor is a Spring component that intercepts a request before it reaches the controller.
+                It is commonly used for:
+
+        	68.	What is a JWT filter?
+        	    A JWT Filter is a security filter that intercepts an incoming request and validates the JWT token before the request reaches the controller.
+        		The filter usually:
+
+                Gets the JWT from the Authorization header.
+                Validates the token.
+                Extracts user information/authorities.
+                Creates an authenticated Authentication object.
+                Stores it in the SecurityContext.
+
+                If the token is invalid or expired, the request is rejected.
+
+                Flow:
+
+                Client → JWT Filter → Validate JWT → SecurityContext → Controller
+
+        	69.	What is stateless authentication?
+        	Stateless authentication means the server does not maintain the user's authentication session/state between requests.
+        	For example, with JWT authentication, the client sends the JWT with every request.
+        	The server validates the JWT and identifies the user from the token.
+        	Flow:
+        	Login → JWT generated → Client stores JWT
+        	For every request:
+        	Client → JWT → Server → Validate JWT → Authenticate User
+        	Stateless = Server doesn't remember the user; the token comes with every request.
+
+        	70.	How to skip authentication for specific endpoints
+        		We can skip authentication for specific endpoints by configuring them with **`permitAll()`** in `SecurityFilterChain`.
+
+                For example:
+
+
+                @Bean
+                SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                    http
+                        .authorizeHttpRequests(auth -> auth
+                            .requestMatchers("/login", "/register", "/health").permitAll()
+                            .anyRequest().authenticated()
+                        );
+
+                    return http.build();
+                }
+
+
+                Here, `/login`, `/register`, and `/health` can be accessed without authentication.
+
+                **Memory:**
+
+                `permitAll() → No authentication required for that endpoint.`
+
+🔹 Exception Handling Annotations
+
+	71.	What is @ExceptionHandler?
+	    @ExceptionHandler is used to handle specific exceptions in a controller and return a proper error response to the client.
+		Example:
+		@ExceptionHandler(UserNotFoundException.class)
+		public ResponseEntity<String> handleException( UserNotFoundException ex) {
+		     return ResponseEntity .status(404) .body(ex.getMessage());
+		}
+
+		If UserNotFoundException occurs, this method handles it and returns 404 Not Found to the client.
+
+	72.	What is @ControllerAdvice?
+	    @ControllerAdvice is an annotation used to handle exceptions globally across multiple controllers in Spring MVC. It is commonly used with @ExceptionHandler to centralize exception handling.
+
+	73.	What is @RestControllerAdvice?
+	    @RestControllerAdvice = @ControllerAdvice + @ResponseBody
+		It is used to handle exceptions globally across REST controllers and return responses directly in the response body, usually as JSON.
+
+	74.	Difference between @ExceptionHandler and @ControllerAdvice?
+	    `@ExceptionHandler` is used to handle specific exceptions, whereas `@ControllerAdvice` is used to centralize exception handling across multiple controllers. We commonly combine them to implement global exception handling in Spring MVC.
+
+
+	75.	What is @ResponseStatus?
+	    @ResponseStatus is an annotation in Spring used to define the HTTP status code for a response, such as 404 Not Found or 400 Bad Request.
+
+		Ex:-
+		@ResponseStatus(HttpStatus.NOT_FOUND)
+        public class UserNotFoundException extends RuntimeException {
+           public UserNotFoundException(String message) {
+               super(message);
+           }
+        }
+
+	76.	What is ResponseStatusException?
+	    ResponseStatusException is used to return a specific HTTP status code and reason when an exception occurs, without creating a custom exception class
+
+		Ex:-
+		if (user == null) {
+           throw new ResponseStatusException(
+             HttpStatus.NOT_FOUND, "User not found");
+        }
+
+		Note:-
+		@ResponseStatus → Annotation to define the status code.
+        ResponseStatusException → Class to throw an exception with a status code.
+
+	77.	How to return custom error response?
+	    To return a custom error response in Spring Boot, I create an ErrorResponse class containing the status code and error message. Then I use @RestControllerAdvice and @ExceptionHandler to handle exceptions globally and return the custom response using ResponseEntity.
+
+		1. Create ErrorResponse class
+		public class ErrorResponse {
+         private int statusCode;
+         private String message;
+
+         public ErrorResponse(int statusCode, String message) {
+            this.statusCode = statusCode;
+            this.message = message;
+         }
+
+         public int getStatusCode() { return statusCode; }
+         public String getMessage() { return message; }
+        }
+
+		2. Create a global exception handler
+		@RestControllerAdvice
+        public class GlobalExceptionHandler {
+
+        @ExceptionHandler(UserNotFoundException.class)
+        public ResponseEntity<ErrorResponse> handleUserNotFound(
+            UserNotFoundException ex) {
+
+        ErrorResponse error =
+                new ErrorResponse(404, ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(error);
+       }
+      }
+
+
+
+	78.	What happens if no exception handler matches?
+        If no exception handler matches, Spring Boot falls back to its default error handling, returning a generic HTTP error response to the client.
+		If no exception handler matches, Spring tries other registered exception resolvers. If the exception remains unhandled, Spring Boot generally returns a 500 Internal Server Error for an unhandled server-side exception.
+
+	79.	Can we handle multiple exceptions in one method?
+	    Yes, we can handle multiple exceptions in one method by passing multiple exception classes to the @ExceptionHandler annotation. This helps reduce duplicate exception-handling code.
+		    @ExceptionHandler({UserNotFoundException.class,IllegalArgumentException.class})
+            public ResponseEntity<String> handleExceptions(Exception ex) {
+                 return ResponseEntity
+                       .status(HttpStatus.BAD_REQUEST)
+                      .body(ex.getMessage());
+            }
+
+	80.	How to handle validation exceptions globally?
+	    We handle validation exceptions globally using @RestControllerAdvice and @ExceptionHandler. For request body validation failures, we handle MethodArgumentNotValidException and return the validation message with HTTP 400 Bad Request.
+
+🔹 Other Important Annotations
+
+	81.	What is @Autowired?
+
+	82.	Difference between field injection and constructor injection?
+
+	83.	What is @Qualifier?
+
+	84.	What is @Primary?
+
+	85.	What is @Lazy?
+
+	86.	What is @PostConstruct?
+
+	87.	What is @PreDestroy?
+
+	88.	What is @EnableScheduling?
+
+	89.	What is @Scheduled?
+
+	90.	What is @Async?
+
+🔹 Actuator & Config
+
+	91.	What is Spring Boot Actuator?
+
+	92.	What is @EnableConfigurationProperties?
+
+	93.	What is @ConfigurationProperties?
+
+	94.	Difference between @Value and @ConfigurationProperties?
+
+	95.	What is @Profile?
+
+	96.	What is @ConditionalOnProperty?
+
+	97.	What is @ConditionalOnMissingBean?
+
+	98.	What is @Import?
+
+	99.	What is @PropertySource?
+
+	100.	What is @RefreshScope?
+
+@ConditionalOnProperty        —      Creates a bean if a property exists and matches a specified value.
+
+@ConditionalOnMissingBean —      Creates a bean only if the specified bean is not already present.
+
+@ConditionalOnBean              —      Creates a bean only if another specified bean already exists
+
+@ConditionalOnClass.            —       Creates a bean only if the specified class is available on the classpath.
+
+
+
+101. What is Spring Boot, and how does it differ from the traditional Spring Framework?
+     Spring Boot is built on top of the Spring Framework and simplifies application development by reducing configuration and boilerplate code.
+
+     Differences:
+     Boilerplate code: Traditional Spring often requires more manual configuration, whereas Spring Boot reduces it.
+     Embedded server: Spring Boot provides embedded servers like Tomcat, so we can run applications directly.
+     Auto-configuration: Spring Boot automatically configures components based on dependencies and application settings.
+     Starter dependencies: Provides starters like spring-boot-starter-web to simplify dependency management.
+     Production-ready features: Provides Actuator for health checks and application monitoring.
+     Modules and integrations: Makes it easier to integrate Spring features such as Web, Data JPA, and Security.
+     Annotations: Supports convenient annotations such as @SpringBootApplication to simplify setup
+
+
+102. What is the purpose of @̲𝚂̲𝚙̲𝚛̲𝚒̲𝚗̲𝚐̲𝙱̲𝚘̲𝚘̲𝚝̲𝙰̲𝚙̲𝚙̲𝚕̲𝚒̲𝚌̲𝚊̲𝚝̲𝚒̲𝚘̲𝚗̲ annotation?
+     @SpringBootApplication is the main annotation used to start and configure a Spring Boot application.
+	 It combines three annotations
+	 1. @SpringBootConfiguration – Defines the class as a configuration class.
+	 2. @EnableAutoConfiguration – Automatically configures components based on dependencies.
+	 3. @ComponentScan – Scans packages to find and register Spring beans.
+
+	 @SpringBootApplication combines @SpringBootConfiguration, @EnableAutoConfiguration, and @ComponentScan. It simplifies configuration, enables auto-configuration, and scans for Spring components.
+
+103. Explain the concept of auto-configuration in Spring Boot.
+
+     when the Spring Boot application starts, @EnableAutoConfiguration triggers Spring Boot's auto-configuration mechanism. Spring Boot scans the classpath to identify available libraries (such as Spring Web, Spring Data JPA, Hibernate, etc.). It also reads the application.properties or application.yml configuration.
+
+     Based on the available dependencies, configuration properties, and existing beans in the application context, Spring Boot loads the appropriate auto-configuration classes. These classes use conditional annotations such as:
+
+	•	@ConditionalOnClass
+
+	•	@ConditionalOnMissingBean
+
+	•	@ConditionalOnProperty
+
+	•	@ConditionalOnBean
+
+    These conditions determine whether a bean should be created. If the conditions are satisfied, Spring Boot automatically creates and registers the required beans in the Spring container. If we have already defined our own bean, @ConditionalOnMissingBean prevents Spring Boot from creating a duplicate bean.
+
+104. What is the role of application.properties or application.yml in Spring Boot?
+     application.properties and application.yml are configuration files in Spring Boot used to define application settings, such as server port, database connection, logging, and application-specific properties.
+
+	 Spring Boot reads these properties during application startup and uses them to configure the application.
+	 application.properties uses key-value format.
+	 application.yml uses YAML format with indentation and supports hierarchical configuration.
+
+	 These files help us manage configuration without hardcoding values in Java classes
+
+105. What are the advantages of using Spring Boot over traditional Spring applications?
+     1.Less boilerplate code: Reduces manual configuration.
+     2.Auto-configuration: Automatically configures beans based on dependencies and conditions.
+     3.Embedded servers: Provides servers like Tomcat, so separate deployment is often unnecessary.
+     4.Starter dependencies: Simplifies dependency management using starters such as spring-boot-starter-web.
+     5.Production-ready features: Spring Boot Actuator provides health checks and monitoring.
+     6.Faster development: Makes it easier to build and run applications with minimal setup.
+
+106. What is the difference between @̲𝙲̲𝚘̲𝚖̲𝚙̲𝚘̲𝚗̲𝚎̲𝚗̲𝚝̲,̲ ̲@̲𝚂̲𝚎̲𝚛̲𝚟̲𝚒̲𝚌̲𝚎̲,̲ ̲@̲𝚁̲𝚎̲𝚙̲𝚘̲𝚜̲𝚒̲𝚝̲𝚘̲𝚛̲𝚢̲,̲ and @̲𝙲̲𝚘̲𝚗̲𝚝̲𝚛̲𝚘̲𝚕̲𝚕̲𝚎̲𝚛̲ in Spring Boot?
+     Stereo type annotations these will make the classes as springManaged beans and available for ComponentScan and then register with application context.
+| Feature              | `BeanFactory`                               | `ApplicationContext`                          |
+| -------------------- | ------------------------------------------- | --------------------------------------------- |
+| Type                 | Basic Spring container                      | Advanced Spring container                     |
+| Dependency Injection | Supported                                   | Supported                                     |
+| Bean creation        | Typically lazy                              | Typically eager for singleton beans           |
+| Event handling       | Not built in as a container feature         | Supports event publishing                     |
+| Internationalization | Not directly supported                      | Supports messages and localization            |
+| Annotation support   | Requires additional setup for some features | Integrates common Spring features more easily |
+| Usage                | Basic or specialized scenarios              | Commonly used in Spring Boot                  |
+| Relationship         | Base container interface                    | Extends `BeanFactory`                         |
+
+Interview answer: `BeanFactory` provides basic bean management and dependency injection, whereas `ApplicationContext` extends it with additional features such as event publishing and internationalization.
+
+
+107. How do you create a Spring Boot RESTful web service?
+     To create a Spring Boot RESTful web service, I use @RestController to define the controller, @RequestMapping to define the base URL, and annotations like @GetMapping, @PostMapping, @PutMapping, and @DeleteMapping to handle HTTP requests. I return the response as JSON or other suitable data formats.
+
+108. What is Spring Boot Actuator, and what are its uses?
+     Spring Boot Actuator is a Spring Boot module used to monitor and manage an application's health and metrics.
+
+	 Uses of Actuator
+     Health check – Checks whether the application is running using /actuator/health.
+     Metrics – Provides performance metrics such as memory usage and request statistics using /actuator/metrics.
+     Application information – Displays application details using /actuator/info.
+     Environment details – Shows configuration properties through /actuator/env (must be secured).
+     Monitoring – Integrates with monitoring tools such as Prometheus and Grafana.
+
+109. What is the significance of @̲𝚁̲𝚎̲𝚜̲𝚝̲𝙲̲𝚘̲𝚗̲𝚝̲𝚛̲𝚘̲𝚕̲𝚕̲𝚎̲𝚛̲ and how is it different from @̲𝙲̲𝚘̲𝚗̲𝚝̲𝚛̲𝚘̲𝚕̲𝚕̲𝚎̲𝚛̲?
+     The main difference is what happens to the method's return value.
+
+| Feature         | `@Controller`                              | `@RestController`                     |
+| --------------- | ------------------------------------------ | ------------------------------------- |
+| Purpose         | Handles web requests, often for web pages  | Handles REST API requests             |
+| Return value    | Usually resolves to a view name            | Written directly to the response body |
+| `@ResponseBody` | Needed to return data directly in the body | Included by default                   |
+| Common use      | MVC applications with HTML views           | REST APIs returning JSON or text      |
+
+Memory trick: `@Controller` → View; `@RestController` → Response body.
+
+110. How do you handle exceptions in Spring Boot applications?
+     In Spring Boot, I handle exceptions using a global exception handler.
+	 1.I create an ErrorResponse class to define the error response structure.
+	 2.I create custom exceptions when required, extending RuntimeException or Exception depending on the use case.
+	 3. I create a global exception handler using @RestControllerAdvice.
+	 4. Inside it, I use @ExceptionHandler to handle different exceptions and return an appropriate HTTP status code and error response using ResponseEntity.
+
+
+111. What is Spring Boot DevTools, and what benefits does it provide during development?
+     Spring Boot DevTools is a development-time tool that improves developer productivity. It provides automatic application restarts, optional browser LiveReload support, and development-friendly settings so that code changes are reflected faster. It is intended for development, not production.
+
+	 Remember: DevTools = Automatic Restart + LiveReload + Faster Development.
+
+112. How do you use Spring Boot to connect to a database (e.g., MySQL or PostgreSQL)?
+     To connect a Spring Boot application to a database like MySQL or PostgreSQL, I add the required database driver and Spring Data JPA dependencies. Then I configure the database URL, username, and password in application.properties.
+	 When the application starts, Spring Boot auto-configuration uses these settings to configure the DataSource and establish database connections.
+
+	 spring.datasource.url=jdbc:mysql://localhost:3306/mydb
+     spring.datasource.username=root
+     spring.datasource.password=your_password
+     spring.jpa.hibernate.ddl-auto=update
+
+113. Explain the difference between @̲𝙱̲𝚎̲𝚊̲𝚗̲ and @̲𝙲̲𝚘̲𝚖̲𝚙̲𝚘̲𝚗̲𝚎̲𝚗̲𝚝̲ in Spring Boot.
+     @Component is a class-level annotation that allows Spring to discover and register a class as a bean through component scanning.
+	 @Bean is a method-level annotation, usually used inside a configuration class, to register the object returned by that method as a Spring bean.
+
+114. How do you configure logging in Spring Boot?
+     Logging in Spring Boot can be configured using application.properties or application.yml. Spring Boot uses Logback by default with the standard logging starter.
+
+	 Example: application.properties
+	 logging.level.root=INFO
+	 logging.level.com.example=DEBUG
+	 logging.file.name=application.log
+
+	 1.root=INFO → Displays INFO, WARN, and ERROR messages by default.
+	 2.com.example=DEBUG → Enables DEBUG logs for that package.
+	 3. logging.file.name → Writes logs to a file.
+	 In Spring Boot, I configure logging using application.properties or application.yml. I can set log levels such as DEBUG, INFO, WARN, and ERROR for the root logger or specific packages. Spring Boot uses Logback by default, and I can also configure file logging and custom logging patterns.
+
+115. What are Spring Boot profiles, and how do you manage them for different environments (dev, prod)?
+     Spring Boot profiles are used to maintain different configurations for different environments, such as development, testing, and production.
+
+	 We create separate configuration files like application-dev.properties and application-prod.properties and activate the required profile using spring.profiles.active
+	 For example, the development profile connects to the development database, while the production profile connects to the production database. This allows us to use different configurations without changing the application code.
+
+116. How do you implement security in a Spring Boot application?
+     To implement security in a Spring Boot application, I use Spring Security.
+	 1. Authentication: Verifies the user's identity using credentials or a JWT.
+	 2. Authorization: Checks whether the authenticated user has permission to access a resource.
+	 3. JWT: For stateless REST APIs, I can use JWT-based authentication.
+	 4. Security configuration: I configure a SecurityFilterChain to define public and protected endpoints.
+	 5. Password security: I store passwords using a secure password encoder such as BCrypt.
+	 6. Method-level security: I use annotations such as @PreAuthorize to restrict access to specific methods.
+
+117. What is Spring Boot’s embedded server, and how does it work?
+     An embedded server is a web server packaged with the application, so we can run the Spring Boot application without installing a separate server.
+	 Examples: Tomcat, Jetty, and Undertow.
+
+	 How it works:
+	 1. We start the Spring Boot application.
+     2. Spring Boot starts the embedded server.
+     3. The server listens on a port, such as 8080.
+     4. It receives HTTP requests and passes them to the Spring MVC application.
+
+	 Step 1: Exclude Tomcat and add Jetty in pom.xml.
+	 <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+    <exclusions>
+        <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+        </exclusion>
+    </exclusions>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-jetty</artifactId>
+</dependency>
+
+
+118. What is the use of @̲𝙴̲𝚗̲𝚊̲𝚋̲𝚕̲𝚎̲𝙰̲𝚞̲𝚝̲𝚘̲𝙲̲𝚘̲𝚗̲𝚏̲𝚒̲𝚐̲𝚞̲𝚛̲𝚊̲𝚝̲𝚒̲𝚘̲𝚗̲ in Spring Boot?
+     @EnableAutoConfiguration is used to tell Spring Boot to automatically configure beans based on the dependencies available on the classpath, application properties, and existing beans.
+
+119. What is the difference between Spring Boot’s application.properties and application.yml files?
+     Both `application.properties` and `application.yml` are used to configure Spring Boot applications. Properties uses a key-value format, whereas YAML uses indentation to represent hierarchical configuration. YAML can be easier to read for complex, nested configurations. Both are supported by Spring Boot.
+
+120. What is Spring Boot's support for creating microservices
+     Spring Boot simplifies microservice development by providing auto-configuration, embedded servers, and easy integration with Spring Cloud.
+
+	 Key Features:-
+	 REST APIs: Build services using @RestController.
+     Service discovery: With Spring Cloud Netflix Eureka, services can discover each other.
+     API Gateway: Spring Cloud Gateway routes requests to the appropriate service.
+     Load balancing: Spring Cloud LoadBalancer distributes requests across service instances.
+     Resilience: Resilience4j supports circuit breakers, retries, and rate limiting.
+     Inter-service communication: Use REST clients such as WebClient or messaging systems such as Kafka.
+     Centralized configuration: Spring Cloud Config manages configuration across services.
+     Monitoring: Spring Boot Actuator exposes health and metrics endpoints.
+
+121. How does Spring Boot handle dependency injection?
+     Spring Boot handles Dependency Injection (DI) through the Spring IoC container. It creates and manages beans and injects the required dependencies automatically.
+
+	 Types of dependency injection
+	 1. Constructor injection – Dependencies are provided through the constructor. Recommended for required dependencies.
+	 2. Setter injection – Dependencies are provided through setter methods.
+	 3. Field injection – Dependencies are injected directly into fields using @Autowired; generally less preferred.
+
+122. How do you test a Spring Boot application using @̲𝚂̲𝚙̲𝚛̲𝚒̲𝚗̲𝚐̲𝙱̲𝚘̲𝚘̲𝚝̲𝚃̲𝚎̲𝚜̲𝚝̲?
+     @SpringBootTest is used to test a Spring Boot application by loading the Spring application context, allowing us to test how components work together.
+
+	 Ex:-
+	 @SpringBootTest
+     class UserServiceTest {
+
+       @Autowired
+       private UserService userService;
+
+       @Test
+       void testGetUser() {
+          String result = userService.getUser(1L);
+
+          assertEquals("Obul", result);
+       }
+    }
+
+	How it works
+    1.@SpringBootTest loads the Spring application context.
+    2.@Autowired injects the required Spring bean.
+    3.@Test marks the test method.
+    4.assertEquals() verifies the expected result.
+
+123. Explain the difference between @̲𝚁̲𝚎̲𝚚̲𝚞̲𝚎̲𝚜̲𝚝̲𝙼̲𝚊̲𝚙̲𝚙̲𝚒̲𝚗̲𝚐̲,̲ ̲@̲𝙶̲𝚎̲𝚝̲𝙼̲𝚊̲𝚙̲𝚙̲𝚒̲𝚗̲𝚐̲,̲ ̲@̲𝙿̲𝚘̲𝚜̲𝚝̲𝙼̲𝚊̲𝚙̲𝚙̲𝚒̲𝚗̲𝚐̲ and other HTTP method annotations.
+     The main difference is that `@RequestMapping` supports multiple HTTP methods, while `@GetMapping`, `@PostMapping`, and others are shortcuts for specific HTTP methods.
+
+| Annotation        | HTTP method                  | Purpose                          |
+| ----------------- | ---------------------------- | -------------------------------- |
+| `@RequestMapping` | Any method, unless specified | General request mapping          |
+| `@GetMapping`     | GET                          | Retrieve a resource              |
+| `@PostMapping`    | POST                         | Create a resource or submit data |
+| `@PutMapping`     | PUT                          | Replace a resource               |
+| `@PatchMapping`   | PATCH                        | Partially update a resource      |
+| `@DeleteMapping`  | DELETE                       | Delete a resource                |
+
+
+124. What are Spring Boot’s default error handling mechanisms, and how can they be customized?
+     In Spring Boot, default error handling is provided by Spring Boot’s auto-configuration. We can customize it using @ControllerAdvice, @RestControllerAdvice, and @ExceptionHandler.
+
+	 1. Default error handling in Spring Boot
+	 When an exception occurs in a REST API, Spring Boot typically handles it as follows:
+	 ->/error endpoint: Spring Boot provides a default error endpoint through BasicErrorController.
+	 ->ErrorAttributes: Provides error details such as status, message, and path.
+	 ->HTTP status codes: Returns appropriate status codes, such as 400 Bad Request, 404 Not Found, or 500 Internal Server Error, depending on the error.
+	 ->Default error response: Depending on configuration and the request, the response may contain fields such as timestamp, status, error, and path. The exception message and stack trace are not necessarily included by default.
+
+125. How do you perform batch processing in Spring Boot?
+     In Spring Boot, batch processing means processing a large amount of data in smaller groups instead of processing everything individually. We commonly use Spring Batch for this.
+
+	 In Spring Boot, I use Spring Batch to process large volumes of data efficiently.
+	 ->Spring Batch follows a Job and Step architecture. A Step typically uses an ItemReader to read data, an ItemProcessor to validate or transform it, and an ItemWriter to write the processed data.
+	 ->I prefer chunk-oriented processing, where records are processed in groups and committed in transactions. For example, while processing a large CSV file, I might process 1,000 records per chunk instead of inserting every record individually.
+
+	 Spring Batch also supports job execution tracking, restartability, retry, and skip mechanisms. For scheduled batch jobs, I can use Spring Scheduling or an external scheduler.
+
+126. What is Spring Data JPA, and how is it used in Spring Boot?
+
+	127.	How do you manage transaction handling in Spring Boot applications?
+
+128. What are the different ways to run a Spring Boot application?
+     ->Run the main class from IntelliJ or Eclipse(local development)
+	 ->mvn spring-boot:run                        (Run directly from source)
+	 ->java -jar app.jar                          (Deployment and production)
+	 ->mvn clean package then java -jar target/app.jar(Build and run)
+	 ->Deploy a WAR to a compatible servlet container, or run a container image(Specific deployment environments)
+
+129. Explain the Spring Boot logging mechanism with default loggers (e.g., Logback).
+     In Spring Boot, logging is used to record application events, errors, warnings, and debugging information. By default, Spring Boot uses SLF4J as the logging facade and Logback as the logging implementation.
+
+	 1. How does logging work?
+	 Application code(Controller / Service / Repository)
+             |
+           SLF4J(Logging API / facade)
+		     |
+	       Logback(Logging implementation)
+
+     2. Logging levels
+	 In Spring Boot, logging is used to record application events, errors, warnings, and debugging information. By default, Spring Boot uses SLF4J as the logging facade and Logback as the logging implementation.
+
+| Level   | Purpose                              |
+| ------- | ------------------------------------ |
+| `TRACE` | Very detailed diagnostic information |
+| `DEBUG` | Detailed information for debugging   |
+| `INFO`  | Normal application events            |
+| `WARN`  | Potential problems                   |
+| `ERROR` | Errors that need attention           |
+
+130. How do you configure Spring Boot to send an email (e.g., using JavaMailSender)?
+     I use the Outbox pattern with asynchronous email processing. First, I save the business data and email event in the Outbox table within the same transaction. Then, a background worker picks up pending events and sends emails using JavaMailSender. I use @Async to execute the processing in a separate thread, update the status after successful sending, and retry failed attempts. This improves responsiveness and prevents email events from being lost if the application crashes.
+
+
