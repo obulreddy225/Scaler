@@ -1,0 +1,211 @@
+1. what is Data Hiding?
+   Data hiding means restricting direct access to a class's internal data by declaring fields as private and providing controlled access through methods such as getters and setters
+   Ex:-
+   class Employee {
+    private String name;
+    private double salary;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+   }
+
+2. what is encapsulation?
+    Encapsulation is an OOP principle where we wrap the data and the methods that operate on that data into a single unit. It also provides controlled access to the internal data by using access modifiers like private and getter/setter methods.
+
+3.Advantages and disadvantages of Encapsulation?
+  advantages:-
+  a) data hiding
+  b) controlled access
+  c) Data validation
+  d) Maintainability
+  e) Reduce coupling
+  f) security
+
+  disadvantages:-
+   a) more boiler plate code and slows down execution
+   b) slight complex
+   c) possible unnecessary  exposure
+
+4) what is tightly encapsulated class ?
+   A class is said to be tightly encapsulated if and only if each and every instance variable of the class is declared as private. Whether the class contains corresponding getter and setter methods or not, and whether those methods are declared as public or not, we don't need to consider these things.
+
+5) what is inheritance ?
+   Inheritance is an OOPS principle where a new class acquires the properties and behaviors of an existing class using the extends keyword. The main advantage of inheritance is code reusability.
+
+6) Has-A relationship or Association?
+   HAS-A relationship represents a relationship where one class contains a reference to an instance of another class. It is used to achieve code reusability through composition or aggregation rather than inheritance.
+
+   Note: Easy memory
+   IS-A → Inheritance → extends
+   HAS-A → Composition/Aggregation → object reference
+
+7) what is composition ?
+   Composition is a strong relationship between two classes. If the contained object cannot exist independently without the container object, then the relationship is called composition. It represents a strong HAS-A relationship and results in tight coupling between the objects.
+   Ex:-
+   class Engine {
+   }
+
+   class Car {
+    private Engine engine = new Engine();
+   }
+
+8) what is Aggregation ?
+   Aggregation is a weak HAS-A relationship between two classes where the contained object can exist independently of the container object.
+
+   class Employee {
+   }
+
+   class Department {
+    private Employee employee;
+
+    Department(Employee employee) {
+        this.employee = employee;
+    }
+   }
+
+9)what is method signature?
+  A method signature in Java consists of the method name and the parameter list. The parameter list includes the number, type, and order of parameters. The return type is not part of the method signature.
+  ⭐ Easy memory
+      Method Signature = Method Name + Number + Type + Order of Parameters
+  The compiler uses the method signature to resolve overloaded method calls at compile time.
+  with in a class 2 mehods with same signature not allowed.
+
+10)what is Overloading ?
+   Method overloading is a feature of Java where, within the same class, we define multiple methods with the same name but different parameter lists. The parameter list can differ in number, type, or order of parameters.
+   ⭐ In method overloading, method resolution is performed by the compiler at compile time based on the method signature. Therefore, method overloading is called compile-time polymorphism, static polymorphism, or early binding.
+
+   a) Automoatic promotion in overloading-- while resolving the overloaded methods if the exact method is not available then we don't get any compiletime error. it will promote the argument to the next level and check wether the matched is available or not.
+     byte->short
+	            ->int->long->float->double
+     char------
+   b) while resolving overloaded methods compiler will always give the more prescedence to child type argument when compared with parent type argument
+   c)When overloaded methods have two unrelated reference types at the same level, passing null can result in an ambiguous method call because null is compatible with both types and neither type is more specific than the other.
+   Ex:-
+   void show(String s) {
+    System.out.println("String");
+   }
+
+    void show(StringBuilder sb) {
+    System.out.println("StringBuilder");
+    }
+
+	show(null);
+    Both methods are applicable because null can be assigned to any reference type:
+    null → String
+    null → StringBuilder
+	➡️ Compile-time error: reference to show is ambiguous.
+
+	d) If overloaded methods have parameters in different orders and we pass arguments that can be promoted to match both methods equally, the compiler cannot determine which method to invoke, resulting in an ambiguous method call.
+	Ex:-
+	m1(int i, float f)
+	m1(float f , int i)
+
+	m1(10, 10.5f)--int float
+	m1(10.5f, 10)-- foat int
+	ma(10,10)-- ambiguous compiletime error
+
+	e) var arg method will get the least presendence if no exact match is availbal then givve a chance to the var-arg.
+	Varargs methods have the lowest priority during method overloading. The compiler first tries to find an exact match or an applicable method using normal method invocation rules. Only if no applicable fixed-arity method is found, the compiler considers the varargs method.
+
+11) Can constructors be overloaded?
+    yes
+	Ex:-
+	class Employee {
+
+    Employee() { }
+
+    Employee(String name) { }
+
+    Employee(String name, int id) {
+	}
+
+12) Can static methods be overloaded?
+    yes
+    Ex:-
+    static void show(int x) { }
+
+    static void show(String x) { }
+	Note:-Static methods can be overloaded because overloading is based on the method signature.
+
+13) Can private methods be overloaded?
+     yes.
+     Ex:-
+    private void show(int x) { }
+
+    private void show(String x) { }
+
+14) Can overloaded methods have different access modifiers?
+    yes.
+    public void show(int x) { }
+
+    private void show(String x) { }
+
+15) what is Overring?
+    Method overriding is a feature of Java where a child class provides its own implementation of a method that is already defined in the parent class. It requires an inheritance relationship between the parent and child classes.
+	In method overriding, the method implementation is determined at runtime based on the actual object, so it is called runtime polymorphism or dynamic polymorphism.
+
+16) Rules for overriding
+    a) method signature must be same and return type is not part of the method signature. and covariant return types are allowed.
+	Ex:-
+    Same method signature       ✅
+    Return type can be subtype   ✅
+    Completely different return type ❌
+	b) we can't over ride private methods.
+	c) A final method cannot be overridden by a child class. A final class cannot be extended, so its methods cannot be overridden either.
+	d) An abstract method must be implemented (overridden) by the concrete child class. If the child class does not implement all inherited abstract methods, then the child class must also be declared abstract.
+	e) In method overriding, the modifiers strictfp, native, and synchronized do not affect the method's overriding rules. The child method can have these modifiers independently, subject to the normal overriding rules.
+	f)we can't decrease the scope of modifiers (private<default<protected<public)
+	g)If the parent class method throws a checked exception, the child class overriding method can throw the same checked exception, a subclass of that exception, or no exception. It cannot throw a broader checked exception.
+	h) we can't override static methods. even if we did that is method hiding not a overriding.
+	i) A varargs method can be overridden by another method with the same varargs signature. Since varargs is internally treated as an array, int... and int[] have the same signature. If the child defines int instead of int..., it is a different method and therefore is not overriding.
+	j) Method overriding is applicable only to methods, not variables.
+
+17) what is polymorphism?
+    Polymorphism means "one thing having multiple forms." In Java, the same interface or parent reference can represent different objects, and the behavior can change based on the actual object.
+
+18) what is coupling?
+    Coupling is the degree of dependency between two classes or components. It indicates how strongly one component depends on another.
+	Types
+    Tight coupling → strong dependency; changes in one component can require changes in another.
+    Loose coupling → minimal dependency; components can change independently.
+
+19) what is cohesion?
+    for each and every component a well defined functionality provided in the same class then it is called cohesion. always prefere the high cohesion for good programming
+	"Cohesion is the degree to which the responsibilities of a class or component are closely related to each other. A class should focus on a single, well-defined responsibility. This is called high cohesion."
+
+
+	//casting or object type casting
+	//static control flow
+	//RIWO
+	//Static control flow parent to child
+	//instance control flow
+	//Instance control flow parent to child
+
+20) creating the objects
+    a) using new keyword
+    b) usinf factory method
+	   Employee emp = EmployeeFactory.createEmployee();
+       Examples from Java: Integer.valueOf(), List.of().
+    c) using clone()
+	   Employee emp2 = emp1.clone();
+    d) using reflection
+	   Employee emp = Employee.class.getDeclaredConstructor().newInstance();
+    e) using deserialization
+	   ObjectInputStream in = new ObjectInputStream(inputStream);
+       Employee emp = (Employee) in.readObject();
+
+
+
+
+
+
+
+
+
+
+

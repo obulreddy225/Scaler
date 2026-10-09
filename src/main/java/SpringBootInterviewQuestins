@@ -136,6 +136,105 @@
     1. clean — removes the previous build output, usually the target directory, including previously compiled .class files and packaged artifacts.
     2. package — compiles the source code, runs tests as configured, and packages the application into a JAR or WAR file.
 
+11. what is SpringBoot starter?
+    Spring Boot starters are predefined dependency bundles that simplify dependency management. Instead of adding each
+    required library individually, we add the appropriate starter to our Maven or Gradle project.
+
+12. springMvc flow?
+    In Spring MVC, DispatcherServlet acts as the front controller. When a client sends an HTTP request,
+    DispatcherServlet receives it and uses HandlerMapping to identify the appropriate controller method.
+
+    The controller handles the request and calls the service layer for business logic. The service interacts with
+    the repository to access the database.
+
+    For REST APIs, the returned Java object is converted into JSON by an HttpMessageConverter, and DispatcherServlet
+    returns the HTTP response to the client. For traditional MVC applications, a ViewResolver resolves the view name
+    and renders the page.
+
+13. what are interceptors?
+    Spring MVC interceptors are components used to perform actions before and after a controller handles a request.
+    The three important methods are:
+    1.preHandle() — executes before the controller method.
+    2.postHandle() — executes after the controller method, before response rendering.
+    3.afterCompletion() — executes after request processing is complete.
+
+14. what are interceptors?
+    Filters are part of the Java Servlet API and execute before the request reaches DispatcherServlet in a typical
+    Spring MVC application. They can also process the response as it travels back to the client.
+
+Memory trick: Filter = Servlet level; Interceptor = Spring MVC level.
+
+15. @Repository replace by @Component
+    Technically, we can use @Component for a database repository class, but @Repository is recommended because it
+     identifies the persistence layer and supports persistence exception translation. It can translate
+     database-specific exceptions into Spring's consistent DataAccessException hierarchy. This makes exception
+     handling more consistent across different data-access technologies.
+16. CORS:-
+    CORS (Cross-Origin Resource Sharing) is a browser security mechanism that allows a frontend running on one origin
+     to access APIs on another origin, provided the backend allows it.
+
+17. get() vs load()
+    get():-
+    1.Retrieves the entity from the database if needed.
+    2.Returns null if the entity does not exist.
+    3.Data may be fetched immediately.
+    4. Available in Hibernate API's
+
+    load():-
+    1.Traditionally returns a proxy without immediately loading the entity data.
+    2.May throw ObjectNotFoundException when the missing entity is accessed, depending on the Hibernate version
+     and API used.
+    3. Data is typically fetched lazily when the proxy is initialized.
+    4. Legacy Hibernate API; modern code often uses getReference() in JPA
+
+18. JDK JVM and JRE
+    JVM:-JVM (Java Virtual Machine): Used to execute Java bytecode.
+    JRE:- (Java Runtime Environment): Provides the runtime environment and libraries required to run Java applications.
+    JDK:- (Java Development Kit): Provides the tools required to develop Java applications, including the Java compiler (javac)
+
+19. try with resources:-
+    Try-with-resources is a feature introduced in Java 7 that automatically closes resources after they have been used,
+    even if an exception occurs.
+
+    It is mainly used with resources that implement the AutoCloseable or Closeable interface, such as files, streams,
+    and database connections.
+
+20. ClassNotFoundException
+    is a checked exception that occurs when an application tries to load a class by its name at runtime, but the class
+    loader cannot find that class.
+
+    Example:-
+    class Main {
+        public static void main(String[] args)
+                throws ClassNotFoundException {
+
+            Class.forName("com.example.Customer");
+        }
+    }
+21. NoClassDefFoundError
+    is an Error that occurs when the JVM tries to load or use a class definition that was available when the code was
+    compiled or previously loaded, but cannot be found or initialized successfully when needed at runtime.
+
+22. class loaders
+    A ClassLoader is a part of the JVM that loads Java class files (.class) into memory when they are needed during
+    program execution.
+    Types of ClassLoaders in Java:-
+    1.Bootstrap ClassLoader:- Loads core Java classes and runtime classes, such as java.lang.String.
+    2.Platform ClassLoader:- Loads platform classes and modules provided by the Java runtime.
+    3.Application ClassLoader:- Loads application classes from the classpath or module path, such as your Main class.
+
+23.volatile keyword?
+   1. volatile ensures visibility of changes made by one thread to other threads.
+   2. It provides memory-ordering guarantees and prevents certain instruction reorderings.
+
+24. What is the difference between volatile and synchronized in Java?
+    volatile ensures visibility and memory-ordering guarantees but does not provide mutual exclusion or make compound
+    operations atomic.
+    synchronized provides mutual exclusion and visibility, making it suitable for protecting critical sections when
+    multiple threads access shared data.
+
+
+
 
 
 👇
