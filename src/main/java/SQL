@@ -1,0 +1,499 @@
+1. SQL fundamentals — Must know
+
+You should be able to answer and code these without hesitation:
+
+INNER JOIN: - INNER JOIN returns only the matching records from both tables based on the join condition.
+LEFT JOIN :-  LEFT JOIN returns all records from the left table and the matching records from the right table based on the join condition
+RIGHT JOIN:-  RIGHT JOIN returns all records from the right table and the matching records from the left table based on the join condition
+======================================================================================================================================================
+2. GROUP BY and HAVING :-GROUP BY is used to group rows having the same value so that we can apply aggregate functions like count,sum,average,max and min
+HAVING is used to filter the groups created by GROUP BY
+
+1. Find the number of employees in each department
+   SELECT department, COUNT(*) FROM employee GROUP BY department;
+
+2. Find the average salary of each department
+   SELECT department, avg(sal) from employee group by department;
+
+3. Find departments having more than 5 employees
+   SELECT department, COUNT(*) FROM employee GROUP BY department HAVING COUNT(*) > 5;
+
+4. Find the highest salary in each department
+   SELECT department, max(sal) from employee group by salary;
+
+5. Find the second-highest salary in each department
+   SELECT department, salary
+    FROM (
+     SELECT department,
+           salary,
+           DENSE_RANK() OVER (
+               PARTITION BY department
+               ORDER BY salary DESC
+           ) AS rnk
+
+     FROM employee
+) e
+WHERE rnk = 2;
+======================================================================================================================================================
+
+3. Subqueries:- A subquery is a query written inside another SQL query.
+
+1. Find employees whose salary is greater than the average salary.
+   SELECT name, salary FROM employee WHERE salary > ( SELECT AVG(salary) FROM employee);
+
+2. Find the employee(s) who have the highest salary.
+   SELECT name FROM employee WHERE salary = ( SELECT MAX(salary) FROM employee);
+
+3. Find the second-highest salary.
+   SELECT MAX(salary) AS secondHighestSalary FROM employee WHERE salary < ( SELECT MAX(salary) FROM employee);
+
+4. Find employees who work in the department with the highest average salary.
+   complicated
+
+5. Find employees whose salary is greater than the average salary of their own department.
+   SELECT name, salary, department FROM employee e
+    WHERE salary > (
+    SELECT AVG(salary)
+    FROM employee e2
+    WHERE e2.department = e.department
+);
+======================================================================================================================================================
+
+4. Correlated subqueries
+   A correlated subquery is a subquery that depends on the current row of the outer query.
+
+1. Find employees whose salary is greater than the average salary of their own department.
+   SELECT name, salary, department FROM employee e WHERE salary > (
+    SELECT AVG(salary) FROM employee e2 WHERE e2.department = e.department);
+
+======================================================================================================================================================
+5. 	UNION vs UNION ALL
+    UNION and UNION ALL are used to combine the results of two or more SELECT queries. UNION removes duplicate rows, whereas UNION ALL includes duplicate rows.
+
+======================================================================================================================================================
+
+6. Window functions:- Window functions perform calculations across a set of rows related to the current row without collapsing the rows into a single result.
+   ROW_NUMBER() → gives a unique sequential number to every row, even when values are the same.
+   RANK() → gives the same rank for tied values and skips ranks after the tie.
+   DENSE_RANK() → gives the same rank for tied values but does not skip ranks.
+
+   note:- Window functions are used to perform calculations on rows without removing the individual rows.
+
+1. delete Query:-
+   DELETE FROM employee WHERE id IN (
+    SELECT id
+    FROM (
+        SELECT id,
+               name,
+               ROW_NUMBER() OVER (
+                   PARTITION BY name
+                   ORDER BY id
+               ) AS rn
+        FROM employee
+    ) e
+    WHERE rn > 1
+);
+
+2. Find the 2nd highest salary in each department.
+    SELECT salary, department
+FROM (
+    SELECT salary,
+           department,
+           DENSE_RANK() OVER (
+               PARTITION BY department
+               ORDER BY salary DESC
+           ) AS rnk
+    FROM employee
+) e
+WHERE rnk = 2;
+
+3.  Find the top 3 highest-paid employees in each department.
+    SELECT *
+FROM (
+    SELECT department,
+           salary,
+           DENSE_RANK() OVER (
+               PARTITION BY department
+               ORDER BY salary DESC
+           ) AS rnk
+    FROM employee
+) e
+WHERE rnk <= 3;
+
+4. Find duplicate employees using ROW_NUMBER().
+ SELECT *
+FROM (
+    SELECT id,
+           name,
+           ROW_NUMBER() OVER (
+               PARTITION BY name
+               ORDER BY id
+           ) AS rn
+    FROM employee
+) e
+WHERE rn > 1;
+
+5. Find the highest-paid employee in each department.
+    SELECT *
+FROM (
+    SELECT name,
+           department,
+           salary,
+           ROW_NUMBER() OVER (
+               PARTITION BY department
+               ORDER BY salary DESC
+           ) AS rn
+    FROM employee
+) e
+WHERE rn = 1;
+
+======================================================================================================================================================
+
+7. Aggregate functions:- Aggregate functions are used to perform calculations on multiple rows and return a single result.
+   COUNT() → counts rows
+   SUM()   → calculates total
+   AVG()   → calculates average
+   MAX()   → finds maximum value
+   MIN()   → finds minimum value,
+======================================================================================================================================================
+8. Finding duplicates
+   SELECT * FROM (
+    SELECT id,
+           name,
+           ROW_NUMBER() OVER (
+               PARTITION BY name
+               ORDER BY id
+           ) AS rn
+    FROM employee
+) e
+WHERE rn > 1;
+
+======================================================================================================================================================
+9. Removing duplicates
+   DELETE FROM employee WHERE id IN (
+    SELECT id
+    FROM (
+        SELECT id,
+               name,
+               ROW_NUMBER() OVER (
+                   PARTITION BY name
+                   ORDER BY id
+               ) AS rn
+        FROM employee
+    ) e
+    WHERE rn > 1
+);
+
+======================================================================================================================================================
+10. Nth highest salary
+    SELECT salary FROM employee ORDER BY salary DESC LIMIT 1 OFFSET n-1;
+	                               OR
+	SELECT salaryFROM (
+    SELECT name,
+           salary,
+           DENSE_RANK() OVER (
+               ORDER BY salary DESC
+           ) AS rnk
+    FROM employee
+) e
+WHERE rnk = n;
+======================================================================================================================================================
+
+11. Department-wise highest/second-highest salary
+
+    SELECT department, salary
+FROM (
+    SELECT department,
+           salary,
+           DENSE_RANK() OVER (
+               PARTITION BY department
+               ORDER BY salary DESC
+           ) AS rnk
+    FROM employee
+) e
+WHERE rnk = 1;
+
+for second highest salary rank =2
+
+=======================================================================================================================================================
+12. Primary Key
+    A Primary Key is a column or combination of columns that uniquely identifies each row in a table. It cannot contain NULL values, and its values must be unique.
+	@Id → tells JPA: this field is the Primary Key.
+=======================================================================================================================================================
+
+13. Foreign Key
+    A Foreign Key is a column or combination of columns used to establish a relationship between two tables. It references the Primary Key of another table.
+	And yes, in a one-to-many relationship, the Foreign Key is generally placed on the many side.
+
+	1- Department and multiple employees and foriegn key should be on multiple side
+	@Entity
+    public class Employee {
+
+    @Id
+    private Long id;
+
+    private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;
+    }
+
+	@Id → Primary Key
+    @ManyToOne → relationship
+    @JoinColumn → Foreign Key column
+=======================================================================================================================================================
+
+14. Index:- An index is a database data structure used to improve the speed of data retrieval. We typically create indexes on columns that are frequently used in WHERE, JOIN, ORDER BY, or sometimes GROUP BY conditions.
+
+| Index Type              | Short Definition                                                             | Use Case                                                                                      |
+| ----------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| **Clustered Index**     | Organizes table data according to the index key.                             | Frequently retrieving/range-searching data based on an ordered key.                           |
+| **Non-Clustered Index** | Separate index structure that stores keys and references to the actual rows. | Fast lookups on columns frequently used in `WHERE` or `JOIN`.                                 |
+| **Unique Index**        | Ensures that indexed column values are unique.                               | `email`, `username`, employee code, etc.                                                      |
+| **Composite Index**     | Index created on **multiple columns**.                                       | Queries frequently filtering by multiple columns, e.g. `WHERE department = ? AND salary > ?`. |
+| **Full-Text Index**     | Specialized index for searching words/text within large text columns.        | Searching articles, descriptions, documents, etc.                                             |
+| **Hash Index**          | Uses a hash structure to locate exact matching values quickly.               | Equality searches such as `WHERE id = 100`; not generally suited for range searches.          |
+
+1. Clustered → data organized by index key
+2. Non-clustered → separate structure pointing to data
+3. Unique → prevents duplicate values
+4. Composite → multiple columns in one index
+
+=======================================================================================================================================================
+15. What is a transaction?
+    A transaction is a unit of work consisting of one or more database operations that are treated as a single logical unit. Either all operations are successfully completed, or none of them are applied.
+
+16. ACID
+    A — Atomicity
+    A transaction is all or nothing. Either all operations are committed, or all are rolled back.
+
+    C — Consistency
+    A transaction takes the database from one valid state to another valid state while maintaining database rules and constraints.
+    Your “not in between” idea is useful for remembering it, but valid state → valid state is the better interview wording.
+    I — Isolation
+    One transaction should not interfere with another concurrent transaction.
+    D — Durability
+    Once a transaction is committed, the data remains saved even if there is a database/server crash or restart.
+
+17. commit :-Commit means permanently save all the changes made by a transaction to the database.
+
+18. Rollback :- ROLLBACK is used to undo the changes made by a transaction that have not been committed.
+
+19. Save point :- Savepoint is used to create a checkpoint inside a transaction, so you can rollback to that point without rolling back the entire transaction.
+
+20. Isolation levels:-
+    | Isolation Level      | Easy Memory                      |
+| -------------------- | -------------------------------- |
+| **Read Uncommitted** | Can read uncommitted data        |
+| **Read Committed**   | Only committed data              |
+| **Repeatable Read**  | Same row → same value            |
+| **Serializable**     | Transactions behave sequentially |
+
+
+21. Dirty Read :- A dirty read occurs when one transaction reads data that has been modified by another transaction but has not yet been committed.
+
+22. Non-repeatable read:- Within the same transaction, you read the same row twice and get different values because another transaction modified and committed it in between.
+
+23. Phantom read:- Phantom Read is when a transaction executes the same query twice, but the second execution returns new or fewer rows because another transaction inserted, deleted, or changed rows that match the condition.
+
+24. Optimistic locking
+    Optimistic locking is a concurrency-control mechanism where we assume conflicts are rare. The application maintains a version number for the record. When a transaction updates the record, it checks whether the version is still the same. If another transaction has already updated it, the version changes and the update fails.
+
+	the second transaction doesn't necessarily "see" the new version. It attempts an update using its old version, and the database/JPA detects that the version no longer matches. In JPA, this commonly results in an OptimisticLockException.
+
+	“If an OptimisticLockException occurs, I can retry the operation using the latest version, or return a conflict to the client and ask them to refresh. The choice depends on whether the operation can be safely retried.”
+
+25. Pessimistic locking
+    Pessimistic locking assumes that conflicts are likely to happen. So, when one transaction accesses a row for an update, it locks that row. Other transactions trying to modify the same row have to wait until the lock is released.
+
+26. Why don't we always use SERIALIZABLE?
+    We don't always use SERIALIZABLE because although it provides the strongest isolation and prevents concurrency anomalies, it can significantly reduce concurrency by causing more blocking and waiting. Therefore, we choose the lowest isolation level that provides the consistency required by the business.
+
+Note:- More isolation → More blocking → Less performance/concurrency.
+
+27. composite key
+    A Composite Key is a key made up of two or more columns together that uniquely identify each row in a table.
+    In JPA, a composite primary key can be mapped using @IdClass or @EmbeddedId.
+
+	@Embeddable → defines the composite key class.
+    @EmbeddedId → embeds that key into the entity.
+
+28. view
+    A View is a virtual table based on a SQL query. The query definition is stored in the database, and when we query the view, the database executes the underlying query and returns the data from the underlying tables.
+
+	Simple View → one table
+    Complex View → multiple tables / complex query
+    Materialized View → stores the result physically
+
+29.	Materialized views
+    A Materialized View is a database object that stores the result of a query physically. Because the result is already stored, reading from it can be much faster than executing the underlying query every time.
+
+30. Constraints
+    Constraints are rules applied to table columns to maintain data integrity and ensure valid data is stored in the database.
+
+31. Query optimization
+    Query optimization is the process of improving a SQL query so that it executes faster and uses fewer database resources.
+
+    First, I use EXPLAIN / execution plan to understand how the database is executing the query. Then I check whether appropriate indexes are being used, whether there are inefficient joins, and whether a full table scan can be avoided. I select only the required columns instead of using SELECT *. I also check for N+1 query problems at the application/JPA level and use pagination when retrieving large amounts of data.
+
+    Query Optimization
+       ↓
+1. EXPLAIN / Execution Plan
+       ↓
+2. Check Indexes
+       ↓
+3. Check Joins
+       ↓
+4. Avoid unnecessary Full Table Scans
+       ↓
+5. Select required columns
+       ↓
+6. Avoid N+1 queries
+       ↓
+7. Use Pagination for large results
+
+32. EXPLAIN
+    EXPLAIN is used to see the execution plan of a SQL query. It helps us understand how the database will execute the query, such as whether it uses an index, performs a full table scan, or uses particular join methods.
+
+	EXPLAIN = How will the database execute my query?
+
+33. partitionining
+    Partitioning is a database technique where a large table is divided into smaller, manageable pieces called partitions, while logically it still remains one table.
+	The main purpose is to improve query performance and manage large amounts of data.
+
+	Range Partitioning → based on a range of values
+    Example: dates/year
+    List Partitioning → based on specific values
+    Example: country = India, USA
+    Hash Partitioning → database uses a hash function to distribute rows
+    Example: distributing customers across partitions.
+
+
+34. sharding
+    Sharding is a database scaling technique where data is horizontally distributed across multiple independent database servers, called shards.
+	Unlike partitioning, the data is not just divided within one database server — it is distributed across multiple database instances/servers.
+
+	Range-based Sharding      → Range of values (Data is divided based on a range of the shard key)
+    Hash-based Sharding       → Hash function (A hash function is applied to the shard key to determine the shard.)
+    Directory-based Sharding  → Mapping tells you the shard (A lookup/directory service maintains the mapping between the shard key and the shard.)
+
+
+35. partitioning vs sharding
+    | Partitioning                           | Sharding                                   |
+| -------------------------------------- | ------------------------------------------ |
+| Divides data into partitions           | Distributes data across servers            |
+| Usually within a database system       | Across multiple database instances/servers |
+| Mainly data organization/performance   | Mainly horizontal scaling                  |
+| One database system manages partitions | Multiple database servers                  |
+
+Partitioning → Big table → smaller pieces
+Sharding → Big database → multiple database servers
+
+36. Why would you choose sharding over partitioning?
+    I would choose sharding when a single database server has reached its scalability limits. Partitioning divides data within a database system, whereas sharding distributes data across multiple database servers, allowing horizontal scaling of storage and workload."
+
+37. Procedure :-
+    A stored procedure is a named set of SQL statements and database logic that is stored inside the database and can be executed whenever needed.
+
+38. Functional Programming :-
+    returns a value and can often be used where a value/expression is expected, depending on the database.
+
+39. difference b/n stored procedure and fiunction?
+    | Stored Procedure                                               | Function                                                            |
+| -------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Mainly used to perform an operation                            | Mainly used to calculate/return a value                             |
+| Can have `IN`, `OUT`, `IN OUT` parameters depending on DB      | Usually has input parameters and returns a value                    |
+| Does not have to return a value                                | Must return a value                                                 |
+| Can perform `INSERT`, `UPDATE`, `DELETE` depending on DB rules | Often used for calculations or retrieving a value                   |
+| Called as a separate database statement                        | Can often be used inside SQL expressions, depending on the database |
+
+40. what is normalization?
+    Database normalization is the process of organizing data into related tables to reduce data redundancy and prevent insertion, update, and deletion anomalies.
+
+
+coding questions check again
+1.Given a list of integers, write a program to find and print the elements with the lowest frequency using Java Stream API.
+
+
+26. Given a list of strings, write a program to find and print the strings containing only vowels using Java Stream API
+
+41. Write a program to find the median of a list of integers using Java Stream API.
+42. Given a list of strings, write a program to find and print the strings containing a specific character at least twice using Java Stream API.
+44. Given a list of strings, write a program to find and print the strings with the maximum number of consonants using Java Stream API.
+45. Write a program to check if a list of strings is palindrome using Java Stream API.
+46. Reverse the order of the list elements
+    List<String> list = List.of("Java", "Spring", "SQL", "Microservices");
+
+        List<String> result = IntStream.range(0, list.size())
+                .mapToObj(i -> list.get(list.size() - 1 - i))
+                .collect(Collectors.toList());
+
+        System.out.println(result);
+
+47.
+
+
+
+LRU implementation
+N+1
+
+
+
+is used to store the current instructor executed by the JVM
+
+1. Serial GC
+
+Uses a single thread for garbage collection.
+
+Stops application threads while collecting.
+
+Suitable for small applications with limited memory.
+
+JVM option: -XX:+UseSerialGC
+
+2. Parallel GC
+
+Uses multiple threads for garbage collection.
+
+Focuses on high application throughput.
+
+Can cause noticeable pauses during collection.
+
+JVM option: -XX:+UseParallelGC
+
+3. G1 GC (Garbage-First)
+
+Divides the heap into regions.
+
+Prioritizes regions expected to yield more reclaimable memory.
+
+Tries to meet a configurable pause-time goal.
+
+JVM option: -XX:+UseG1GC
+
+4. ZGC
+
+Designed for very low pause times.
+
+Performs most expensive GC work concurrently with application execution.
+
+Useful for applications with large heaps and strict latency requirements.
+
+JVM option: -XX:+UseZGC
+
+
+3rd Highest salry per department
+Map<String, Employee> result =
+    employees.stream()
+        .collect(Collectors.groupingBy(
+            Employee::getDepartment,
+            Collectors.collectingAndThen(
+                Collectors.toList(),
+                list -> list.stream()
+                    .sorted(Comparator.comparing(Employee::getSalary).reversed())
+                    .skip(2)
+                    .findFirst()
+                    .orElse(null)
+            )
+        ));

@@ -233,6 +233,61 @@ Memory trick: Filter = Servlet level; Interceptor = Spring MVC level.
     synchronized provides mutual exclusion and visibility, making it suitable for protecting critical sections when
     multiple threads access shared data.
 
+25. what is serialization and deserialization?
+    Serialization is the process of converting a Java object into a byte stream so that it can be stored in a file
+    or sent over a network.
+    The reverse process is called deserialization — converting the byte stream back into a Java object.
+
+26. what is Fail fast and Fail safe?
+    A fail-fast iterator throws a ConcurrentModificationException if a collection is structurally modified while it is
+    being iterated, except through the iterator’s own supported modification methods.
+    The term fail-safe is commonly used for iterators that can continue iterating without throwing ConcurrentModificationException
+     when the collection changes. However, fail-safe is not an official Java API term.
+
+27. What is the difference between Iterator and ListIterator in Java?
+    Iterator is used to traverse elements in a collection in the forward direction. It supports hasNext(), next(), and
+    optionally remove().
+    ListIterator is used only with lists and supports both forward and backward traversal. It also supports add(),
+    set(), and remove() operations.
+    Iterator can be used with collections such as ArrayList, HashSet, and LinkedList, whereas ListIterator is available
+    only for lists.
+
+28. what is PC Rigister in memeory
+    “The Program Counter (PC) Register is a JVM memory area associated with each thread. It keeps track of the address
+     of the JVM instruction currently being executed by that thread.”
+
+29. Serial GC
+    Your answer: Single-threaded applications and STW.
+    Correct. Serial GC uses a single thread for garbage collection and pauses application threads during collection
+    (Stop-The-World).
+    Suitable for small heaps and small applications.
+    Simple, with low GC overhead in suitable workloads.
+    Can cause longer pauses as the heap grows.
+
+30. Parallel GC
+    Your answer: Multiple threads for GC and high throughput.
+    Uses multiple GC threads to collect garbage.
+    Focuses on high throughput rather than minimizing pause times.
+    Application threads are paused during its stop-the-world collection phases.
+
+31. G1GC
+    Your answer: Heap divided into regions, prioritizes regions with more garbage, low latency.
+    Divides the heap into multiple regions instead of fixed-size contiguous young and old spaces.
+    Prioritizes regions expected to yield the most reclaimable space relative to collection cost.
+    Uses evacuation to copy surviving objects out of selected regions.
+    Aims for predictable pause times, balancing latency and throughput.
+
+32. ZGC
+    Application threads and GC work concurrently.
+    Designed for very low pause times.
+    Performs much of its work concurrently with application threads.
+    Uses techniques such as colored pointers and load barriers in HotSpot implementations.
+    Concurrent work still consumes CPU, and pauses are not completely eliminated.
+
+
+
+
+
 
 
 
