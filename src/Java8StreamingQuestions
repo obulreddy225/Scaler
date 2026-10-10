@@ -1,0 +1,237 @@
+DSA
+====================================================================
+1. LRUCache
+2. containerSum
+3. trapping rain water-----practice it again
+4. paranthesis problem-----practice it again
+
+
+====================================================================
+Streams — Basic
+
+
+
+
+
+
+
+Find the first number divisible by 3.
+Sort strings by length.
+Convert a list of strings into a list of string lengths.
+Check whether all numbers are even.
+Check whether any number is greater than 10.
+Check whether no number is negative.
+Find the first number greater than 10.
+Remove duplicate numbers.
+Get the first 3 elements.
+Skip the first 2 elements and get the remaining elements.
+Find the average of a list of integers.
+Find the sum using reduce().
+Concatenate strings using Collectors.joining().
+
+Streams — Intermediate
+Filter strings starting with "A" and convert them to uppercase.
+Sort strings by length and then alphabetically.
+Find the longest string.
+Find the shortest string.
+Find the second-largest number.
+Find the second-smallest number.
+Find the longest word starting with "A".
+Count strings containing the letter "a".
+Find the sum of lengths of all strings.
+Find the sum of lengths of strings containing "e".
+
+Convert a list of integers into a list of strings.
+Square every even number.
+Find all prime numbers from a list.----------------------practice again
+Count the vowels across a list of strings.-------------------
+long count = names.stream()
+        .flatMapToInt(String::chars)
+        .filter(c -> "aeiouAEIOU".indexOf(c) >= 0)
+        .count();
+
+
+Merge two lists into one using streams.
+Flatten a List<List<Integer>>.
+Flatten a List<List<String>>.
+Find the most frequent number.-------------------------
+Find all numbers less than a given value.
+Find the first string containing a given character.
+
+Employee-Based Stream Questions
+Find the employee with the highest salary.
+Find the employee with the lowest salary.
+Find the second-highest salary.
+Find the second-highest distinct salary.
+Find the average employee salary.
+Find the maximum salary.
+Find the minimum salary.
+Find the difference between maximum and minimum salary.
+Find employees with salary greater than ₹50,000.
+Find employees with salary less than ₹60,000.
+Find the sum of salaries greater than ₹50,000.
+Get a list containing only employee names.
+Get employees whose names start with "A".
+==============================================================
+Group employees by department.
+Partition employees into salary > ₹60,000 and salary <= ₹60,000.
+Find the highest-paid employee in each department.
+Map<String, Employee> result = employees.stream()
+        .collect(Collectors.groupingBy(
+                Employee::getDepartment,
+                Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        list -> list.stream()
+                                .sorted(Comparator.comparing(Employee::getSalary).reversed())
+                                .skip(1)
+                                .findFirst()
+                                .orElse(null)
+                )
+        ));
+==============================================================
+Find the average salary for each department.
+Find the employee count in each department.
+Sort employees by salary descending.
+Sort employees by salary descending and then name alphabetically.
+
+
+Collectors / Grouping
+Group strings by their length.
+Group strings by their first character.
+Count occurrences of each string.
+Count occurrences of each character in a string.
+Find the most frequent element.
+Partition numbers into even and odd.
+Partition strings based on length > 5.
+Find the sum of each group after groupingBy().
+Find the maximum value in each group.
+Find duplicate elements using streams.
+Set + Java 8
+Remove duplicates from a list using distinct().
+Find the union of two sets.
+Find the intersection of two sets.
+Find the difference between two sets.
+Convert a Set to a List.
+Convert a Set of strings to uppercase.
+Find the maximum element in a Set.
+Find elements greater than 10 from a Set.
+Sort a Set in ascending order.
+Check whether any Set element starts with "A".
+Map + Java 8
+Filter Map entries where value > 100.
+Filter Map entries where value is even.
+Find the key having the maximum value.
+Find the key having the minimum value.
+Sort a Map by values ascending.
+Sort a Map by values descending.
+Sort a Map by key.
+Sort a Map by key length.
+Sum all values in a Map.
+Find the average of Map values.
+Remove entries having null values.
+Get all keys whose values are greater than 100.
+Find duplicate values in a Map.
+Convert List<Employee> to Map<Integer, String> using employee ID and name.
+Convert List<Employee> to Map<Department, List<Employee>>.
+Group employees by department.
+Merge two Maps by summing duplicate-key values.
+Invert Map<String, Integer> into Map<Integer, List<String>>.
+Convert Map<String, String> values into their lengths.
+Flatten Map<String, List<String>> into a single List<String>.
+Important Interview-Level Java 8
+Find the second-highest salary when multiple employees have the same highest salary.
+Find the highest-paid employee from each department.
+Find the department having the highest average salary.
+Find duplicate characters in a string using streams.
+Find the first non-repeated character in a string.
+Find the first repeated character in a string.
+Find the frequency of each word in a sentence.
+Find the most frequent word in a sentence.
+Find duplicate elements in a list using groupingBy().
+Find elements that occur more than once.
+Find elements that occur exactly once.
+Find the top 3 highest numbers.
+Find the top 3 highest-paid employees.
+Find the top 2 highest salaries from each department.
+Find employees whose salary is above the department average.
+Find the department with the maximum number of employees.
+Find the longest string in each group.
+Find the maximum number from each partition.
+Convert a list into a Map while handling duplicate keys.
+Merge two lists, remove duplicates, and sort the result.
+
+Find all strings starting with "b" and convert them to uppercase.
+Convert List<String> to Map<String, Integer> where value = string length.
+Find the shortest word.
+Find all employees whose salary is below a threshold.
+Find employees whose names start with a given letter.
+Check if all strings are non-empty.
+Count distinct elements in a list.
+Find the first non-null element.
+Find numbers divisible by 3 using anyMatch().
+Check if any string contains a given substring.
+Concatenate only strings containing "e".
+Find maximum and minimum salary together.
+Find the most expensive product.
+Find the minimum-salary employee.
+Find employees with salary greater than a threshold and collect them.
+Convert a list of strings to uppercase using map().
+Get numbers using limit() / first N elements.
+Flatten nested collections using flatMap().
+Convert Map<String, Double> values to formatted strings such as "$123.45".
+Join a Map<String, String> into a single string.
+Convert Properties into Map<String, String>.
+Check whether all Map values satisfy a condition.
+Convert Map<K,V> → Map<V,K>.
+Find duplicate values in a Map.
+Get a sub-map where keys start with a particular prefix.
+Convert Map values (List<String>) into one flat list.
+Partition a Map into high/low based on value.
+Convert a Map into another Map using transformed values.
+Merge two Maps and sum values for duplicate keys.
+Group Map values having the same value into Map<Value, List<Key>>.
+
+
+
+
+
+Map<String, Employee> result = employees.stream()
+        .collect(Collectors.groupingBy(
+                Employee::getDepartment,
+                Collectors.collectingAndThen(
+                        Collectors.maxBy(
+                                Comparator.comparing(Employee::getSalary)
+                        ),
+                        Optional::get
+                )
+        ));
+
+
+
+Map<String, Double> result = employees.stream()
+        .collect(Collectors.groupingBy(
+                Employee::getDepartment,
+                Collectors.averagingDouble(Employee::getSalary)
+        ));
+
+29. Find maximum value in each group
+
+For example, maximum salary in each department:
+
+Map<String, Double> result = employees.stream()
+        .collect(Collectors.groupingBy(
+                Employee::getDepartment,
+                Collectors.collectingAndThen(
+                        Collectors.maxBy(
+                                Comparator.comparing(Employee::getSalary)
+                        ),
+                        emp -> emp.map(Employee::getSalary).orElse(0.0)
+                )
+        ));
+
+
+
+
+41.skip
+42.
+
