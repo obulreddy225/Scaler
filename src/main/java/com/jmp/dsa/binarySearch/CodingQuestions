@@ -1,0 +1,68 @@
+1. Find the missing number in a sorted array containing numbers from 1 to N
+
+2. Find the median of two sorted arrays   --hard problem
+
+3. Find Peak Element
+public static int peakElement(int[] arr) {
+    int left = 0;
+    int right = arr.length - 1;
+
+    while (left < right) {
+        int mid = left + (right - left) / 2;
+
+        if (arr[mid] < arr[mid + 1]) {
+            left = mid + 1;
+        } else {
+            right = mid;
+        }
+    }
+
+    return left;
+}
+
+4.Koko Eating Bananas
+5.Minimum Number of Days to Make m Bouquets  --medium
+6.Find the Smallest Divisor Given a Threshold
+7.Find the First Occurrence of a Number Using Binary Search
+  You are given a sorted array of integers that may contain duplicate values and a target number X.
+  Find the index of the first occurrence of X using Binary Search.
+  If the element is not present, return -1
+
+8. Find the Index Where an Element Should Be Inserted
+   You are given a sorted array of distinct integers and a target value X.
+   If X exists in the array, return its index.
+   If it does not exist, return the index where it should be inserted to maintain sorted order.
+   The solution must use Binary Search
+
+9. Find the Last Occurrence of a Number
+10.Search in a Rotated Sorted Array-----------medium
+
+
+2nd level
+1. Find the Minimum in a Rotated Sorted Array
+2. Count Occurrences of a Number in a Sorted Array
+3. Find the Single Element in a Sorted Array
+   Hint:-Every other number appears twice. Find the unique number in \(O(\log n)\).
+4. Search in a 2D Matrix
+5. Allocate Books / Split Array Largest Sum
+6. Aggressive Cows — Maximize Minimum Distance
+
+
+3. Recommended preparation order
+For your interviews, I suggest this sequence:
+1. Standard Binary Search
+2. First and Last Occurrence
+3. Search Insert Position
+4. Count Occurrences
+5. Missing Number
+6. Find Peak Element
+7. Search in a Rotated Sorted Array
+8. Find Minimum in a Rotated Sorted Array
+9. Koko Eating Bananas
+10. Smallest Divisor Given a Threshold
+11. Minimum Days to Make Bouquets
+12. Search in a 2D Matrix
+13. Single Element in a Sorted Array
+14. Allocate Books / Split Array Largest Sum
+15. Aggressive Cows
+16. Median of Two Sorted Arrays
