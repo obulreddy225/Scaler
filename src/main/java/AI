@@ -132,6 +132,19 @@
      4. Send those chunks with the question to the LLM.
      This approach is called Retrieval-Augmented Generation (RAG).
 
+12. what are transformers?
+    A Transformer is a deep learning architecture that helps an AI model understand relationships between tokens in text and
+    process them to generate meaningful output.
+    Transformers are the architecture behind many modern LLMs, such as GPT models.
+    Ex:-Suppose the user asks:
+    The employee submitted a leave request because he was sick. Who was sick?
+    The model needs to understand that “he” refers to “the employee.”
 
+    A Transformer uses a mechanism called attention to learn relationships between words or tokens, helping the model understand
+    the sentence's context.
 
-12.
+    Transformer --- Deep learning architecture used by many LLMs.
+    Attention   --- Helps the model learn which tokens are relevant to other tokens.
+    Token       --- A unit of text processed by the model.
+    LLM         --- A language model that can use a Transformer architecture to understand and generate text.
+
