@@ -1,0 +1,18 @@
+1. Explain the Java Streams?
+   ->The Java Stream API was introduced in Java 8 to process data from collections in a declarative and functional style.
+   It supports operations such as filtering, mapping, sorting, and collecting data without modifying the original collection
+   by default.
+   ->Stream operations are mainly divided into intermediate operations, such as filter() and map(), and terminal operations,
+    such as collect() and forEach().
+   ->Streams also support lazy evaluation, meaning intermediate operations are executed only when a terminal operation is
+   invoked.
+
+2. When do Streams introduce unnecessary overhead?
+   1. Small collections: Stream setup and lambda invocation can cost more than a simple loop for very small tasks.
+   2. Simple operations: A basic loop may be faster for straightforward calculations.
+   3. Unnecessary intermediate operations: Extra transformations or creating temporary collections can increase processing
+      and memory costs.
+   4. Boxing and unboxing: Using Stream<Integer> instead of IntStream can introduce overhead when processing primitive numbers.
+   5. Parallel streams on small datasets: Thread scheduling and coordination can cost more than the work being performed.
+   6. Modifying shared variables inside stream operations can introduce synchronization issues and make code harder to reason
+      about.

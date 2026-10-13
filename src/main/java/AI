@@ -1,0 +1,21 @@
+1. What is AI?
+   AI is the broad field of creating computer systems that perform tasks that normally require human-like
+   intelligence, such as reasoning, planning, understanding language, or making decisions.
+
+2. what is Machine Learning (ML)?
+   ML is a branch of AI where a system learns patterns from data to make predictions or decisions rather
+   than relying only on explicitly written rules.
+
+3. what is Deep Learning (DL)?
+   Deep Learning is a subset of Machine Learning that uses neural networks with multiple layers to learn
+   complex patterns from data.
+
+   Ex:-
+   Deep Learning is used in image recognition, speech recognition, and Generative AI.
+
+4. what is Generative AI (GenAI)?
+   GenAI refers to AI systems that generate new content, such as text, code, images, audio, or video.
+   Modern LLMs are a major example.
+
+   Ex:-
+   ChatGPT uses Generative AI to generate answers to user questions and help developers write code.

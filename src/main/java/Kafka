@@ -1,0 +1,73 @@
+Realtime interview questions
+====================================
+1. your database transaction commits successfully, but publishing the event to kafka fails. How would you handle it?
+   The main problem is database and Kafka consistency.
+   Best interview answer is :- Transactional Outbox Pattern
+   ->In this approach, we save the business data and the event into two database tables within the same database
+   transaction.
+   Ex:-
+   when creating an order, we save the order in the orders table and the corresponding event in the outbox table within
+   the same transaction. A separate background publisher reads pending events from the outbox table and publishes them
+   to Kafka.
+   After successful publishing, it marks the event as published. If Kafka is unavailable, the event remains pending and
+   the publisher retries later.
+   We also make the consumer idempotent to prevent duplicate business processing if an event is published more than once.
+
+2. How do you ensure zero message losses in kafka?
+   ->At the producer level, I would use the Transactional Outbox Pattern to ensure that business data and the corresponding
+   event are saved in the same database transaction. I would also configure acks=all and enable producer idempotence.
+   ->At the broker level, I would configure replication and an appropriate min.insync.replicas setting to improve message
+   durability.
+   ->At the consumer level, I would follow at-least-once delivery semantics by processing the message successfully before
+   committing the offset. If processing fails, the message can be retried.
+   ->Finally, I would make the consumer idempotent to prevent duplicate business operations when messages are delivered more
+    than once.
+
+3. How to make Producer idempotent in Kafka?
+   Prevents duplicate Kafka records caused by producer retries within Kafka's idempotent-producer guarantees.
+   Configuration: enable.idempotence=true
+
+4. what is Exponentialbackoff? How do you implement retries?
+   Exponential backoff is a retry strategy in which the waiting time between consecutive retries increases exponentially when
+   a service call fails.
+   Ex:-
+   If Service A calls Service B and the call fails, instead of retrying immediately, Service A waits for 1 second before the
+   first retry, 2 seconds before the second retry, and 4 seconds before the third retry.
+   We can also add jitter, which introduces a random delay to prevent multiple services from retrying simultaneously.
+   ->In Spring Boot, we can implement retries using Resilience4j by configuring the maximum number of attempts, the initial
+   waiting duration, and the exponential backoff multiplier.
+
+
+
+
+
+
+
+Kafka subject
+==================================
+1. what is Kafka?
+   Apache Kafka is a distributed event streaming platform used for asynchronous communication between applications.
+   In Kafka, producers publish messages to topics, and consumers read those messages from the topics.
+   Kafka supports high-throughput data processing, scalability, fault tolerance, and loose coupling between applications.
+   For example,
+   when an order is placed, the Order Service publishes an event to a Kafka topic, and the Notification Service consumes
+   that event to send an email or SMS.
+
+2. Kafka vs REST?
+   Kafka is generally used for asynchronous, event-driven communication between microservices. The producer publishes a
+   message to a Kafka topic, and the consumer processes it independently. The producer does not need to wait for the consumer to finish processing the message.
+
+   REST APIs are generally used for synchronous request-response communication. One service sends an HTTP request to
+   another service and usually waits for the response before continuing its processing.
+
+   For example, we can use REST when we need an immediate response, such as fetching user details, and Kafka when we need
+   asynchronous processing, such as sending an order notification.
+
+   Kafka: Publish → Continue → Consumer processes.
+   REST: Request → Wait → Response.
+
+3. What is a Kafka Topic?
+   A Kafka Topic is a logical category used to store and organize messages or events.
+   Producers publish messages to a topic, and consumers read those messages from the topic.
+   A topic can have multiple partitions, which help Kafka achieve parallel processing and scalability.
+   Kafka guarantees message ordering within a partition, not across the entire topic.

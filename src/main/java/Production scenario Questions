@@ -1,0 +1,70 @@
+SOLID PRNICIPLES || ACID PRINICIPLE || CAP Theorem
+
+1. Explain a critical production issue you handled and how did you resolve it?
+   ->When I had recently joined the project, our team faced an issue with transaction pagination in the development environment.
+   ->The requirement was to fetch 100 transactions per page, but the API returned only 56 records, even though more eligible
+    records were available in the database. The functionality worked correctly with dummy data in the local environment.I took
+    ownership of the issue because my colleague was going on vacation.
+   ->First, I compared the local and development database data and identified differences in the data. Then I traced the
+   service-layer logic and found that, after fetching records from the database, we were applying additional filtering in
+   the service layer. Because of this, the final response contained fewer than 100 eligible records.
+   ->The initial workaround proposed by the team was to repeatedly call the same DAO methods until we collected 100 records.
+    I explained that this would introduce unnecessary database calls and increase latency.
+   ->Instead, I suggested moving the filtering conditions into the database query so that the database would return the
+   eligible records directly, reducing unnecessary data retrieval and service-layer processing.
+
+   ->This approach addressed the root cause more efficiently and made the pagination logic easier to maintain.
+   ->I implemented pagination at the database level using WHERE, LIMIT, and OFFSET.
+
+2. your service suddenly receives 10X traffic  How would you handle?
+   Remember this flow
+   Scale → Balance → Cache → Protect → Monitor
+   (Horizontal Scaling, Load balancing, Caching, Database optimization, Ratelimiting, asynchronus communication, Monitoring
+
+   What if you use Kubernetes? and production level if it fails?
+   For example, if your service currently has 3 pods, Kubernetes HPA might scale it to 10 or 15 pods, depending on configured
+   limits and metrics
+
+3. your payment API receives 10 duplication requests simultaneously? how would you prevent duplicate transactions?
+   I would use an **idempotency key, database constraints, and transaction management** to prevent duplicate payments.
+
+   1. **Idempotency key:** The client sends a unique key for each payment operation. Retries for the same payment must reuse
+        the same key.
+   2. **Database uniqueness:** I create a unique constraint on the idempotency key so that concurrent requests cannot create
+        duplicate payment records.
+   3. **Atomic processing:** I use a database transaction to claim the key and create the payment record safely.
+   4. **Handle concurrent requests:** If multiple requests arrive with the same key, only one can claim it successfully.
+        The others retrieve the existing payment status or response.
+   5. **External payment gateway:** I pass the same idempotency key to the payment provider, if supported, to prevent
+      duplicate charges when requests are retried.
+   6. **Failure handling:** I store the payment status and reconcile uncertain outcomes instead of blindly retrying a charge.
+
+   This ensures that retries and concurrent requests for the same payment do not create duplicate transactions.
+
+4. How will you do the routing to API's in Springboot application?
+   ->In our application, we used Spring Cloud Gateway to route incoming requests to the appropriate microservices. We
+   configured routes in the application.yml file using a destination URI and route predicates.
+   ->Predicates determine whether a request matches a route, based on conditions such as the request path, HTTP method, or
+   headers. The URI specifies the destination service.
+   ->For example, requests matching /api/orders/** are routed to the Order Service using lb://ORDER-SERVICE, which enables
+   service discovery and load balancing.
+
+   Ex:-
+   spring:
+     cloud:
+       gateway:
+         routes:
+           - id: order-service
+             uri: lb://ORDER-SERVICE
+             predicates:
+               - Path=/api/orders/**
+
+5. can you use @Repository in place of @Component?
+   ->Yes, we can use @Component instead of @Repository to register a DAO class as a Spring bean. However, @Repository is a
+   specialized stereotype annotation for the persistence layer.
+   ->It provides persistence exception translation, which can convert technology-specific persistence exceptions into Spring's
+    DataAccessException hierarchy when the appropriate exception-translation infrastructure is configured.
+   ->Therefore, we prefer @Repository for DAO classes because it clearly identifies their responsibility and supports
+   persistence exception translation.
+
+

@@ -1,0 +1,30 @@
+1. what is UNIT TESTING?
+   Unit Testing is the process of testing an individual unit of code, such as a method or class, independently to verify
+   that it works as expected.
+
+2. what is MOCK?
+   @Mock is used to create a fake object of a dependency so that we can test a class without calling the actual dependency.
+
+3. @InjectMocks
+   is a Mockito annotation that creates an instance of the class being tested and injects its mock dependencies into it.
+
+   @Mock = Creates the fake dependency.
+   @InjectMocks = Creates the object being tested and puts the fake dependency inside it.
+   @InjectMocks creates an object of the class being tested and injects the mock dependencies into it.
+
+4. what is Stub?
+   A Stub is a fake implementation of a dependency used during testing. It returns predefined responses so we can test our
+   code without calling the actual dependency.
+
+   Ex:- For stubbing we can create the class with dummy implementation with predefined responses and will use in testing
+
+5. difference b/n stub and mock?
+   The main difference between a Stub and a Mock is how we use them during testing.
+
+   | Stub                            | Mock                                                     |
+   | ------------------------------- | -------------------------------------------------------- |
+   | Returns predefined responses.   | Can return predefined responses and verify interactions. |
+   | Focuses on providing test data. | Focuses on verifying how dependencies are used.          |
+   | Example: Returns `"Test User"`. | Example: Verifies `getUserName()` was called once.       |
+
+6.
