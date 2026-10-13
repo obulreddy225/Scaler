@@ -19,3 +19,119 @@
 
    Ex:-
    ChatGPT uses Generative AI to generate answers to user questions and help developers write code.
+
+5. what is difference b/n Traditional AI vs Generative AI?
+   Traditional AI — Fraud detection
+   Input: Bank transaction details.
+   The system analyzes the transaction and predicts whether it is potentially fraudulent.
+   Output: Fraud risk: High
+
+   Generative AI — Code generation
+   Input: “Write a Java program to find duplicate numbers.”
+   The system generates Java code based on the prompt.
+
+   The main difference is that Traditional AI is often used to analyze, classify, or predict information, whereas Generative AI is used to create new content.
+
+
+
+   | Traditional AI                                                                 | Generative AI                                                |
+   | ------------------------------------------------------------------------------ | ------------------------------------------------------------ |
+   | Mainly performs tasks such as classification, prediction, and decision-making. | Generates new content such as text, code, images, and audio. |
+   | Often produces a label, score, or prediction.                                  | Often produces newly generated content.                      |
+   | Example: Detect whether a bank transaction is fraudulent.                      | Example: Generate Java code from a prompt.                   |
+   | Example output: `Fraud: Yes`                                                   | Example output: A Java method or explanation.                |
+
+
+
+6. Why not every Deep Learning system is Generative AI
+   Deep Learning — Face recognition
+   A deep learning model learns patterns from face images and identifies or verifies a person.
+   Output: A person's identity or a match result.
+   It doesn't need to generate new content.
+
+   Generative AI — Image generation
+   A model learns patterns from training images and generates a new image based on a prompt.
+   Output: A newly generated image.
+
+   No, not every Deep Learning system is a Generative AI system.
+
+   Deep Learning uses neural networks with multiple layers to learn complex patterns from data. It can be used for different
+   tasks, such as classification, prediction, recognition, and content generation.
+
+   Ex:- a deep learning model used for face recognition identifies a person, whereas a Generative AI model such as ChatGPT
+   generates new content.
+
+   Therefore, Deep Learning describes the technique, while Generative AI describes the capability to generate new content.
+
+7. what is LLM?
+   LLM stands for Large Language Model.
+   ->An LLM is an AI model trained on large amounts of text and other data so that it can understand and generate human-like
+   language.
+   ->At a high level, an LLM generates text by predicting the next token based on the preceding tokens and the context available
+   to it. It repeats this process to produce a response.
+   ->An LLM does not guarantee that every answer is correct. It can generate incorrect information, known as a hallucination.
+   ->Connect it to your Java experience
+     Suppose you're building a Spring Boot application using Spring AI.
+     ---our Java application sends a prompt to an LLM through an API.
+     ---The LLM processes the prompt and generates a response.
+     ---Your application receives the response and returns it to the user.
+   ->Your Spring Boot application is the application layer; the LLM is the model generating the language response.
+
+8. What is an LLM, and how does it generate a response?
+   An LLM, or Large Language Model, is an AI model trained on large amounts of text and other data to understand and generate
+   human-like language.
+   It takes a prompt as input and generates a response by predicting the next token based on the preceding tokens and the
+   available context. It repeats this process until the response is complete.
+
+9. What are tokens?
+   A token is a small unit of text that a language model processes. Depending on the tokenizer, a token can represent a whole
+   word, part of a word, punctuation, or another text unit.
+   Ex:-
+   I love Java programming!
+   might be split into tokens like:
+   ["I", " love", " Java", " programming", "!"]
+   This is only an illustrative split; actual tokenization depends on the model.
+
+   Why do tokens matter?
+   ---Models process input and output as tokens.
+   ---Context-window limits are measured in tokens.
+   ---API usage and pricing often depend on input and output token counts.
+
+10. What is a context window?
+    A context window is the maximum amount of tokenized information a model can handle in a single request, including the
+    relevant input and generated output, subject to the model's specific limits.
+
+    Ex:-
+    Imagine you're chatting with an AI assistant about a large Java project. You provide:
+    ---Your Java code
+    ---Error logs
+    ---Previous conversation
+    ---Your latest question
+    All this information consumes tokens
+    ->If the total information exceeds the model's context limit, some information may need to be removed, summarized, or split
+    across multiple requests.
+    ⭐⭐⭐ Interview-ready definition:-
+    A context window is the maximum number of tokens a language model can process within a single context, including input and,
+    depending on the model's limits, generated output. It determines how much prompt, conversation history, or document content
+    the model can consider at once.
+
+ 11. What is a context window, and what happens if the input exceeds the model's context limit?
+     A context window is the maximum number of tokens a language model can handle within a single context, including input,
+     relevant conversation history, and generated output, subject to the model's limits.
+
+     If the input exceeds the context limit, we can reduce the input, summarize the conversation history, remove irrelevant
+     information, or split a large document into smaller chunks and process them separately.
+
+    ⭐⭐⭐
+     Real world Example:- Real-world Java + GenAI example
+     Suppose you build a Spring Boot application that allows users to ask questions about large PDF documents.
+     If the entire PDF exceeds the model's context window, you can:
+     1. Split the PDF into smaller chunks.
+     2. Convert the chunks into embeddings and store them in a vector database.
+     3. Retrieve only the relevant chunks when the user asks a question.
+     4. Send those chunks with the question to the LLM.
+     This approach is called Retrieval-Augmented Generation (RAG).
+
+
+
+12.
