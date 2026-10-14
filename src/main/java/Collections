@@ -1,0 +1,26 @@
+1. How IdentityHashMap differs from a normal HashMap?
+   The main difference is how they compare keys.
+   ->HashMap: Uses equals() to compare keys.
+   ->IdentityHashMap: Uses == to compare keys, checking whether they are the exact same object.
+
+2. Concept of a cache map?
+   A cache map stores frequently accessed data in a map so that we can retrieve it quickly instead of repeatedly fetching it from
+   a database or another service.
+   Important: A normal HashMap is not automatically a complete caching solution. Real applications may need expiration (TTL),
+   eviction, thread safety, and cache invalidation. Libraries such as Caffeine or distributed caches such as Hazelcast can provide
+   these features.
+
+   Interview-ready answer:
+   “A cache map stores frequently accessed data as key-value pairs so that we can retrieve it quickly without repeatedly calling
+   the database or downstream APIs. It improves performance, reduces response time, and reduces backend load.”
+
+3. What are some benefits of using Streams?
+   Java Streams simplify collection processing by providing readable and concise operations for filtering, mapping, sorting, and
+   collecting data. They support functional programming and can also perform parallel processing when appropriate.”
+
+   Remember: Streams do not store data themselves; they process data from a source such as a collection. Parallel Streams are not
+   always faster, especially for small tasks or workloads involving shared state.
+
+4. How does HashMap work internally?
+
+

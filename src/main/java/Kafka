@@ -14,28 +14,35 @@ Realtime interview questions
    We also make the consumer idempotent to prevent duplicate business processing if an event is published more than once.
 
 2. How do you ensure zero message losses in kafka?
-   ->At the producer level, I would use the Transactional Outbox Pattern to ensure that business data and the corresponding
-   event are saved in the same database transaction. I would also configure acks=all and enable producer idempotence.
-   ->At the broker level, I would configure replication and an appropriate min.insync.replicas setting to improve message
-   durability.
-   ->At the consumer level, I would follow at-least-once delivery semantics by processing the message successfully before
-   committing the offset. If processing fails, the message can be retried.
-   ->Finally, I would make the consumer idempotent to prevent duplicate business operations when messages are delivered more
-    than once.
+   1. Producer configuration
+   - Set acks=all so the producer waits for acknowledgment from all in-sync replicas.
+   - Set enable.idempotence=true to prevent duplicate writes caused by producer retries.
+   - Configure retries and suitable delivery timeouts.
+   2. Kafka broker configuration
+   - Set replication factor, for example, 3.
+   - Set min.insync.replicas=2 so writes require at least two in-sync replicas when using acks=all.
+   - Monitor under-replicated partitions and broker health.
+   3. Consumer configuration
+   - Disable automatic offset commits (enable.auto.commit=false).
+   - Commit the offset only after the message has been processed successfully.
+   - If processing fails, retry or send the message to a Dead Letter Topic (DLT) after bounded retries.
+   4. End-to-end reliability
+   - Make consumers idempotent to handle duplicate delivery safely.
+   - For database updates and Kafka events, use the Transactional Outbox Pattern where appropriate.
+   - Monitor failed messages, lag, retries, and DLT activity.
 
 3. How to make Producer idempotent in Kafka?
    Prevents duplicate Kafka records caused by producer retries within Kafka's idempotent-producer guarantees.
    Configuration: enable.idempotence=true
 
-4. what is Exponentialbackoff? How do you implement retries?
-   Exponential backoff is a retry strategy in which the waiting time between consecutive retries increases exponentially when
-   a service call fails.
-   Ex:-
-   If Service A calls Service B and the call fails, instead of retrying immediately, Service A waits for 1 second before the
-   first retry, 2 seconds before the second retry, and 4 seconds before the third retry.
-   We can also add jitter, which introduces a random delay to prevent multiple services from retrying simultaneously.
-   ->In Spring Boot, we can implement retries using Resilience4j by configuring the maximum number of attempts, the initial
-   waiting duration, and the exponential backoff multiplier.
+4. Do you know about Kafka schema registry?
+   “Kafka Schema Registry is a centralized service used to manage and version schemas for Kafka messages. It helps producers and
+   consumers maintain a consistent message structure and supports compatibility checks when schemas change. It is commonly used
+   with Avro, Protobuf, or JSON Schema serializers and deserializers.”
+
+   Remember: Kafka transports the messages; Schema Registry manages the message schemas.
+
+5.
 
 
 

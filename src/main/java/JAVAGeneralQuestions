@@ -1,0 +1,139 @@
+1. Concept of class metadata in the context of Java class loading?
+   a. What is class metadata in Java class loading?
+      Class metadata is the information the JVM stores about a loaded class so it can understand and execute that class.
+      It includes information such as:
+      ->Class name — for example, Employee
+      ->Parent class and interfaces — which class it extends and interfaces it implements
+      ->Fields — variables declared in the class
+      ->Methods — method names, parameters, and return types
+      ->Constructors — information about constructors
+      ->Runtime information — access modifiers and other information needed by the JVM
+
+2. How does it work during class loading?
+   ->Loading: The JVM loads the class bytecode.
+   ->Linking: The JVM verifies the bytecode, prepares the class, and resolves symbolic references as needed.
+   ->Initialization: The JVM executes static initializers and initializes static variables.
+   The JVM maintains class metadata as part of making the class available for execution.
+
+3. What happens when we try to reuse a stream?
+   A Java Stream can be consumed only once. Once a terminal operation is performed on a stream, we cannot reuse that stream for
+   another operation. If we try to reuse it, Java throws an IllegalStateException because the stream has already been operated
+   upon or closed.
+
+   Example:-
+   List<Integer> list = List.of(10, 20, 30);
+   Stream<Integer> stream = list.stream();
+   stream.forEach(System.out::println); // First use
+   stream.count(); // Throws IllegalStateException
+
+   How to reuse the data? Create a new stream from the collection.
+   list.stream().forEach(System.out::println);
+   long count = list.stream().count();
+   Note:-
+   A stream can have multiple intermediate operations, but it can be consumed by only one terminal operation.
+
+4. How can null be handled in TreeSet?
+   By default, TreeSet does not allow null when using natural ordering.
+   Interview answer: “We can allow a null value in a TreeSet by using a custom comparator, such as
+   Comparator.nullsFirst(Comparator.naturalOrder()). This handles null comparisons and places null first in the sorted set.”
+
+5. what is PC Rigister in memeory
+    “The Program Counter (PC) Register is a JVM memory area associated with each thread. It keeps track of the address
+     of the JVM instruction currently being executed by that thread.”
+6. Serial GC
+    Your answer: Single-threaded applications and STW.
+    Correct. Serial GC uses a single thread for garbage collection and pauses application threads during collection
+    (Stop-The-World).
+    Suitable for small heaps and small applications.
+    Simple, with low GC overhead in suitable workloads.
+    Can cause longer pauses as the heap grows.
+
+7. Parallel GC
+    Your answer: Multiple threads for GC and high throughput.
+    Uses multiple GC threads to collect garbage.
+    Focuses on high throughput rather than minimizing pause times.
+    Application threads are paused during its stop-the-world collection phases.
+
+8. G1GC
+    Your answer: Heap divided into regions, prioritizes regions with more garbage, low latency.
+    Divides the heap into multiple regions instead of fixed-size contiguous young and old spaces.
+    Prioritizes regions expected to yield the most reclaimable space relative to collection cost.
+    Uses evacuation to copy surviving objects out of selected regions.
+    Aims for predictable pause times, balancing latency and throughput.
+
+9. ZGC
+    Application threads and GC work concurrently.
+    Designed for very low pause times.
+    Performs much of its work concurrently with application threads.
+    Uses techniques such as colored pointers and load barriers in HotSpot implementations.
+    Concurrent work still consumes CPU, and pauses are not completely eliminated.
+
+10. what is Garbage collection?
+    Garbage Collection (GC) is an automatic process managed by the JVM that reclaims heap memory by identifying and removing
+    objects that are no longer reachable or used by the application.
+
+11. what is class loading? and different types of class loadings?
+    Class loading is the process by which the JVM loads a `.class` file into memory when the class is needed for execution.
+    During this process, the JVM loads the class information, such as its methods, fields, and constructors.
+    ### Different types of ClassLoaders
+    Java has three main types of class loaders:
+    | ClassLoader             | Purpose                                                       | Example                        |
+    | ----------------------- | ------------------------------------------------------------- | ------------------------------ |
+    | Bootstrap ClassLoader   | Loads core Java classes                                       | `java.lang.String`             |
+    | Platform ClassLoader    | Loads platform classes provided by the JDK                    | Platform modules and libraries |
+    | Application ClassLoader | Loads classes from the application's classpath or module path | Your application classes       |
+
+    ### Example
+    Suppose you write:
+    public class Employee {
+        public static void main(String[] args) {
+            System.out.println("Hello Java");
+        }
+    }
+    When the JVM needs to execute `Employee`, the Application ClassLoader loads the `Employee.class` file.
+    When the program uses `String`, the Bootstrap ClassLoader loads the core `String` class.
+
+    ### Class loading process
+    Class loading is commonly explained in three stages:
+    1. Loading: The JVM finds the class file and creates its in-memory representation.
+    2. Linking: The JVM verifies the class, prepares static fields, and resolves symbolic references as needed.
+    3. Initialization: The JVM executes static initializers and assigns explicit values to static variables.
+
+    ### Interview-ready answer
+
+    “Class loading is the process by which the JVM loads class files into memory when required. The three main class loaders are Bootstrap, Platform, and Application ClassLoader. The class loading lifecycle consists of Loading, Linking, and Initialization.”
+
+    Remember: ClassLoader types are Bootstrap, Platform, and Application; Loading, Linking, and Initialization are the stages of the class loading lifecycle.
+
+12. Why is String immutable in Java?
+    String is immutable in Java, meaning once a String object is created, its value cannot be changed.
+    There are several reasons for this:
+    ---Security: Strings are commonly used for usernames, file paths, URLs, and database connections. Immutability prevents their
+       contents from changing unexpectedly.
+    ---String Pool: Immutable strings can be safely shared and reused from the String Pool.
+    ---Thread safety: Strings can be shared between multiple threads without synchronization to protect their contents.
+    ---HashCode caching: Since the value cannot change, Java can cache the String's hash code, making it efficient for use as a key
+       in HashMap.
+
+13. "synchronized" vs "volatile"?
+    Both are used in Java multithreading, but they solve different problems.
+
+    | Feature   | `synchronized`                                                   | `volatile`                                                      |
+    | --------- | ---------------------------------------------------------------- | --------------------------------------------------------------- |
+    | Purpose   | Provides mutual exclusion and visibility                         | Provides visibility of updates between threads                  |
+    | Locking   | Uses a monitor lock                                              | Does not use a monitor lock                                     |
+    | Atomicity | Makes the synchronized block/method execute mutually exclusively | Does not make compound operations atomic                        |
+    | Use case  | When multiple threads access and modify shared state together    | When a variable's latest value must be visible to other threads |
+
+14.  What is a deadlock, and how can you prevent it?
+     Deadlock is a situation where two or more threads wait indefinitely for locks held by each other, preventing them from
+     proceeding.
+
+     We can prevent deadlocks by:
+     ---Avoiding nested locks whenever possible.
+     ---Acquiring locks in a consistent order across all threads.
+     ---Using tryLock() with a timeout when using ReentrantLock.
+     ---Keeping synchronized blocks small and avoiding unnecessary lock holding.
+
+
+

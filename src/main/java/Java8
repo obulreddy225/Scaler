@@ -16,3 +16,5 @@
    5. Parallel streams on small datasets: Thread scheduling and coordination can cost more than the work being performed.
    6. Modifying shared variables inside stream operations can introduce synchronization issues and make code harder to reason
       about.
+
+3.
