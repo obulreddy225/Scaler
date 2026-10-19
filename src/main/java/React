@@ -1,0 +1,1271 @@
+### Chapter 1: Intro
+
+--Welcome to the React full course. In this course, we'll learn how to build complex websites with React. And by the
+  end of this course, we'll build two projects.
+  1.a chatbot and
+  2.an e-commerce project.
+
+--We'll start from the very basics of React like how to set up React with JavaScript and we'll learn each feature in
+  detail step by step. We'll learn the
+  1. major features of React as well as advanced features like how to use React with a backend
+  2. deploy React to the internet with AWS
+  3. React with TypeScript  and
+  4. React with AI
+
+
+### Chapter 2: 1. React Basics, JSX
+
+--I'm going to be doing this course on Windows, but the steps are the same if you're using a Mac. Before we begin, we're
+  going to need two pieces of software
+  1. Number one is a web browser
+  2. code editor.
+
+--development is Google Chrome and the most popular code editor for web development is VS Code. So I recommend using
+  these. If you need to install these, you can search for them on Google.
+
+--Now you'll also need to know the basics of JavaScript
+--React is built on JavaScript and we're going to be writing a lot of JavaScript when using React. Don't worry, you don't
+  need to be an expert in JavaScript. You just need to know some basic features like the ones listed here. And I'll also
+  Basics of JavaScript Features:-
+  1.Variables
+  2.Functions
+  3.Strings
+  4.if-statements
+  5.Objects
+  6.Arrays
+  7.loops
+
+-- you'll need to know the basics of HTML.When using React, we're going to be writing a lot of HTML.
+   Basics Of HTML
+   1.HTML elements(like buttons)
+   2.attributes
+   3.class attributes(class = " ")
+
+
+--On our computer, we're going to go to our desktop and we're going to create a new folder. So here I'm going to right
+  click and create a new folder. And this folder is going to contain all the code that we write in this course.
+  So let's name it react-course and press enter. Next we're going to open this folder in our code editor VS Code.
+  So, we'll open VS Code. and then click File, Open Folder and select the folder we just created. So, I created my folder
+  on the desktop and it's this folder right here. So, we'll select this folder and then click. select folder and we can
+  close this welcome page.
+
+-- So, now let's create a new file to learn React. So up here, we're going to create a new file and we're going to name
+   it react-basics.html and press enter.
+   --As a review, a file that ends with .html contains HTML code and this creates a website.
+   --Next, we're going to create a website and we're going to set up React on this website. Now, to save time, we're
+     actually going to download some starting code.
+   --So, we're going to open our web browser, Google Chrome. And at the top, we're going to type
+     supersimple.dev/react-basics and press enter.
+   --So, this page has some starting HTML code we can use to learn React. So now let's click on this page and we're going
+   --to select all this code by pressing control A on Windows or command A on Mac and we're going to copy paste this code
+     into our file. So we'll right click copy. We can also press control C on Windows or command C on Mac and then open
+     our code editor and then inside this HTML file we're going to right click and paste. We can also press control+V
+     on Windows or commandV on Mac.And finally let's save this file by pressing control S on Windows or command S on Mac.
+
+--Next, we're going to open this file in our web browser to see what the website looks like. To make this easier, we're
+  going to use a VS Code extension called Live Server.
+
+  ⭐⭐⭐⭐⭐
+  So, the benefit of live server is it will automatically refresh the web page whenever we change some code.
+  So, it's going to make our coding easier.
+--If you don't have live server installed, you can click the extension section and then search for live server at the top
+  and then click install.Once live Server is installed, we're going to go back to our code and we're going to open this file
+  in live server by right clicking in the file and click open with live server.
+  --So live server will open the HTML file using our browser and it's going to create a website and we should see the
+    message welcome to super simple dev react course on this website.
+  --So this message is displayed by React and this means that we successfully set up React on this website.
+
+--Now, let's go back to VS Code And this is the minimum amount of code that we need to set up React. We're going to go
+  through this code step by step to make sure that you understand everything here.
+  ⭐⭐⭐⭐⭐
+   what is React?
+   ---React is an external library that helps us create websites easier. Now, there are two
+      1. React is an external library.
+      2. React helps us create websites
+
+--Let's go through these one by one.
+  1. React is an external library. First, let's review what an external library is. So here we have a bunch of HTML code.
+  An HTML code creates a website. And now,
+  ⭐⭐⭐⭐⭐
+  how do we load JavaScript onto our website? There are several ways to load JavaScript on a website.
+--One way is to use an HTML element called a script element.
+  Ex:-
+  For example, under this div element, let's create a script element. But our code editor might autocomplete this for us.
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <title>React Basics</title>
+    </head>
+    <body>
+      <div class="js-container"></div>
+      <script>
+          console.log('hello');
+      </script>>
+
+      <script src="https://unpkg.com/supersimpledev/react.js"></script>
+      <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+
+      <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+      <script type="text/babel">
+        const container = document.querySelector('.js-container');
+        ReactDOM.createRoot(container).render('Welcome to SuperSimpleDev React Course');
+      </script>
+    </body>
+  </html>
+  --Now, inside this script element, we can write some JavaScript code. For example, console.log the hello. As a review,
+  this code displays the text hello in the console. So now let's save and we're going to open the console in our browser.
+  So we'll open Google Chrome and LiveServer is going to automatically refresh the page and run that JavaScript code.
+  And now we're going to check the console by right-clicking and then click inspect and open the console tab.And you'll
+  see that inside the console we displayed the text hello. And that's exactly what this code does. So we successfully
+  loaded this code onto our website. We'll go back to VS Code. So this is one way to run JavaScript code on a website.
+
+  --First, we create a script element and then we put our JavaScript code inside.
+--Another way to run JavaScript is to save our JavaScript code in a file. So on the left, let's create a new file and
+  we'll name it React-basics.js and press enter. So when we end a file with js, this file contains JavaScript code. So
+  now let's move that code into this file. So we'll go to our HTML file. We're going to select this code and then right
+  click cut. We can also press control+X on Windows or command X on Mac. And inside our JavaScript file, we're going to
+  right click and paste and save this file.
+  --Now to run the code inside this file, we're going to go back to our HTML and we're going to add an HTML attribute to
+    this script element. So after this script, we're going to type space and then type src equals double quotes. So the
+    src attribute lets us load JavaScript from a file. Inside these double quotes, we're going to tell the computer which
+    JavaScript file to load. So we'll type react-basics.js.
+  -- So this will look for a file called react-basics.js beside the current HTML file. So it's going to find the file
+     here, and it's going to run all the code inside this file. So now let's save and open our browser and check the
+     result
+  --Live server will automatically refresh the page. And inside the console you can see that we display the message hello.
+    So we're successfully loading code from inside a file. We'll go back to VS Code.And this is a second way to load
+    JavaScript. We save our JavaScript in a file and then we load it from the file.**
+
+--Next, the script element can actually load code from anywhere on the internet, not just on our computer.
+  Ex:-we're going to open Google Chrome. And then we're going to create a new tab. And at the top we're going to type
+   unpkg.com/supersimpledev/external-library.js and press enter.**
+  --So on this website we have some JavaScript code. So this is just normal JavaScript code. it displays a message.This
+    is an external library inside the console. So using the script element, we can actually take this code from this
+    website and run it on our own website.
+  --To do that, we're going to open VS Code and inside the src attribute, instead of loading the JavaScript code from a
+    file, we're going to load the JavaScript code from a website. So, first we need the URL of the website. So, we'll go
+    back to Google Chrome and at the top this is a URL and we're going to copy and VS Code we're going to remove this
+    file and we're going to paste the URL. And now let's save.
+  -- So now let's go back to our website and we're going to go to the tab for our website. And we're going to check the
+     console.And inside the console, you can see we displayed the message, this is an external library. So we successfully
+     loaded JavaScript code from another website. Let's go back to VS Code.
+  --So using the script element, we can load JavaScript code from anywhere on the internet. So this code is called an
+    external library. An external library is just code that is outside of our computer.It's code that someone else wrote
+    and we can load that code into our website using the script element.
+
+--Now, React is an external library. So, React is just a bunch of code that is outside our computer that someone else
+  wrote and we can load this code on our website and use it. So inside our starting file at the bottom here, these two
+  script elements load the React external library. So loads React.js and React-dom.js.
+  Ex:-
+      <script src="https://unpkg.com/supersimpledev/react.js"></script>
+      <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+--So let's open these URLs in our browser and take a look. So we're going to select this URL and we're going to copy.
+  And inside Google Chrome, we're going to create a new tab. And at the top, we're going to paste the URL and press enter.
+  And on this website, you can see that we have a bunch of JavaScript code. So, this is the code for React. We're just
+  taking all of this code and then loading it onto our website. Let's go back to VS Code. And the same thing applies to
+  this second URL. If we select it and then copy and in our browser create a new tab and then at the top paste and press
+  enter. You can see that this website also has a bunch of JavaScript code and this is also the code for React. So, as
+  you can see, React is an external library. It's just a bunch of code that is outside of our computer that someone else
+  wrote. And we can load this code on our website and use it.
+--Now, before we move on, there's two things you might be wondering about.
+  1. why are we loading React from Super Simple Dev instead of some official React URL? So, this just lets control the
+     version of React. If we loaded React from the official URL, you might get a different version of React than the one
+     I'm using in this video, which might cause issues. So, for the video, we're going to use a super simple dev URL to
+     make sure that we have the same version of React and you're able to follow along.
+  2. The second thing you might be wondering is why are there two external libraries for React React and React DOM. So
+  React is designed to be used in different places like websites and also mobile apps. So the creators of React decided
+  to divide it into two external libraries. React which contains all the shared features that are used in both websites
+  and mobile apps and React DOM which contain features that are specific to websites. So if we're using React to create
+  websites, we need to load the React external library and the React DOM external library. If we were using React to
+  create mobile apps, we would load the React external library and a different library called React Native.In this course,
+  we're going to use React to create websites. So, we're going to load React and React DOM.Okay, so we learned that React
+  is an external library. It's just a bunch of code that is outside of our computer and we're going to load it onto our
+  website.
+
+--The next part is React helps us create websites easier. So now let's learn how to use React
+  --We'll go back to VS Code and we're going to scroll down and these two lines of JavaScript at the bottom sets up React.
+    So let's go through this step by step. In the first line, we're using document.query selector to get an HTML
+    element from the website and put it into our JavaScript.
+  -- As a review this is a feature of JavaScript called the DOM or the document object model. Basically, JavaScript gives
+     us this document object which sort of combines JavaScript and HTML together. It lets us get HTML elements from the
+     page and put them into our JavaScript and it also lets our JavaScript modify HTML elements on the page. So the DOM
+     or the document object sort of combines HTML and JavaScript together and it lets the two languages interact with each
+     other.Don't worry, you don't need to know a lot about the DOM to learn React. I'm just explaining what this code
+     does so you understand what's going on here.
+  --So the code document.query selector lets us get an HTML element from the page and put it into our JavaScript.Inside
+    these brackets, we tell the computer which HTML element we want to get from the page. So if we start with a dot, this
+    means we're going to look for a class. And here we're looking for the class js-container Up here, this div element has
+    the class js-container.So, it's going to take this element and put it into our JavaScript. And finally, we're going
+    to save it inside a variable so we can use it later.
+  --Next, let's go to the second line of code and ReactDOM.createRoot basically sets up React To set up React, we have
+    to give it an HTML element. So, we're going to give it the element that we saved up here, which is this div element.
+    So, basically the way this works is that this element is going to act as a container. Everything that we create with
+    React is going to be displayed inside this element or inside this container. The reason React uses a container is
+    because it keeps things organized.Everything inside this element will be controlled by React and React will not
+    affect anything outside of this element.So it keeps things isolated and organized.So after we set up React with a
+    container, we can start using the features of React.
+  --One feature of React is render. Render means to display something. So render lets us display something inside this
+    container or inside this element. Now between the brackets of render, we're going to tell React what to display
+    inside the container. So right now we told it to display the text welcome to super simple dev react course. And if
+    we go back to our website and open the tab for our website.
+  --and after we open the console, this time we're going to go to the elements tab.So this lets us see the HTML that's
+    currently on the page. We're going to open this body element and inside we can see our container and you can see that
+    React rendered or displayed the message welcome to super simple dev react course. inside our container. So we'll go
+    back to our code and that's how we set up and use React.
+  --First we give it a container and then we can display things like a message inside this container.Before we continue,
+
+--let's review the rest of the code in this file to make sure that we understand every line of code. So, the HTML at
+  the top here as well as the bottom here.This HTML is called the HTML structure.As a review, this is a standard
+  structure that we follow when writing HTML.
+  --At the top, <!DOCTYPE html> tells a computer to use a modern version of HTML.
+  --<html></html>The HTML element represents a website.
+  --So all the code for our website should go inside the HTML element. Now every website is split into two sections.
+  the head section <head></head and the body <body></body> section. The head section generally contains things that are
+  not visible on the page.
+  Ex:- the title element sets the text at the top of the tab. So, this is not visible on the page. So, we put this inside
+  the head.
+  --The body section generally contains things that are visible on the page.
+  For example,
+  the div element will be visible on the page. So we put it inside the body.Finally, we usually put our script elements
+  at the bottom of the body because we want our HTML to be create first and then our JavaScript can modify the HTML.
+So that's a review of the HTML structure. This is a standard structure that we follow when writing HTML.So now we
+understand almost every line of code in this file. This is just the HTML structure that we have to follow.
+
+--This is a container that we give to React to keep things isolated and organized.This is an example of an external
+  library and this loads the React external library or loads the code for React.And this sets up and uses React.The last
+  two lines that we haven't learned yet are these two lines right here. So here we're loading another external library.
+  And this external library is called Babel.So again if I open this URL in my browser copy and in my browser going to
+  create a new tab and at the top paste and press enter.You'll see that this website contains a bunch of JavaScript code
+  and this is the code for another external library called Babel.
+--So we'll go back to VS Code and let's learn what is the Babel external library.Babel is known as a JavaScript compiler.
+  So it basically translates other languages into JavaScript.
+--So why do we need Babel? When using React, we actually don't use normal JavaScript. We use an enhanced version of
+  JavaScript called JSX.
+--JSX stands for JavaScript XML. It's the same as JavaScript, but we can also write HTML directly in our JavaScript code.
+  So, it's just JavaScript with extra features. So, let's do an example of JSX to learn how to use it. Inside the script
+  element at the bottom, we're going to create a new variable using const and let's call it button equals. And now let's
+  create a button HTML element. So here we're going to**
+
+**26 minutes, 5 seconds**
+
+**type HTML directly less than button greater than and then less than /button greater than.**
+
+**26 minutes, 14 seconds**
+
+**So this is actually HTML code and we're writing it directly inside our JavaScript. So this HTML code creates a**
+
+**26 minutes, 24 seconds**
+
+**button and then inside our button we can put the text hello.**
+
+**26 minutes, 30 seconds**
+
+**So this code here is actually using JSX.**
+
+**26 minutes, 34 seconds**
+
+**So JSX works the same way as JavaScript except we can also write HTML directly in our JavaScript code.**
+
+**26 minutes, 43 seconds**
+
+**So, what does this code do? It's actually pretty straightforward. This code creates a new button element inside**
+
+**26 minutes, 52 seconds**
+
+**our JavaScript and then we save it in a variable.**
+
+**26 minutes, 57 seconds**
+
+**We can actually do this with normal JavaScript as well. We can use the DOM and we can create a button element in**
+
+**27 minutes, 4 seconds**
+
+**our JavaScript like this. So you can think of this JSX code as a shortcut for this JavaScript code.**
+
+**27 minutes, 14 seconds**
+
+**So that's JSX. JSX is an enhanced version of JavaScript. So it's the same as JavaScript, but we can also write**
+
+**27 minutes, 23 seconds**
+
+**HTML directly in our JavaScript code. So when using React, we usually use JSX**
+
+**27 minutes, 30 seconds**
+
+**instead of normal JavaScript because, as you can see, JSX is simpler.**
+
+**27 minutes, 38 seconds**
+
+**Now there is one problem with JSX which is our web browser doesn't understand JSX. It only understands normal JavaScript.**
+
+**27 minutes, 49 seconds**
+
+**In order to use JSX we need to translate it into normal JavaScript first and then**
+
+**27 minutes, 56 seconds**
+
+**our web browser can understand this code.**
+
+**28 minutes**
+
+**To do that we use the Babel external library. Babel translates JSX into**
+
+**28 minutes, 7 seconds**
+
+**normal JavaScript so our web browser can understand it. To use Babel, we need to**
+
+**28 minutes, 13 seconds**
+
+**do two steps. First, we load the Babel external library, which is what we do here. And then when we want to translate**
+
+**28 minutes, 23 seconds**
+
+**something into JavaScript, we have to give the script element an attribute type equals text/babel.**
+
+**28 minutes, 31 seconds**
+
+**So this attribute tells Babel to translate all the code inside here into normal JavaScript.**
+
+**28 minutes, 39 seconds**
+
+**So that's what these two lines of code do. First, we load the Babel external library and then we tell Babel to**
+
+**28 minutes, 47 seconds**
+
+**translate the code from JSX into normal JavaScript so our web browser can understand it. So now we understand all**
+
+**28 minutes, 56 seconds**
+
+**of the code in our starting file. And again, this is the minimum amount of code that we need to set up React.**
+
+**29 minutes, 6 seconds**
+
+**Next, let's learn some more features of React. So, we'll scroll back down. And currently, we're using React to display**
+
+**29 minutes, 15 seconds**
+
+**some text inside this container. Now, in addition to text, we can also display**
+
+**29 minutes, 21 seconds**
+
+**HTML elements inside this container. So to do that, we're going to remove this string**
+
+**29 minutes, 29 seconds**
+
+**and instead we're going to give render an HTML element.**
+
+**29 minutes, 34 seconds**
+
+**So up here, we actually created an HTML element or a button. So we're going to give this to the render function. So here we're going to give it the button.**
+
+**29 minutes, 46 seconds**
+
+**And now it's going to display this button inside our container or inside this div here. Let's save and we'll open**
+
+**29 minutes, 55 seconds**
+
+**the browser and open the tab for our website. And you'll see it displayed the button with the text hello on the website.**
+
+**30 minutes, 5 seconds**
+
+**And if we check the elements tab, you can see that React displayed the button inside our container.**
+
+**30 minutes, 13 seconds**
+
+**We'll go back to our code.**
+
+**30 minutes, 15 seconds**
+
+**So that's what this code does. It displays an element inside this container.**
+
+**30 minutes, 23 seconds**
+
+**Now let's do another example. Let's display a different HTML element inside this container. So below this button,**
+
+**30 minutes, 32 seconds**
+
+**let's use JSX to create a paragraph element. So first we'll create a new variable using const and we'll name the**
+
+**30 minutes, 40 seconds**
+
+**variable paragraph equals and we'll create a paragraph element using the code less than p greater than less than /p greater than.**
+
+**30 minutes, 54 seconds**
+
+**So this html code creates a paragraph or a paragraph of text. Inside our**
+
+**31 minutes, 1 second**
+
+**paragraph, let's just put paragraph of text.**
+
+**31 minutes, 6 seconds**
+
+**And now let's display this paragraph on our website. So inside render, instead of the button, we're going to render the**
+
+**31 minutes, 15 seconds**
+
+**paragraph and save.**
+
+**31 minutes, 20 seconds**
+
+**If we open our website, you can see it displayed a paragraph of text. If we go into the elements tab and**
+
+**31 minutes, 28 seconds**
+
+**we open this div container, we can see that React displayed this paragraph element inside this container.**
+
+**31 minutes, 37 seconds**
+
+**So let's go back to our code. And that's basically how we use React. We give React a container and then we can**
+
+**31 minutes, 45 seconds**
+
+**display an HTML element inside this container.**
+
+**31 minutes, 51 seconds**
+
+**Next, we're currently using React to display one element at a time on our website, which is not that useful. So**
+
+**31 minutes, 58 seconds**
+
+**now we're going to learn how to use React to display multiple elements on our website. So one thing we can't do is**
+
+**32 minutes, 6 seconds**
+
+**give render multiple elements. So this is not supported. We also can't save multiple elements inside a variable.**
+
+**32 minutes, 15 seconds**
+
+**This is also not supported. Instead, we need to use another HTML element called a div element. So, under our paragraph,**
+
+**32 minutes, 24 seconds**
+
+**let's create a new variable using const and let's name it div and make it equal.**
+
+**32 minutes, 32 seconds**
+
+**And we'll create an HTML div element using the code less than div greater than less than /d greater than.**
+
+**32 minutes, 42 seconds**
+
+**So this is the HTML code to create a div element. As a review, the div element**
+
+**32 minutes, 49 seconds**
+
+**represents a container. The purpose of a div element is to contain other elements like buttons and paragraphs. So that's**
+
+**32 minutes, 58 seconds**
+
+**actually why we used a div element up here. This element is a container. It's going to contain everything that we**
+
+**33 minutes, 5 seconds**
+
+**create using React. So let's go back down.**
+
+**33 minutes, 10 seconds**
+
+**Inside our div element, we can put other HTML elements like a button. So, let's**
+
+**33 minutes, 17 seconds**
+
+**actually select this code and we'll copy and then inside this div, paste.**
+
+**33 minutes, 27 seconds**
+
+**And let's also put a paragraph element inside our div. So we'll select this code for the paragraph element and we'll**
+
+**33 minutes, 35 seconds**
+
+**copy and our div paste.**
+
+**33 minutes, 42 seconds**
+
+**So this code works because a div is considered as one element. So we're just taking one element and saving it in one**
+
+**33 minutes, 50 seconds**
+
+**variable which is supported in JavaScript. The only thing special about this is that this one element can contain other elements inside.**
+
+**34 minutes**
+
+**Next, we're going to give this div to the render function here. So, instead of the paragraph, we're going to give render our div and save.**
+
+**34 minutes, 12 seconds**
+
+**And if we check our website, you can see that React displayed multiple elements on the website, a**
+
+**34 minutes, 20 seconds**
+
+**button and a paragraph. If we look at the elements tab and open this div container,**
+
+**34 minutes, 28 seconds**
+
+**you can see that React displayed our div inside this container.**
+
+**34 minutes, 33 seconds**
+
+**Let's go back to our code. And that's how we display multiple elements on a website using React.**
+
+**34 minutes, 41 seconds**
+
+**First, we group the elements inside a div element. And then we render the div element.**
+
+**34 minutes, 49 seconds**
+
+**Before we continue, we're going to do some code cleanup. When we have multiple lines of HTML like this, a best practice**
+
+**34 minutes, 57 seconds**
+
+**is to add brackets around it. So, at the front, we're going to add an open bracket and at the end, a closed bracket.**
+
+**35 minutes, 6 seconds**
+
+**And we're going to put the HTML on its own line. So, here we have JavaScript and HTML together. We're going to add a**
+
+**35 minutes, 14 seconds**
+
+**new line here by pressing enter. and we're going to put the HTML on its own line. Same thing here. Click here and**
+
+**35 minutes, 22 seconds**
+
+**press enter to put the HTML on its own line.**
+
+**35 minutes, 28 seconds**
+
+**Next, we have two elements that are inside a div. So, we're also going to give this line an indent by pressing**
+
+**35 minutes, 35 seconds**
+
+**tab. And then, we're going to give this line an indent by pressing tab. So that it's easy to see that these two elements are inside this div element.**
+
+**35 minutes, 46 seconds**
+
+**So this is how we should format our code when we have multiple lines of HTML.**
+
+**35 minutes, 52 seconds**
+
+**Another way to think about this is inside here, you're actually just writing HTML normally.**
+
+**35 minutes, 59 seconds**
+
+**So don't worry, the more that you use React, the more you'll get used to this format. So let's save this file.**
+
+**36 minutes, 9 seconds**
+
+**Now that we learn the basics of React, let's talk about how React helps us create websites easier.**
+
+**36 minutes, 17 seconds**
+
+**If we look at this code, creating a website with React feels natural. It's a lot simpler than using the DOM feature**
+
+**36 minutes, 25 seconds**
+
+**in JavaScript. We can just create the HTML elements we want directly and then give it to React and React will display it on the website.**
+
+**36 minutes, 36 seconds**
+
+**Another benefit is JSX lets us find errors easier.**
+
+**36 minutes, 42 seconds**
+
+**For example, if I misspell button, it will actually tell me that these two don't match because this is an actual**
+
+**36 minutes, 51 seconds**
+
+**element rather than just text or a string. So, it makes it easier to find errors when we're coding. So, I'll add the O back.**
+
+**37 minutes, 2 seconds**
+
+**Another benefit is we can insert values inside our JSX elements. For example,**
+
+**37 minutes, 9 seconds**
+
+**inside this paragraph, we're going to type space and we're going to insert a value here by typing open curly bracket**
+
+**37 minutes, 16 seconds**
+
+**close curly bracket. And inside here, we can give it any JavaScript code. For**
+
+**37 minutes, 22 seconds**
+
+**example, 2 + 2. So this will calculate 2 + 2 and then insert it into this**
+
+**37 minutes, 30 seconds**
+
+**element. If we save and then check our website, we can see that it calculated 2 + 2**
+
+**37 minutes, 39 seconds**
+
+**which is four and inserted it into this paragraph element. So we'll go back to our code and that's another benefit of**
+
+**37 minutes, 48 seconds**
+
+**using React. We can insert JavaScript code directly into our JSX elements. So this is similar to string interpolation**
+
+**37 minutes, 57 seconds**
+
+**where we can insert values into a string except here we're inserting values into**
+
+**38 minutes, 4 seconds**
+
+**actual HTML elements. So those are three ways that React helps us create websites easier. Number one, it's more natural.**
+
+**38 minutes, 13 seconds**
+
+**We can create the elements that we want and then just give it to React and it will put it on the website. Number two,**
+
+**38 minutes, 20 seconds**
+
+**it helps us find errors easier because these are actual elements. And number three, we can insert our JavaScript code**
+
+**38 minutes, 27 seconds**
+
+**into our elements. So this helps us use JavaScript and HTML together more easily.**
+
+**38 minutes, 35 seconds**
+
+**Now, React has many other features that helps us create websites easier, but we're going to learn those features later on as we go through the course.**
+
+**38 minutes, 44 seconds**
+
+**The last thing we're going to do is we're going to scroll up and we're just going to remove this example external**
+
+**38 minutes, 51 seconds**
+
+**library and save so that we just have the code that we need for React.**
+
+**39 minutes, 2 seconds**
+
+**And that's the end of this lesson. In this lesson, we learned that React is an external library that helps us create**
+
+**39 minutes, 9 seconds**
+
+**websites easier. We learned how to load the React external library. We learned how to set up React and use render. We**
+
+**39 minutes, 19 seconds**
+
+**reviewed the basics of HTML and JavaScript.**
+
+**39 minutes, 23 seconds**
+
+**We learned JSX, an enhanced version of JavaScript. We created elements directly with JSX.**
+
+**39 minutes, 32 seconds**
+
+**And we learned how to insert values into our JSX elements. Here are some exercises to help you practice what we**
+
+**39 minutes, 40 seconds**
+
+**learned in this lesson. You can find the solutions to these exercises in the video description.**
+
+### Chapter 3: 2. Components, Props, Start the Chatbot Project
+
+**40 minutes, 20 seconds**
+
+**In this lesson, we're going to learn two of the most important features of React, which are components and props. To learn**
+
+**40 minutes, 29 seconds**
+
+**this, I actually prepared a project that we can do for this lesson. We're going to go to our browser**
+
+**40 minutes, 36 seconds**
+
+**and we can delete these extra tabs for now. And we're going to create a new tab.**
+
+**40 minutes, 45 seconds**
+
+**And at the top, we're going to go to super simple.dev/projects/ chatbot and press enter.**
+
+**40 minutes, 58 seconds**
+
+**This is a chatbot project. We can send a message to a robot up here and the robot will respond to our message. For**
+
+**41 minutes, 8 seconds**
+
+**example, we can click in here and type hello chatbot and then press send.**
+
+**41 minutes, 18 seconds**
+
+**And the robot will respond with hello, how can I help you? Now, if we scroll to the bottom of this page, we can also**
+
+**41 minutes, 26 seconds**
+
+**move the text box to the bottom by clicking this link.**
+
+**41 minutes, 31 seconds**
+
+**So, a lot of chatbot applications use this design where the text box is at the bottom. However, because we're watching**
+
+**41 minutes, 39 seconds**
+
+**a video, this text box might get cut off or it might be covered by the video progress bar. So, just for this video,**
+
+**41 minutes, 47 seconds**
+
+**we're going to click this again and we're going to start with a text box at the top.**
+
+**41 minutes, 53 seconds**
+
+**Next, this is a simple chatbot and currently it can only do three things.**
+
+**41 minutes, 59 seconds**
+
+**get today's date, flip a coin, and roll a dice. For example, up here, we can**
+
+**42 minutes, 5 seconds**
+
+**type, "Can you get me today's date?" and press send.**
+
+**42 minutes, 16 seconds**
+
+**And it will respond with today's date.**
+
+**42 minutes, 19 seconds**
+
+**And let's try typing, "How about flip a coin?" and press send.**
+
+**42 minutes, 30 seconds**
+
+**and it will respond with heads or tails.**
+
+**42 minutes, 34 seconds**
+
+**Finally, let's type okay, thank you and press send.**
+
+**42 minutes, 42 seconds**
+
+**And it responds with no problem.**
+
+**42 minutes, 46 seconds**
+
+**So, this is a chatbot project we're going to work on for the next few lessons. Now, this is a simple chatbot and it can only do these three things.**
+
+**42 minutes, 55 seconds**
+
+**But in the future, we can also switch this to a more powerful AI that can respond to any message we send.**
+
+**43 minutes, 3 seconds**
+
+**But for now, we'll just use this simple chatbot to learn React. Now, let's use React to build this chatbot project.**
+
+**43 minutes, 12 seconds**
+
+**We'll go back to VS Code and let's make a copy of React Basics.**
+
+**43 minutes, 19 seconds**
+
+**So, first we'll select this file and then rightclick, copy.**
+
+**43 minutes, 26 seconds**
+
+**And inside here, we're going to rightclick and paste.**
+
+**43 minutes, 32 seconds**
+
+**And let's rename this file. So, we'll rightclick and rename and rename it to chatbot.html and press enter.**
+
+**43 minutes, 46 seconds**
+
+**And let's close the React Basics files for now.**
+
+**43 minutes, 51 seconds**
+
+**So, we're going to start with the same code as the React Basics file, except we're just going to change the title up**
+
+**43 minutes, 58 seconds**
+
+**here. So, we'll remove React Basics and just change it to chatbot and save.**
+
+**44 minutes, 7 seconds**
+
+**And now, let's open this file in our browser. We'll rightclick, open with a live server.**
+
+**44 minutes, 16 seconds**
+
+**And it should say chatbot in the tab up here. So now we can close the React basics tabs which are these two here.**
+
+**44 minutes, 27 seconds**
+
+**And we'll go back to VS Code.**
+
+**44 minutes, 30 seconds**
+
+**And now we're ready to begin the chatbot project.**
+
+**44 minutes, 35 seconds**
+
+**First we're going to learn one of the most important features of React called components. A component is just a piece of the website.**
+
+**44 minutes, 47 seconds**
+
+**For example, let's go back to our browser and open the final chatbot project.**
+
+**44 minutes, 54 seconds**
+
+**So looking at this project, we can split it up into different pieces. One piece can be the text box and the button at**
+
+**45 minutes, 2 seconds**
+
+**the top and another piece are each of these chat messages.**
+
+**45 minutes, 7 seconds**
+
+**So these are called components. A component is just a piece of the website. Now, when building websites,**
+
+**45 minutes, 15 seconds**
+
+**it's better to split up the website into pieces or components so that we can work on a small piece of the website at a time.**
+
+**45 minutes, 26 seconds**
+
+**Now that we know what components are, let's create our first component in React. So, we mentioned that one way we**
+
+**45 minutes, 34 seconds**
+
+**can split up this website is to have one component at the top for this text box and the button. So, let's create a**
+
+**45 minutes, 42 seconds**
+
+**component for this in React. We'll go back to our code and we'll scroll down and first let's**
+
+**45 minutes, 51 seconds**
+
+**remove the example button and paragraph that we used. So, we'll select this and remove it.**
+
+**46 minutes**
+
+**And to create a component in React, we're going to use a function. So we'll type function. And now we're going to**
+
+**46 minutes, 8 seconds**
+
+**name this component. Since this piece of the website is for inputting a message and sending it to the chatbot, let's**
+
+**46 minutes, 16 seconds**
+
+**name this component capital C chat capital I input brackets and curly brackets.**
+
+**46 minutes, 25 seconds**
+
+**Now in React the component name must start with a capital letter. So make sure that chat input starts with a**
+
+**46 minutes, 32 seconds**
+
+**capital C. This is also known as Pascal case where each word in the name starts with a capital letter.**
+
+**46 minutes, 43 seconds**
+
+**Next this function will return some HTML. So we're going to type return and**
+
+**46 minutes, 50 seconds**
+
+**we're going to return the HTML for this piece of the website. So this piece of the website has a text box and a button.**
+
+**46 minutes, 58 seconds**
+
+**So let's type brackets and press enter between these brackets.**
+
+**47 minutes, 4 seconds**
+
+**And to create a text box, we're going to use the HTML element less than input greater than. And we also need to type**
+
+**47 minutes, 12 seconds**
+
+**less than /input greater than. Now you may notice that in normal HTML input**
+
+**47 minutes, 20 seconds**
+
+**doesn't need this closing tag. However, JSX is more strict than normal HTML. So,**
+
+**47 minutes, 28 seconds**
+
+**all elements need a closing tag, including input. Now, there's actually a shortcut we can use here. If there's**
+
+**47 minutes, 36 seconds**
+
+**nothing inside an element, we can actually remove the closing tag.**
+
+**47 minutes, 42 seconds**
+
+**And at the end of this opening tag, we can just type space and then slash. So, this code is a shortcut for this code.**
+
+**47 minutes, 52 seconds**
+
+**And this is called a self-closing element. So in JSX we have to either have a closing tag or use this self-closing element shortcut.**
+
+**48 minutes, 3 seconds**
+
+**Next, this piece of the website also has a button. So let's also create a button element using less than button greater**
+
+**48 minutes, 11 seconds**
+
+**than less than /button greater than. And inside this button we have the text send.**
+
+**48 minutes, 20 seconds**
+
+**And now we're going to get an error here because we're trying to return two values or two elements from this function. But we can only return one**
+
+**48 minutes, 29 seconds**
+
+**value from a function. To solve this problem, we can use a div element like down here to group these two elements together.**
+
+**48 minutes, 38 seconds**
+
+**So above this, let's create a div element.**
+
+**48 minutes, 43 seconds**
+
+**And at the bottom, less than /d greater than. And let's also add indents before**
+
+**48 minutes, 50 seconds**
+
+**these two lines. So we'll click here and press tab. And also click here and press tab.**
+
+**48 minutes, 57 seconds**
+
+**So this shows that these two elements are inside this div element. And now this code no longer has an error because**
+
+**49 minutes, 5 seconds**
+
+**we're returning one value from this function.**
+
+**49 minutes, 9 seconds**
+
+**Now that we created this component, let's learn how to display it on the website. If we scroll down, right now**
+
+**49 minutes, 18 seconds**
+
+**we're using React to display this div on the website. So all we have to do is to insert our component inside this div and**
+
+**49 minutes, 27 seconds**
+
+**it will be displayed on the website. So one way to do this is to use curly brackets to insert something like we did**
+
+**49 minutes, 35 seconds**
+
+**before. So here we'll type curly brackets. And now we're just going to run this function**
+
+**49 minutes, 44 seconds**
+
+**capital C chat input and brackets.**
+
+**49 minutes, 49 seconds**
+
+**So this will run the function and it will return this HTML from the function and then the curly brackets will insert**
+
+**49 minutes, 57 seconds**
+
+**the HTML into the div and then display it on the page.**
+
+**50 minutes, 2 seconds**
+
+**So, as you can see, we can put any JavaScript code between these curly brackets. As long as this code results**
+
+**50 minutes, 9 seconds**
+
+**in a value, we can insert it into this HTML.**
+
+**50 minutes, 14 seconds**
+
+**Let's remove the button and the paragraph that we used as an example and save.**
+
+**50 minutes, 22 seconds**
+
+**And let's check our website. We'll open the browser and go to our chatbot project. And now we created the elements**
+
+**50 minutes, 30 seconds**
+
+**for the top section of the chatbot project, the text box and the send button. So don't worry about how it**
+
+**50 minutes, 37 seconds**
+
+**looks for now. Later in the course, we're going to style this with CSS and make it look like the final project.**
+
+**50 minutes, 46 seconds**
+
+**Let's go back to our code.**
+
+**50 minutes, 50 seconds**
+
+**And next, React has a special syntax we can use to insert a component. Instead**
+
+**50 minutes, 57 seconds**
+
+**of using curly brackets and running the function, we can type this code less than and then the name of the component**
+
+**51 minutes, 6 seconds**
+
+**capital C chat input greater than and then less than slash chat input greater than.**
+
+**51 minutes, 17 seconds**
+
+**So this is called the component syntax.**
+
+**51 minutes, 21 seconds**
+
+**This does the same thing as the code above. It runs the chat input function and then inserts the result into the HTML.**
+
+**51 minutes, 31 seconds**
+
+**If we save and we check our project, you'll notice that that syntax does the same thing and it creates another text box and button.**
+
+**51 minutes, 43 seconds**
+
+**Let's go back to our code.**
+
+**51 minutes, 46 seconds**
+
+**And again, this code does the same thing as this code. Now this syntax has a big advantage.**
+
+**51 minutes, 55 seconds**
+
+**This actually looks like an HTML element. It has an opening tag and a closing tag. So you can think of this**
+
+**52 minutes, 3 seconds**
+
+**like we're creating our own HTML element called chat input.**
+
+**52 minutes, 10 seconds**
+
+**HTML provides us with some default elements like div, input and button. And now using React, we can actually create our own HTML element like chat input.**
+
+**52 minutes, 23 seconds**
+
+**Then we can use our own HTML elements to build the website instead of just the default HTML elements. And this is actually one of the main ideas of React.**
+
+**52 minutes, 35 seconds**
+
+**We can create our own HTML elements. So when using React, we should use this**
+
+**52 minutes, 42 seconds**
+
+**component syntax instead of running the component function directly because this syntax lets us create our own HTML element.**
+
+**52 minutes, 52 seconds**
+
+**And again, we can use the self-closing element shortcut like we did up here. If there is nothing inside this element, we can remove this closing tag.**
+
+**53 minutes, 4 seconds**
+
+**And inside the opening tag at the end, we can type space and slash.**
+
+**53 minutes, 11 seconds**
+
+**And now we can remove this example code above. And let's save and check our project.**
+
+**53 minutes, 21 seconds**
+
+**And that creates the top section of the chatbot project. So go back to VS Code.**
+
+**53 minutes, 30 seconds**
+
+**And we mentioned in the previous lesson that React helps us create websites easier. And this is another way that React helps us create websites easier.**
+
+**53 minutes, 40 seconds**
+
+**It lets us split our website into smaller pieces or components. And this lets us work on a small piece of the website at a time.**
+
+**53 minutes, 51 seconds**
+
+**Before we create the rest of the project, we're going to improve our code a little bit. First, notice that in this**
+
+**53 minutes, 59 seconds**
+
+**component, we're using a div to group these two elements together. However, this is also going to insert an extra**
+
+**54 minutes, 8 seconds**
+
+**div element into our website. So, if we go to our website**
+
+**54 minutes, 15 seconds**
+
+**and rightclick and click inspect, and we're going to go to the elements tab, and we're going to go to our**
+
+**54 minutes, 24 seconds**
+
+**container here, and we're going to expand it.**
+
+**54 minutes, 27 seconds**
+
+**So notice here that we have a bunch of extra divs on this website. So what if we don't want to insert these extra**
+
+**54 minutes, 35 seconds**
+
+**divs? What if we just want to insert the text box and the button on our website?**
+
+**54 minutes, 41 seconds**
+
+**Let's go back to our code and learn how to do that.**
+
+**54 minutes, 46 seconds**
+
+**React has another way to group elements together called a fragment. To use a fragment, we can remove the word div.**
+
+**54 minutes, 56 seconds**
+
+**and div from the closing tag and just have a less than greater than and a less than slashgreater than. So this is**
+
+**55 minutes, 5 seconds**
+
+**called a fragment and it groups the two elements together. So we can return it from the function but it won't insert an**
+
+**55 minutes, 13 seconds**
+
+**extra div. So, if we save this code and then go to our website**
+
+**55 minutes, 19 seconds**
+
+**and take a look at the HTML, you'll notice now we have one less extra div on the website.**
+
+**55 minutes, 27 seconds**
+
+**Let's go back and we can also use a fragment down here. If we don't want to insert this**
+
+**55 minutes, 34 seconds**
+
+**extra div, we can remove it and remove it at the bottom and just use a**
+
+**55 minutes, 40 seconds**
+
+**fragment. If we save and check the website, now we no longer have those extra divs.**
+
+**55 minutes, 49 seconds**
+
+**We have our container and we just inserted the text box and the button.**
+
+**55 minutes, 56 seconds**
+
+**So that's fragments. It allows us to group elements together without creating an extra div.**
+
+**56 minutes, 4 seconds**
+
+**Let's go back to our code.**
+
+**56 minutes, 7 seconds**
+
+**And since this variable no longer contains a div, let's rename it. So right now we're building a chatbot**
+
+**56 minutes, 15 seconds**
+
+**application or an app. So let's rename this variable to app instead. And here**
+
+**56 minutes, 22 seconds**
+
+**as well, we're going to render the app and save.**
+
+**56 minutes, 28 seconds**
+
+**So again in React, when returning multiple elements or saving multiple elements, we can use a fragment to group**
+
+**56 minutes, 36 seconds**
+
+**them together. And this makes our HTML a little bit cleaner because it doesn't create an extra div element.**
+
+**56 minutes, 45 seconds**
+
+**Next, another improvement we can make is to add a placeholder to the text box at the top. So the gray text inside the**
+
+**56 minutes, 53 seconds**
+
+**text box is called a placeholder. It tells us what to type inside the text box. And when we start typing, it will disappear.**
+
+**57 minutes, 3 seconds**
+
+**To create a placeholder, we give this input element an attribute. So at the end, we're going to type the attribute**
+
+**57 minutes, 12 seconds**
+
+**placeholder equals double quotes.**
+
+**57 minutes, 17 seconds**
+
+**And then inside these double quotes, we're going to put the text that we want, which is send a message to chatbot.**
+
+**57 minutes, 29 seconds**
+
+**If we save this code and look at our website, now we have a placeholder in the text**
+
+**57 minutes, 36 seconds**
+
+**box. And when we start typing in it, it will disappear. So the placeholder is working. Now there is one problem here,**
+
+**57 minutes, 45 seconds**
+
+**which is if we remove this text, you'll notice that this placeholder is too long and it's getting cut off. To fix this,**
+
+**57 minutes, 53 seconds**
+
+**let's make this text box wider. We'll go back to our code.**
+
+**57 minutes, 58 seconds**
+
+**And to make this input wider, we're going to give it another attribute. So at the end, we'll type another attribute**
+
+**58 minutes, 6 seconds**
+
+**called size equals double quotes. And this sets how many characters can fit in**
+
+**58 minutes, 12 seconds**
+
+**this input. By the way, a character is just a letter, number, or symbol.**
+
+**58 minutes, 19 seconds**
+
+**Let's set the size to 30 characters and save and take a look.**
+
+**58 minutes, 26 seconds**
+
+**Okay, so that looks pretty good for now. Again, don't worry about how this looks.**
+
+**58 minutes, 32 seconds**
+
+**We'll style it later in the course using CSS.**
+
+**58 minutes, 37 seconds**
+
+**So, we just created our first component or our first piece of the website, which is the section at the top. Now, let's**
+
+**58 minutes, 45 seconds**
+
+**get some practice and create more components.**
+
+**58 minutes, 49 seconds**
+
+**Let's go back to the final chatbot project and let's ask ourselves how can we split up the rest of this website into pieces.**
+
+**59 minutes**
+
+**Another piece of this website could be one chat message here. So let's create a component for this piece of the website.**
+
+**59 minutes, 8 seconds**
+
+**We'll go back to VS Code and to create a component we're going to use a function. So down here, let's**
+
+**59 minutes, 18 seconds**
+
+**create a function and let's name it capital C chat capital**
+
+**59 minutes, 25 seconds**
+
+**M message brackets and curly brackets. So remember a component name must start with a capital letter and we use Pascal case.**
+
+**59 minutes, 36 seconds**
+
+**So each word starts with a capital letter.**
+
+**59 minutes, 40 seconds**
+
+**Now inside this function, we're going to return the HTML for this piece of the website or this component.**
+
+**59 minutes, 49 seconds**
+
+**So let's also type brackets and enter.**
+
+**59 minutes, 52 seconds**
+
+**So we can write the HTML on multiple lines. And now each chat message has two things, some text and a profile image.**
+
+**1 hour, 3 seconds**
+
+**Since we have multiple things inside this component, let's group them together using a fragment. So we can**
+
+generate PDF

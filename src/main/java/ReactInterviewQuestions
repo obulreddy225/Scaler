@@ -1,0 +1,49 @@
+1. what is React?
+   React is an open-source JavaScript library developed by Meta for building interactive user interfaces using reusable
+   components.
+2. what is LiveServer?
+   Live Server is a VS Code extension that starts a local development server and automatically refreshes the browser when
+   we save changes to our code.
+3. What is the <script> element?
+   The <script> element is used to include or execute JavaScript code in an HTML document.
+   Ex:-
+   <script>
+     console.log('Hello World');
+   </script>
+   This executes the JavaScript and prints Hello World in the browser Console.
+4. What is the purpose of the <script> element?
+   The <script> element is used to embed JavaScript code in HTML or load an external JavaScript file.
+   --How do you include an external JavaScript file?
+     <script src="app.js"></script>
+   The browser loads and executes the JavaScript file.
+
+5. What is the difference between inline and external JavaScript?
+   Inline JavaScript: Code is written directly inside the HTML <script> element.
+   External JavaScript: Code is maintained in a separate .js file and loaded using the src attribute.
+
+6. What is the difference between async and defer?
+   <script src="app.js" defer></script>
+   async: Downloads the script while HTML parsing continues and executes it as soon as it is ready.
+   defer: Downloads the script while HTML parsing continues but executes it after HTML parsing finishes. Deferred scripts
+   execute in document order.
+
+7. Where should we place the <script> element?
+   It can be placed in the <head> or <body>. Using defer in the <head> is a common approach for external scripts that
+   need the HTML document to be parsed first.
+
+8. what is div tag
+
+9. HTML structure
+   HTML structure means the way HTML elements are organized to define the structure of a webpage.
+   HTML Basic Structure:-
+   <!DOCTYPE html>
+   <html>
+     <head>
+       <title>React Basics</title>
+     </head>
+     <body>
+       <div class="js-container"></div>
+     </body>
+   </html>
+
+10.
