@@ -1,0 +1,65 @@
+1. Design a URL Shortener
+   I would design a URL shortener that converts long URLs into short URLs and redirects users to the original URLs when they click
+   on them.
+
+   a. URL Creation
+   ---First, I would create a `POST /api/urls` endpoint that accepts the long URL
+   ---The service generates a unique ID and converts it into a short code using Base62 encoding. Base62 uses digits, lowercase
+      letters, and uppercase letters.
+   ---Then, I store the unique ID, short code, and original URL in the database and return the shortened URL to the client.
+
+   b. URL Redirection
+   ---Next, I would create a `GET /{shortCode}` endpoint.
+   ---When a user clicks the short URL, the service extracts the short code using a path variable and looks up the original URL in
+      the database.
+   ---Finally, it redirects the user to the original URL using an HTTP redirect response.
+
+   c. Unique ID Generation
+   ---Since multiple requests can arrive simultaneously, we need to generate unique IDs without collisions. For a large-scale
+      system, I would use a distributed ID generator, such as a Snowflake-style generator.
+   ---I would also add a unique constraint on the short code in the database.
+
+   d. Database Design
+   ---I would create a URL mapping table with fields such as:
+   - `id`
+   - `short_code`
+   - `original_url`
+   - `created_at`
+   Since shortened URLs cannot be updated or deleted, the mappings would remain permanent.
+
+   e.Performance Optimization
+   ---To improve performance, I would use Redis caching.
+   ---When a user clicks a short URL, the service first checks Redis. If the mapping exists in the cache, it retrieves the original
+      URL without querying the database.
+   ---If it is not in the cache, the service fetches it from the database, stores it in Redis, and redirects the user.
+
+  f. Scalability
+   ---Since the system needs to handle around 100 million new URLs per day, I would deploy multiple stateless Spring Boot instances
+      behind a load balancer.
+   ---If the database becomes a bottleneck, we can introduce database partitioning or sharding and optimize indexes.
+
+  g. Error Handling and Security
+   ---If the short code does not exist, the service returns a `404 Not Found` response.
+   ---I would validate submitted URLs, prevent abuse through rate limiting, and monitor API latency, database performance, and
+      Redis cache hit rates.
+
+   **Overall flow:**
+   Long URL → Generate unique ID → Base62 encoding → Store mapping in database → Return short URL.
+   When clicked:
+   Short URL → Extract short code → Check Redis → Query database if needed → Redirect to original URL.
+
+2. Design a RateLimiter?
+   A rate limiter controls how many requests a user or client can send to a system within a specific time period.
+   which algorithms to use
+   ---Fixed Window Counter: Counts requests within fixed time windows.
+   ---Sliding Window: Tracks requests over a rolling time period, or approximates that behavior with counters.
+   ---Token Bucket: Allows a controlled burst of requests while limiting the long-term request rate.
+   ---Leaky Bucket: Processes requests at a controlled rate, often smoothing bursts.
+
+   Questions to build RateLimiter?
+   --- Is it a client-side rate limiter or server-side API rate limiter?
+   --- Does the rate limiter throttle API requests based on IP, the user ID, or other properties?
+   --- What is the scale of the system? Is it built for a startup or a big company with a large user base?
+   --- Will the system work in a distributed environment?
+   --- Is the rate limiter a separate service or should it be implemented in application code?
+   --- Do we need to inform users who are throttled?
