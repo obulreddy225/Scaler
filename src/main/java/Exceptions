@@ -1,0 +1,150 @@
+1. what is an Exception?
+   An exception is an unwanted or unexpected event that occurs during program execution and disrupts the normal flow of
+   execution.
+   It is highly recommended to handle the exception and the main object of exception handling is graceful termination of
+   program.
+
+2. what is Compiler?
+   “A compiler is a program that translates source code into bytecode or machine code. In Java, the Java compiler (javac)
+   converts the .java source file into a .class file containing bytecode.
+
+3. what is JVM?
+   “JVM (Java Virtual Machine) is an abstract machine that executes Java bytecode present in .class files and provides a
+   platform-independent execution environment.”
+
+4. what is JRE?
+   “JRE (Java Runtime Environment) provides the environment required to run Java applications. It includes the JVM and
+   supporting libraries needed to execute Java bytecode.”2
+
+5. what is JDK?
+   Used to develop Java applications; includes development tools such as the compiler.
+   “JDK (Java Development Kit) is a software development kit used to develop, compile, and run Java applications. It
+   includes the JRE components, JVM, Java compiler (javac), and other development tools.”
+
+6. what are checked Exceptions?
+   “Checked exceptions are checked by the compiler at compile time, but they can occur during runtime when an operation
+   fails. For example, FileNotFoundException can occur when we try to open a file that does not exist.”
+   Ex:- FileNotFoundException
+
+7. what is Fully checked Exception?
+   An exception class is said to be fully checked if and only if all its child classes are also checked exceptions.”
+   Ex:-IOException
+
+8. what is UncheckedException?
+   “Unchecked exceptions are exceptions that are not checked by the compiler at compile time and occur during runtime.”
+   Ex;-
+   NullPointerException
+   ArithmeticException
+   ArrayIndexOutOfBoundsException
+
+9. How do you handle the Exceptions?
+   “We can handle exceptions in Java using try-catch blocks. We place the code that may cause an exception inside the
+   try block and handle the exception in the corresponding catch block. We can use finally to execute cleanup code, and
+   throw and throws to throw or declare exceptions.”
+   Keyword  	 Purpose
+   try	         Contains code that may throw an exception
+   catch	     Handles an exception
+   finally 	     Executes cleanup code, usually whether an exception occurs or not
+
+10. what happen if the Exception is occur in the Catch block?
+    If an exception occurs inside a catch block, that exception will not be handled by the same catch block. It propagates
+    to the caller unless another suitable handler catches it.
+
+11. method to print Exception information.
+    printStackTrace()-- name of the Exception :description of the Exception :stackTrace
+    toString()       -- Name of the Exception :Description of the Exception
+    getMessage()     -- Description
+
+12. what is final key word?
+    In Java, final is a keyword that can be used at the variable, method, and class levels to restrict modifications.
+    Variable level: Once assigned, a final variable cannot be reassigned.
+    Method level: A final method cannot be overridden by a subclass.
+    Class level: A final class cannot be extended or inherited.
+13. what is finally?
+    finally is a block in Java that is used with a try block to execute cleanup activities, such as closing database
+    connections, file resources, and other resources. It generally executes whether an exception occurs or not.
+
+14. what us finalize()?
+    is a method always invoked by garbage collector just before destroying an object to perform cleanup activities.one's
+    finalize() completes immediately GC destroy the object.
+
+15. try with resources?
+    Try-with-resources was introduced in Java 7. It automatically closes resources declared within the try statement when
+    the block finishes execution, whether an exception occurs or not. The resources must implement the AutoCloseable or
+    Closeable interface
+
+16. what is throw keyword?
+    throw is a keyword in Java used to explicitly throw an exception object from a method or block of code.
+    public class Main {
+        public static void main(String[] args) {
+            int age = 15;
+
+            if (age < 18) {
+                throw new IllegalArgumentException("Not eligible");
+            }
+        }
+    }
+
+17. throws keyword?
+    throws is a keyword in Java used in a method declaration to specify the exceptions that the method may throw. It
+    indicates that the responsibility for handling or propagating those exceptions is passed to the caller.”
+    --- we can use throws for methods and constructors but not for classes
+    --- we can use throws for only throwable types
+    --- we can use it for only Exceptions not for errors
+    --- with in try block if there is a chance of rising an exception then we can't write catch block for that Exception.
+        otherwise we will get compile time error saying :Exception is never thrown
+
+18. How to create UserDefined Exceptions?
+    We can create user-defined or custom exceptions by creating a class that extends RuntimeException for an unchecked
+    exception or Exception for a checked exception. We typically define a constructor that accepts a String message and
+    passes it to the parent class using super(message)
+
+19. what is classCastException when it is occurred?
+    ClassCastException is an unchecked exception that occurs at runtime when we try to cast an object to an incompatible
+    class type
+
+20. NoClassDefFoundError?
+    “NoClassDefFoundError is an unchecked error that occurs when the JVM cannot find a class definition that was
+    available when the code was compiled, typically because the class is missing from the runtime classpath or a
+    required class failed to initialize.”
+
+21. ClassNotFoundException?
+    “ClassNotFoundException is a checked exception that occurs when an application tries to load a class dynamically
+     by its name, but the class cannot be found by the class loader.”
+
+22. can we rethrow an Exception?
+    “Yes, we can rethrow an exception by catching it in a catch block and using the throw keyword to throw the same
+    exception again. This allows the exception to propagate to the calling method for further handling.”
+    public class Main {
+        static void process() {
+            try {
+                int result = 10 / 0;
+            } catch (ArithmeticException e) {
+                System.out.println("Logging the exception");
+                throw e; // Rethrowing the same exception
+            }
+        }
+
+        public static void main(String[] args) {
+            try {
+                process();
+            } catch (ArithmeticException e) {
+                System.out.println("Exception handled by caller");
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
