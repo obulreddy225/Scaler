@@ -1,5 +1,6 @@
 1. what is Data Hiding?
-   Data hiding means restricting direct access to a class's internal data by declaring fields as private and providing controlled access through methods such as getters and setters
+   Data hiding means restricting direct access to a class's internal data by declaring fields as private and providing
+   controlled access through methods such as getters and setters
    Ex:-
    class Employee {
     private String name;
@@ -15,7 +16,9 @@
    }
 
 2. what is encapsulation?
-    Encapsulation is an OOP principle where we wrap the data and the methods that operate on that data into a single unit. It also provides controlled access to the internal data by using access modifiers like private and getter/setter methods.
+    Encapsulation is an OOP principle where we wrap the data and the methods that operate on that data into a single
+    unit. It also provides controlled access to the internal data by using access modifiers like private and
+    getter/setter methods.
 
 3.Advantages and disadvantages of Encapsulation?
   advantages:-
@@ -29,23 +32,44 @@
   disadvantages:-
    a) more boiler plate code and slows down execution
    b) slight complex
-   c) possible unnecessary  exposure
+   c) possible unnecessary exposure
 
 4) what is tightly encapsulated class ?
-   A class is said to be tightly encapsulated if and only if each and every instance variable of the class is declared as private. Whether the class contains corresponding getter and setter methods or not, and whether those methods are declared as public or not, we don't need to consider these things.
+   A class is said to be tightly encapsulated if and only if each and every instance variable of the class is declared
+   as private. Whether the class contains corresponding getter and setter methods or not, and whether those methods are
+   declared as public or not, we don't need to consider these things.
 
 5) what is inheritance ?
-   Inheritance is an OOPS principle where a new class acquires the properties and behaviors of an existing class using the extends keyword. The main advantage of inheritance is code reusability.
+   Inheritance is an OOPS principle where a new class acquires the properties and behaviors of an existing class using
+   the extends keyword. The main advantage of inheritance is code reusability.
+
+   --->Total Java API is implemented based on inheritance concept.
+   --->The most common methods which are applicable for any java object are defined in the object class and hence every
+       class in java is the child class of Object either directly or indirectly. So that Object class methods by default
+       available to every java class without rewriting due to this object class acts as a root for all java classes.
+   ---> Throwable class defines the most common methods which are applicable for all the child classes(for every
+        Exception and error classes). hence this class acts as root for java exception Hirarchy.
+
+   a. what is multiple Inheritance in Java and why Java doesn't support multiple Inheritance through Classes.
+      Multiple inheritance is an OOP concept in which one class inherits properties and behaviors from more than one
+      parent class.
+      Java does not support multiple inheritance through classes because it can create ambiguity when two parent classes
+      contain methods with the same signature.
 
 6) Has-A relationship or Association?
-   HAS-A relationship represents a relationship where one class contains a reference to an instance of another class. It is used to achieve code reusability through composition or aggregation rather than inheritance.
+   HAS-A relationship represents a relationship where one class contains a reference to an instance of another class.
+   It is used to achieve code reusability through composition or aggregation rather than inheritance.
+   -->A Has-A relationship represents a relationship between two classes where one class contains a reference to an
+      object of another class to use its functionality.
 
    Note: Easy memory
    IS-A → Inheritance → extends
    HAS-A → Composition/Aggregation → object reference
 
 7) what is composition ?
-   Composition is a strong relationship between two classes. If the contained object cannot exist independently without the container object, then the relationship is called composition. It represents a strong HAS-A relationship and results in tight coupling between the objects.
+   Composition is a strong relationship between two classes. If the contained object cannot exist independently without
+   the container object, then the relationship is called composition. It represents a strong HAS-A relationship and
+   results in tight coupling between the objects.
    Ex:-
    class Engine {
    }
@@ -55,7 +79,8 @@
    }
 
 8) what is Aggregation ?
-   Aggregation is a weak HAS-A relationship between two classes where the contained object can exist independently of the container object.
+   Aggregation is a weak HAS-A relationship between two classes where the contained object can exist independently of
+   the container object.
 
    class Employee {
    }
@@ -68,27 +93,34 @@
     }
    }
 
-9)what is method signature?
-  A method signature in Java consists of the method name and the parameter list. The parameter list includes the number, type, and order of parameters. The return type is not part of the method signature.
+9) what is method signature?
+  A method signature in Java consists of the method name and the parameter list. The parameter list includes the number,
+  type, and order of parameters. The return type is not part of the method signature.
   ⭐ Easy memory
       Method Signature = Method Name + Number + Type + Order of Parameters
   The compiler uses the method signature to resolve overloaded method calls at compile time.
-  with in a class 2 mehods with same signature not allowed.
+  with in a class 2 methods with same signature not allowed.
 
-10)what is Overloading ?
-   Method overloading is a feature of Java where, within the same class, we define multiple methods with the same name but different parameter lists. The parameter list can differ in number, type, or order of parameters.
-   ⭐ In method overloading, method resolution is performed by the compiler at compile time based on the method signature. Therefore, method overloading is called compile-time polymorphism, static polymorphism, or early binding.
+10) what is Overloading ?
+   Method overloading is a feature of Java where, within the same class, we define multiple methods with the same name
+   but different parameter lists. The parameter list can differ in number, type, or order of parameters.
+   ⭐ In method overloading, method resolution is performed by the compiler at compile time based on the method
+      signature. Therefore, method overloading is called compile-time polymorphism, static polymorphism, or early binding.
 
-   a) Automoatic promotion in overloading-- while resolving the overloaded methods if the exact method is not available then we don't get any compiletime error. it will promote the argument to the next level and check wether the matched is available or not.
+   a) Automatic promotion in overloading-- while resolving the overloaded methods if the exact method is not available
+   then we don't get any compiletime error. it will promote the argument to the next level and check whether the matched
+   is available or not.
      byte->short
 	            ->int->long->float->double
      char------
-   b) while resolving overloaded methods compiler will always give the more prescedence to child type argument when compared with parent type argument
-   c)When overloaded methods have two unrelated reference types at the same level, passing null can result in an ambiguous method call because null is compatible with both types and neither type is more specific than the other.
-   Ex:-
-   void show(String s) {
-    System.out.println("String");
-   }
+   b) while resolving overloaded methods compiler will always give the more precedence to child type argument when
+      compared with parent type argument
+   c)When overloaded methods have two unrelated reference types at the same level, passing null can result in an
+     ambiguous method call because null is compatible with both types and neither type is more specific than the other.
+      Ex:-
+      void show(String s) {
+       System.out.println("String");
+      }
 
     void show(StringBuilder sb) {
     System.out.println("StringBuilder");
@@ -100,17 +132,20 @@
     null → StringBuilder
 	➡️ Compile-time error: reference to show is ambiguous.
 
-	d) If overloaded methods have parameters in different orders and we pass arguments that can be promoted to match both methods equally, the compiler cannot determine which method to invoke, resulting in an ambiguous method call.
+   d) If overloaded methods have parameters in different orders and we pass arguments that can be promoted to match
+	 both methods equally, the compiler cannot determine which method to invoke, resulting in an ambiguous method call.
 	Ex:-
 	m1(int i, float f)
 	m1(float f , int i)
 
 	m1(10, 10.5f)--int float
-	m1(10.5f, 10)-- foat int
+	m1(10.5f, 10)-- float int
 	ma(10,10)-- ambiguous compiletime error
 
-	e) var arg method will get the least presendence if no exact match is availbal then givve a chance to the var-arg.
-	Varargs methods have the lowest priority during method overloading. The compiler first tries to find an exact match or an applicable method using normal method invocation rules. Only if no applicable fixed-arity method is found, the compiler considers the varargs method.
+	e) var arg method will get the least precedence if no exact match is available then give a chance to the var-arg.
+	Varargs methods have the lowest priority during method overloading. The compiler first tries to find an exact match
+	or an applicable method using normal method invocation rules. Only if no applicable fixed-arity method is found,
+	the compiler considers the varargs method.
 
 11) Can constructors be overloaded?
     yes
@@ -146,58 +181,328 @@
     private void show(String x) { }
 
 15) what is Overring?
-    Method overriding is a feature of Java where a child class provides its own implementation of a method that is already defined in the parent class. It requires an inheritance relationship between the parent and child classes.
-	In method overriding, the method implementation is determined at runtime based on the actual object, so it is called runtime polymorphism or dynamic polymorphism.
+    Method overriding is a feature of Java where a child class provides its own implementation of a method that is
+    already defined in the parent class. It requires an inheritance relationship between the parent and child classes.
+	In method overriding, the method implementation is determined at runtime based on the actual object, so it is called
+	runtime polymorphism or dynamic polymorphism.
 
 16) Rules for overriding
-    a) method signature must be same and return type is not part of the method signature. and covariant return types are allowed.
-	Ex:-
-    Same method signature       ✅
-    Return type can be subtype   ✅
-    Completely different return type ❌
+    a) method signature must be same and return type is not part of the method signature. and covariant return types are
+       allowed.
+	   Ex:-
+       Same method signature       ✅
+       Return type can be subtype   ✅
+       Completely different return type ❌
 	b) we can't over ride private methods.
-	c) A final method cannot be overridden by a child class. A final class cannot be extended, so its methods cannot be overridden either.
-	d) An abstract method must be implemented (overridden) by the concrete child class. If the child class does not implement all inherited abstract methods, then the child class must also be declared abstract.
-	e) In method overriding, the modifiers strictfp, native, and synchronized do not affect the method's overriding rules. The child method can have these modifiers independently, subject to the normal overriding rules.
+	c) A final method cannot be overridden by a child class. A final class cannot be extended, so its methods cannot be
+	   overridden either.
+	d) An abstract method must be implemented (overridden) by the concrete child class. If the child class does not
+	   implement all inherited abstract methods, then the child class must also be declared abstract.
+	e) In method overriding, the modifiers strictfp, native, and synchronized do not affect the method's overriding
+	   rules. The child method can have these modifiers independently, subject to the normal overriding rules.
 	f)we can't decrease the scope of modifiers (private<default<protected<public)
-	g)If the parent class method throws a checked exception, the child class overriding method can throw the same checked exception, a subclass of that exception, or no exception. It cannot throw a broader checked exception.
+	g)If the parent class method throws a checked exception, the child class overriding method can throw the same
+	  checked exception, a subclass of that exception, or no exception. It cannot throw a broader checked exception.
 	h) we can't override static methods. even if we did that is method hiding not a overriding.
-	i) A varargs method can be overridden by another method with the same varargs signature. Since varargs is internally treated as an array, int... and int[] have the same signature. If the child defines int instead of int..., it is a different method and therefore is not overriding.
+	i) A varargs method can be overridden by another method with the same varargs signature. Since varargs is internally
+	   treated as an array, int... and int[] have the same signature. If the child defines int instead of int..., it is
+	   a different method and therefore is not overriding.
 	j) Method overriding is applicable only to methods, not variables.
 
 17) what is polymorphism?
-    Polymorphism means "one thing having multiple forms." In Java, the same interface or parent reference can represent different objects, and the behavior can change based on the actual object.
+    Polymorphism means "one thing having multiple forms." In Java, the same interface or parent reference can represent
+    different objects, and the behavior can change based on the actual object.
 
 18) what is coupling?
-    Coupling is the degree of dependency between two classes or components. It indicates how strongly one component depends on another.
+    Coupling is the degree of dependency between two classes or components. It indicates how strongly one component
+    depends on another.
 	Types
     Tight coupling → strong dependency; changes in one component can require changes in another.
     Loose coupling → minimal dependency; components can change independently.
 
 19) what is cohesion?
-    for each and every component a well defined functionality provided in the same class then it is called cohesion. always prefere the high cohesion for good programming
-	"Cohesion is the degree to which the responsibilities of a class or component are closely related to each other. A class should focus on a single, well-defined responsibility. This is called high cohesion."
+    Cohesion refers to how closely related the responsibilities of a class are. When a class has a single, well-defined
+    responsibility, it is said to have high cohesion.
+    for each and every component a well defined functionality provided in the same class then it is called cohesion.
+    always prefer the high cohesion for good programming
+	"Cohesion is the degree to which the responsibilities of a class or component are closely related to each other.
+	A class should focus on a single, well-defined responsibility. This is called high cohesion."
 
+20) what is Object type Casting?
+    Object type casting means converting an object reference from one type to another type within an inheritance
+    hierarchy.
 
-	//casting or object type casting
-	//static control flow
-	//RIWO
+    a. Upcasting:- Converting a child-class reference to a parent-class reference.
+       class Animal {
+           void eat() {
+               System.out.println("Eating");
+           }
+       }
+
+       class Dog extends Animal {
+           void bark() {
+               System.out.println("Barking");
+           }
+       }
+
+       Animal a = new Dog();  // Upcasting
+       a.eat();
+       ---Dog is the child class of Animal.
+       ---A Dog object is assigned to an Animal reference.
+       ---Upcasting happens implicitly.
+       ---Through a, you can directly access only the members available in the Animal reference type. Overridden
+          instance methods still use runtime polymorphism.
+
+    b. Converting a parent-class reference back to a child-class reference.
+       Ex:-
+       Animal a = new Dog();
+
+       Dog d = (Dog) a;  // Downcasting
+       d.bark();
+
+       ---We use (Dog) to perform explicit casting.
+       ---Down casting is needed to access child-specific members through the child reference.
+       ---The actual object must be compatible with the target type; otherwise, Java throws ClassCastException.
+21. Explain static control flow?
+    Static control flow describes the order in which static variables are initialized and static blocks are executed
+    when a class is loaded, before the main() method executes.
+    Steps of static control flow
+    1. Identification of static members: The JVM identifies static variables and static blocks in the class.
+    2. Execution from top to bottom: Static variable assignments and static blocks execute in the order they appear in
+       the source code.
+    3. Execution of main(): After class initialization completes, the JVM invokes the main() method, if it is the
+       application's entry point.
+
+22. what Read Indirect Write only?
+    Direct read: Accessing a variable directly by using its name inside a static block
+    Ex:-
+    class Test {
+        static {
+            System.out.println(x); // Direct read
+        }
+
+        static int x = 10;
+    }
+    Indirect read: Reading a variable through a method, such as display(), which accesses x.
+    Ex:-
+    class Test {
+        static {
+            display(); // Indirect read
+        }
+
+        static int x = 10;
+
+        static void display() {
+            System.out.println(x);
+        }
+    }
+
 	//Static control flow parent to child
 	//instance control flow
 	//Instance control flow parent to child
 
 20) creating the objects
     a) using new keyword
-    b) usinf factory method
+    b) using factory method
 	   Employee emp = EmployeeFactory.createEmployee();
        Examples from Java: Integer.valueOf(), List.of().
-    c) using clone()
+    c) Using the clone() method —
+       creates a copy of an existing object.(By default, it creates a shallow copy of the object)
+       Ex:-
 	   Employee emp2 = emp1.clone();
     d) using reflection
 	   Employee emp = Employee.class.getDeclaredConstructor().newInstance();
     e) using deserialization
 	   ObjectInputStream in = new ObjectInputStream(inputStream);
        Employee emp = (Employee) in.readObject();
+
+21) what is DeepCopy()
+    A deep copy creates a new object and also creates separate copies of its nested mutable objects.
+
+22. what is constructor?
+    “A constructor is a special member of a class that is used to initialize an object when it is created.”
+    Example
+    class Employee {
+        int id;
+
+        Employee(int id) {
+            this.id = id;
+        }
+    }
+
+    Employee emp = new Employee(101);
+
+23. Important rules for constructor?
+    --The constructor name must be the same as the class name.
+    --It has no return type, not even void.
+    --It is invoked when an object is created using new.
+    --Constructors can be overloaded.
+    --Constructors are not inherited or overridden.
+
+24. Difference b/n constructor and instance block?
+    “An instance initializer block is used to execute common initialization logic whenever an object is created. It
+    executes before the constructor body. A constructor initializes an object and can accept parameters, allowing us to
+    initialize objects with different values.”
+
+    Remember the execution order: Instance variable initializers and instance initializer blocks execute in textual
+    order, before the constructor body.
+
+25. what is Default Constructor?
+    Default constructor is a constructor with no parameters that the Java compiler automatically provides when we do not
+    define any constructor in a class.
+    Ex:-
+    class Employee {
+        int id;
+    }
+
+    public class Main {
+        public static void main(String[] args) {
+            Employee e = new Employee();
+            System.out.println(e.id);
+        }
+    }
+
+26. Rules in Constructor?
+    1. this() or super() must be the first statement in a constructor. If neither is written, the compiler implicitly
+       inserts super() when applicable
+    2. You cannot explicitly call both this() and super() in the same constructor because both must be the first
+       statement.
+    3. Where they can be used: this() and super() constructor invocations can be used only in constructors, not in
+       ordinary methods or initializer blocks.
+    4. Constructor chaining: We can call one constructor from another using this() or call a parent-class constructor
+       using super().
+    5. Avoid circular constructor calls: Constructors must not call each other in a cycle, such as this() calling
+       another constructor that eventually calls the first one.
+    6. Constructor calls: this() calls another constructor in the same class, while super() calls a constructor in the
+       immediate parent class.
+
+27. Overloading of constructor is possible?
+    “Yes, constructor overloading is possible in Java. We can define multiple constructors in the same class with
+    different parameter lists, allowing objects to be initialized in different ways.”
+
+28. why Overriding of constructor is possible in Java?
+    “Constructor overriding is not possible in Java because constructors are not inherited by child classes. Overriding
+    requires a child class to provide a new implementation of an inherited method with the same signature. Since
+    constructors are not inherited, they cannot be overridden.”
+
+29. is Recursive constructor call was allowed?
+    In methods recursive method call is Runtime Exception but Constructor Recursive call is a compiletime error.
+
+30. Can we declare a constructor as static in Java? Why?
+    “No, we cannot declare a constructor as static in Java because a constructor is used to initialize an object when it
+    is created, whereas the static keyword is associated with class-level members rather than instance-level
+    initialization.”
+    Only applicable modifiers to the constructor are
+    --public
+    --protected
+    --default
+    --private
+
+31. if parent class constructor throws any checked Exception then what we can do ?
+    “If a parent-class constructor throws a checked exception, the child-class constructor must handle that exception
+    or declare it using throws. Alternatively, the child constructor can declare the same exception or a narrower
+    checked exception.”
+
+32. what is Singleton class in Java?
+    “A Singleton class is a class that ensures only one instance of that class is created and provides a global access
+    point to that instance throughout the application.
+    It is useful for shared services such as logging, configuration management, and other resources that should have a
+    single shared instance.”
+    Ex:-
+    class Singleton {
+        private static final Singleton INSTANCE = new Singleton();
+
+        private Singleton() {
+            // Prevent object creation from outside
+        }
+
+        public static Singleton getInstance() {
+            return INSTANCE;
+        }
+    }
+    Usage:
+    Singleton s1 = Singleton.getInstance();
+    Singleton s2 = Singleton.getInstance();
+
+    System.out.println(s1 == s2); // true
+
+    Ex:-Lazy Singleton with Double-Checked Locking
+    public class Logger {
+
+        private static volatile Logger instance;
+
+        private Logger() {
+        }
+
+        public static Logger getInstance() {
+            if (instance == null) {
+                synchronized (Logger.class) {
+                    if (instance == null) {
+                        instance = new Logger();
+                    }
+                }
+            }
+            return instance;
+        }
+    }
+
+33. Advantage of singleton class?
+    1.Global point of access: A Singleton provides a single, shared instance that can be accessed through a static
+      method, such as getInstance().
+    2.Controlled instance creation: It ensures that only one instance of the class is created, which can be useful for
+      shared services such as logging or configuration management.
+    3.Potential memory savings: It avoids creating multiple instances of the same shared service. However, memory
+      savings depend on the use case; a Singleton is not always more memory-efficient.
+
+34. Disadvantages of Singleton?(Important)
+    “Singleton has some disadvantages, such as global state, tight coupling, and difficulty in unit testing. If it
+    maintains mutable shared state, we must also handle thread safety. Therefore, I would use Singleton only when a
+    single shared instance is genuinely required.”
+
+    a. What is the Singleton design pattern?(Important)
+       Ensure only one instance of a class exists and provide a global access point to it.
+    b. What is the difference between eager and lazy initialization?(Important)
+       Eager creates the instance during class initialization; lazy creates it when first requested.
+    c. How do you implement a thread-safe Singleton?(Important)
+       Know synchronized, double-checked locking with volatile, and the static inner class approach
+    d. Why do we need volatile in double-checked locking?(Important)
+       It ensures visibility between threads and prevents(Instructor reordering) unsafe publication caused by reordering.
+    e. Can we break a Singleton using Reflection?(Important)
+       Yes. Reflection can sometimes access a private constructor and create another instance. An enum Singleton is
+       resistant to this kind of attack.
+    f. Can serialization break a Singleton?
+       Yes, deserialization can create another instance unless you handle it, typically with readResolve(). Enum
+       singletons handle serialization specially
+    g. Can we clone a Singleton object?
+       Cloning can produce another instance unless cloning is prevented or handled appropriately.
+    h. How would you implement Singleton using an enum?
+       public enum Logger {
+           INSTANCE;
+
+           public void log(String message) {
+               System.out.println(message);
+           }
+       }
+       Usage: Logger.INSTANCE.log("Hello");
+    i. Is a Singleton instance unique across an entire application?
+       Is a Singleton instance unique across an entire application?
+
+       Not necessarily. It is generally one instance per class loader for a typical Java Singleton. Multiple JVMs, class
+       loaders, or application instances may each have their own instance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
