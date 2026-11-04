@@ -1,9 +1,23 @@
 🔥 Java Multithreading — Interview Preparation Roadmap
+1. ExecutorService vs CompletableFuture?
+   ---ExecutorService is used to manage a pool of threads and submit tasks for execution. It separates task submission from thread
+   management.
+   ---CompletableFuture is used to execute asynchronous tasks, combine the results of independent tasks, and define actions that
+   run when previous tasks complete. It also supports handling exceptions in asynchronous workflows.
+   ---CompletableFuture is a class in Java used to perform asynchronous programming. It allows us to execute tasks asynchronously,
+   chain multiple tasks, combine results, and handle exceptions without blocking the main thread unnecessarily.
+
+   ---We can use ExecutorService to manage the threads and CompletableFuture to coordinate asynchronous tasks. They can also be
+   used together.
 
 1. What is a Thread?
-A thread is the smallest unit of execution within a process. A process can have multiple threads, and these threads share the process's resources such as heap memory, while each thread has its own stack and program counter.
-
-All these threads belong to the same process.
+   A thread is the smallest unit of execution within a process. A process can have multiple threads, and these threads share
+   the process's resources such as heap memory, while each thread has its own stack and program counter.All these threads
+   belong to the same process.
+   Each thread has its own stack and program counter (PC) register.
+    - Stack: Stores stack frames containing method call information, local variables, and intermediate computations.
+    - PC Register: Keeps track of the current bytecode instruction being executed by that thread in the JVM.
+                   (Tracks the current instruction for that thread.)
 
 ⭐ Important interview point
 
@@ -14,27 +28,34 @@ Program Counter
 Execution state
 
 Threads share:
-
 Heap
 Method area / class metadata
 Process resources
 
 2. Process vs Thread
-A process is an independent program/application running in its own memory space. A thread is the smallest unit of execution within a process. Multiple threads within the same process share resources such as heap memory, while each thread has its own stack and program counter. Different processes have separate memory spaces, so they don't directly share memory.
+   A process is an independent program/application running in its own memory space. A thread is the smallest unit of execution
+   within a process. Multiple threads within the same process share resources such as heap memory, while each thread has
+   its own stack and program counter. Different processes have separate memory spaces, so they don't directly share memory.
 
-3.what is multithreading?
-Multithreading is the ability to execute multiple threads concurrently within a single process. These threads share the process's resources, such as heap memory, which allows tasks to be performed efficiently. It improves CPU utilization, application responsiveness, and throughput, especially when some threads are waiting for I/O operations.
+3. what is multithreading?
+   Multithreading is the ability to execute multiple threads concurrently within a single process. These threads share the
+   process's resources, such as heap memory, which allows tasks to be performed efficiently. It improves CPU utilization,
+   application responsiveness, and throughput, especially when some threads are waiting for I/O operations.
 
 3. Why Multithreading?
-Multithreading is used to execute multiple tasks concurrently within the same process. It helps improve application responsiveness, CPU utilization, and throughput, especially when tasks involve waiting for I/O operations such as database calls, network calls, or file operations.
+   Multithreading is used to execute multiple tasks concurrently within the same process. It helps improve application
+   responsiveness, CPU utilization, and throughput, especially when tasks involve waiting for I/O operations such as
+   database calls, network calls, or file operations.
 
 a.reduce response time --independent tasks execute concurrently
 b.Improve resource utilizations-CPU can work while other threads are waiting for I/O
 c.High throughput
 d. Better responsiveness.
 
-4.what is threadschedular?
-  Thread scheduling is handled by the JVM in cooperation with the underlying operating system and  is responsible for deciding which thread should get CPU time for execution when multiple threads are ready to run. The scheduling behavior is platform/JVM dependent, and we should not rely on a specific scheduling algorithm or execution order.
+4. what is threadschedular?
+   Thread scheduling is handled by the JVM in cooperation with the underlying operating system and  is responsible for
+   deciding which thread should get CPU time for execution when multiple threads are ready to run. The scheduling behavior
+   is platform/JVM dependent, and we should not rely on a specific scheduling algorithm or execution order.
 
 5. thread creatin using extending Thread class
    class MyThread extends Thread {
@@ -217,16 +238,20 @@ TERMINATED
     Thread priority is a value assigned to a thread that indicates its relative importance to the scheduler. Java supports priorities from 1 to 10, with 5 as the default. However, thread priority is only a scheduling hint and does not guarantee execution order.
 
 18. yield()
-    yield() is a static method of the Thread class. It gives a hint to the thread scheduler that the current thread is willing to temporarily give up the CPU so that other threads of the same or higher priority may get a chance to execute.
+    yield() is a static method of the Thread class. It gives a hint to the thread scheduler that the current thread is
+    willing to temporarily give up the CPU so that other threads of the same or higher priority may get a chance to execute.
 
 	⭐ Interview answer
-    Thread.yield() is a static method that gives a hint to the thread scheduler that the current thread is willing to temporarily yield the CPU, allowing other eligible threads to get a chance to execute. However, the scheduler is free to ignore this request.
+    Thread.yield() is a static method that gives a hint to the thread scheduler that the current thread is willing to
+    temporarily yield the CPU, allowing other eligible threads to get a chance to execute. However, the scheduler is free
+    to ignore this request.
     Easy memory:
     yield() → "I can give others a chance."
     But → not guaranteed.
 
 19. public final void Join() throws InterruptedException
-    join() is used to make the current thread wait until another thread completes its execution. For example, if the main thread calls t.join(), the main thread waits until thread t finishes, and then continues its execution.
+    join() is used to make the current thread wait until another thread completes its execution. For example, if the main
+    thread calls t.join(), the main thread waits until thread t finishes, and then continues its execution.
 	class MyThread extends Thread {
 
     public void run() {
@@ -284,21 +309,21 @@ TERMINATED
     }
  }
  ⭐ Interview answer
-  If the main thread calls child.join() while the child thread calls mainThread.join(), both threads wait for each other indefinitely, resulting in a deadlock.
-  A thread calling join() on itself causes it to wait indefinitely because the thread can never complete while it is waiting for its own completion.
+  ->If the main thread calls child.join() while the child thread calls mainThread.join(), both threads wait for each other
+  indefinitely, resulting in a deadlock.
+  ->A thread calling join() on itself causes it to wait indefinitely because the thread can never complete while it is waiting
+  for its own completion.
   ⭐Remember
   A waits for B + B waits for A → classic deadlock
   A waits for A → self-join / indefinite waiting
 
 21.sleep() throws InterruptedException
-   Thread.sleep() is used to pause the execution of the current thread for a specified period. After that period, the thread becomes eligible for execution again. sleep() does not release any lock held by the thread.
+   Thread.sleep() is used to pause the execution of the current thread for a specified period. After that period, the thread
+   becomes eligible for execution again. sleep() does not release any lock held by the thread.
    class Main {
     public static void main(String[] args) throws InterruptedException {
-
         System.out.println("Start");
-
         Thread.sleep(3000);  // 3 seconds
-
         System.out.println("End");
     }
   }
@@ -311,7 +336,7 @@ TERMINATED
 
 22.How a thread can interrupt another thread?
    A thread can interrupt another thread using the interrupt() method.
-   a thread can interupt a sleeping thread (or) waiting thread by using inturrupt method (or) Thread class.
+   a thread can interrupt a sleeping thread (or) waiting thread by using interrupt method (or) Thread class.
 
    class MyThread extends Thread {
 
@@ -341,7 +366,9 @@ TERMINATED
    One thread can interrupt another thread by calling the target thread's interrupt() method. It doesn't forcibly terminate the target thread; instead, it sets the interrupt status, and if the target is blocked in sleep(), wait(), or join(), it receives an InterruptedException.
 
 23. what is synchronization?
-    Synchronization is a mechanism in Java used to control concurrent access to shared resources. It ensures that only one thread at a time can execute a synchronized section for the same lock, thereby preventing race conditions and maintaining data consistency.
+    Synchronization is a mechanism in Java used to control concurrent access to shared resources. It ensures that only one
+    thread at a time can execute a synchronized section for the same lock, thereby preventing race conditions and maintaining
+    data consistency.
 	Ex:-
 	class Account {
 
@@ -375,19 +402,25 @@ TERMINATED
     ✅ Can execute simultaneously.
 
 25. class level lock ?
-    A class-level lock is the lock associated with the Class object, and it is used when we synchronize a static method or explicitly synchronize on ClassName.class.
-    A class-level lock is the lock associated with the Class object. Static synchronized methods use the class-level lock, so only one thread can execute any static synchronized method of that class at a time.
+    A class-level lock is the lock associated with the Class object, and it is used when we synchronize a static method or
+    explicitly synchronize on ClassName.class.
+    A class-level lock is the lock associated with the Class object. Static synchronized methods use the class-level lock,
+    so only one thread can execute any static synchronized method of that class at a time.
 
 26. what is RACE Condition?
-    A race condition occurs when multiple threads concurrently access and modify shared data without proper synchronization, causing inconsistent or incorrect results depending on the execution order of the threads.
+    A race condition occurs when multiple threads concurrently access and modify shared data without proper synchronization,
+    causing inconsistent or incorrect results depending on the execution order of the threads.
 	⭐ Interview answer
-    We can prevent race conditions by using synchronization, which ensures that only one thread at a time can access the critical section when operating on shared data.
+    We can prevent race conditions by using synchronization, which ensures that only one thread at a time can access the
+    critical section when operating on shared data.
 
 27. what is object lock and when it is required?
-    An object lock is a monitor lock associated with an object. It is required when multiple threads access shared data and we need to ensure that only one thread at a time executes the synchronized code for that object.
+    An object lock is a monitor lock associated with an object. It is required when multiple threads access shared data
+    and we need to ensure that only one thread at a time executes the synchronized code for that object.
 
 28. what is class level lock and when it is required?
-    A class-level lock is a lock associated with the Class object. It is acquired when a thread enters a static synchronized method or a synchronized block using ClassName.class. It is used to control concurrent access to shared static resources.
+    A class-level lock is a lock associated with the Class object. It is acquired when a thread enters a static synchronized
+    method or a synchronized block using ClassName.class. It is used to control concurrent access to shared static resources.
 
 29. what is difference b/n class level lock and object level lock
 | Object-level lock                              | Class-level lock                                |
@@ -399,7 +432,8 @@ TERMINATED
 | Protects instance/shared object data           | Usually protects static/shared class-level data |
 
 30. What is a Synchronized Block?
-    A synchronized block is a block of code that allows us to lock only a specific section of code, instead of locking the entire method.
+    A synchronized block is a block of code that allows us to lock only a specific section of code, instead of locking the
+    entire method.
 
 31. how to declare synchronized block to get the lock of current object?
     synchronized (this) {
@@ -407,9 +441,10 @@ TERMINATED
     }
 
 32. what is the advantage of synchronized block over synchronized method?
-    The main advantage of a synchronized block over a synchronized method is that we can synchronize only the critical section of code instead of the entire method. This reduces the scope of locking and allows other non-critical code to execute concurrently, improving performance and scalability.
+    The main advantage of a synchronized block over a synchronized method is that we can synchronize only the critical
+    section of code instead of the entire method. This reduces the scope of locking and allows other non-critical code to execute concurrently, improving performance and scalability.
 
-33. Is a thread can acquire multiple locks simultaneoosly?
+33. Is a thread can acquire multiple locks simultaneosly?
     Yes. A thread can acquire multiple locks simultaneously. This is called nested locking.
 	synchronized (lock1) {
 
@@ -417,16 +452,23 @@ TERMINATED
         // critical section
     }
    }
-   Yes, a thread can acquire multiple locks simultaneously by acquiring one lock and then another lock before releasing the first one. However, acquiring multiple locks can lead to deadlock if different threads acquire the same locks in different orders.
+   Yes, a thread can acquire multiple locks simultaneously by acquiring one lock and then another lock before releasing the
+   first one. However, acquiring multiple locks can lead to deadlock if different threads acquire the same locks in different
+   orders.
 
 34. what is synchronization statement?
-    A synchronized statement is a synchronized block that allows us to lock a specific section of code using a specified object as the lock. Only one thread at a time can execute that block for the same lock.
+    A synchronized statement is a synchronized block that allows us to lock a specific section of code using a specified
+    object as the lock. Only one thread at a time can execute that block for the same lock.
 
 35. Interthread communication?
-    Inter-thread communication is a mechanism in Java that allows threads to communicate and coordinate with each other. It is mainly used when one thread needs to wait for a condition or for another thread to perform some work. Java provides wait(), notify(), and notifyAll() for inter-thread communication.
+    Inter-thread communication is a mechanism in Java that allows threads to communicate and coordinate with each other.
+    It is mainly used when one thread needs to wait for a condition or for another thread to perform some work. Java provides
+    wait(), notify(), and notifyAll() for inter-thread communication.
 	⭐
-	->The thread that is waiting for a particular condition or update should call wait(). When another thread performs the required update, it can call notify() or notifyAll() to wake the waiting thread.
-	->wait(),notify() and notifyAll() are present in object claa but not in thread class. Because Thread can call these mthods on any java object
+	->The thread that is waiting for a particular condition or update should call wait(). When another thread performs the
+	required update, it can call notify() or notifyAll() to wake the waiting thread.
+	->wait(),notify() and notifyAll() are present in object claa but not in thread class. Because Thread can call these
+	methods on any java object
 ⭐⭐⭐
 36. producer and consumer problem?
     🔑 Remember
@@ -439,15 +481,16 @@ TERMINATED
 
     Consumer removes data → Producer can be notified
 
-37. ldifference b/n notift and notifyAll?
+37. difference b/n notify() and notifyAll?
 | `notify()`                                           | `notifyAll()`                                                      |
 | ---------------------------------------------------- | ------------------------------------------------------------------ |
-| Wakes up **one** waiting thread                      | Wakes up **all** waiting threads                                   |
+| Wakes up one waiting thread                          | Wakes up all waiting threads                                       |
 | JVM chooses which waiting thread to wake             | All waiting threads become eligible to compete for the lock        |
 | Useful when only one waiting thread needs to proceed | Useful when multiple waiting threads may have different conditions |
 
 38. what is dead lock and how can we avoid this?
-    Deadlock is a situation where two or more threads are permanently blocked because each thread is holding a lock and waiting for another lock held by another thread.
+    Deadlock is a situation where two or more threads are permanently blocked because each thread is holding a lock and
+    waiting for another lock held by another thread.
 	Thread 1                  Thread 2
    |                         |
    | acquires Lock A         | acquires Lock B
@@ -463,7 +506,8 @@ TERMINATED
    Consistent lock ordering + minimize nested locks + use timed tryLock() when appropriate.
 
 39. what is Reentrant Lock?
-    ReentrantLock is a class from java.util.concurrent.locks that provides explicit locking similar to the synchronized keyword, but with additional features and more control over locking.
+    ReentrantLock is a class from java.util.concurrent.locks that provides explicit locking similar to the synchronized
+    keyword, but with additional features and more control over locking.
 	⭐
 	Reentrant means the same thread can acquire the same lock multiple times without getting blocked.
 
@@ -477,10 +521,12 @@ TERMINATED
   Fairness option → new ReentrantLock(true)
 
 41.what is Starvation?
-   Starvation is a situation where a thread waits for a long time because other threads continuously get CPU time or access to the required resource, preventing the thread from making progress.
+   Starvation is a situation where a thread waits for a long time because other threads continuously get CPU time or access
+   to the required resource, preventing the thread from making progress.
 
 42.What is deamon Thread?
-   A daemon thread is a background thread that runs to support other threads. The JVM does not wait for daemon threads to finish. When all non-daemon threads finish, the JVM can terminate even if daemon threads are still running.
+   A daemon thread is a background thread that runs to support other threads. The JVM does not wait for daemon threads to
+   finish. When all non-daemon threads finish, the JVM can terminate even if daemon threads are still running.
 
 43.Difference between Runnable and Callable
 | `Runnable`                               | `Callable`                                       |
@@ -493,7 +539,8 @@ TERMINATED
 | Common with `Thread` / ExecutorService   | Usually used with `ExecutorService`              |
 
 44. what is Livelock ?
-    Livelock occurs when multiple threads continuously change their state or respond to each other, but none of them makes progress. Unlike deadlock, the threads are not blocked; they are actively running.
+    Livelock occurs when multiple threads continuously change their state or respond to each other, but none of them makes
+    progress. Unlike deadlock, the threads are not blocked; they are actively running.
 
 45. wait() vs sleep()
 | `wait()`                                                           | `sleep()`                              |
@@ -507,7 +554,8 @@ TERMINATED
 | Throws `InterruptedException`                                      | Throws `InterruptedException`          |
 
 46. what is Executor framewok?
-    Executor Framework is a framework provided in the java.util.concurrent package that helps manage and execute threads. It separates task submission from thread creation and thread management, typically using thread pools.
+    Executor Framework is a framework provided in the java.util.concurrent package that helps manage and execute threads.
+    It separates task submission from thread creation and thread management, typically using thread pools.
 
 	Without Executor Framework:
     Thread t1 = new Thread(task1);
@@ -523,16 +571,20 @@ TERMINATED
 	 executor.shutdown();
 
 47. Why Executor Framework?
-    We use the Executor Framework to separate task submission from thread management. It provides thread pools, which allow us to reuse threads, reduce the overhead of creating new threads, control the number of concurrent threads, and efficiently execute multiple tasks.
+    We use the Executor Framework to separate task submission from thread management. It provides thread pools, which allow
+    us to reuse threads, reduce the overhead of creating new threads, control the number of concurrent threads, and
+    efficiently execute multiple tasks.
 
-48. differenc b/n normal and Executor service?
+48. difference b/n normal and Executor service?
     "We create and submit the task to the Executor Framework, and the Executor Framework creates and manages the worker threads."
 	In normal we need to create the Thread and we need to pass the task as a parameter to thread and start
 	⭐ Interview answer:-
-	In the normal approach, we create a Thread object, pass the task to it, and explicitly call start() to execute the task. With ExecutorService, we create and submit the task to the executor, and the executor manages the worker threads for us.
+	In the normal approach, we create a Thread object, pass the task to it, and explicitly call start() to execute the task.
+	With ExecutorService, we create and submit the task to the executor, and the executor manages the worker threads for us.
 
 49.what is Executor?
-   Executor is an interface in the java.util.concurrent package that provides a mechanism for executing tasks. It has a single method, execute(Runnable command), which accepts a Runnable task.
+   Executor is an interface in the java.util.concurrent package that provides a mechanism for executing tasks. It has a single
+   method, execute(Runnable command), which accepts a Runnable task.
    Ex:-
    Executor executor = Executors.newFixedThreadPool(2);
 
@@ -543,7 +595,8 @@ TERMINATED
    Executor is a Funtiuonal Interface
 
 50. what is ExecutorService?
-    ExecutorService is an interface in the java.util.concurrent package that extends the Executor interface and provides additional features for managing and executing tasks.
+    ExecutorService is an interface in the java.util.concurrent package that extends the Executor interface and provides additional
+    features for managing and executing tasks.
 	⭐
 	Important methods:-
 	a)execute():-
@@ -755,14 +808,17 @@ TERMINATED
     Tasks execute sequentially.
 
 56. How ThreadPoolExecutor works
-    ThreadPoolExecutor maintains a pool of worker threads. When we submit a task, the executor places it in a work queue if a worker thread is not immediately available. Worker threads continuously take tasks from the queue and execute them. After completing one task, the worker thread can be reused for another task.
+    ThreadPoolExecutor maintains a pool of worker threads. When we submit a task, the executor places it in a work queue if a
+    worker thread is not immediately available. Worker threads continuously take tasks from the queue and execute them. After
+    completing one task, the worker thread can be reused for another task.
 
 57.	Core pool size, Maximum pool size
     Core pool size = the minimum number of worker threads that the pool tries to keep available.
 	Maximum pool size = the maximum number of worker threads that the executor can create.
 
 58.	what is CompletableFuture?
-    CompletableFuture is a Java class used for asynchronous and non-blocking programming. It allows us to execute tasks asynchronously and perform further actions when the task completes, without blocking the calling thread.
+    CompletableFuture is a Java class used for asynchronous and non-blocking programming. It allows us to execute tasks asynchronously
+    and perform further actions when the task completes, without blocking the calling thread.
 
 	Ex:-
 	CompletableFuture<Integer> future =
@@ -925,7 +981,8 @@ get() and join()
       lock.readLock()
       lock.writeLock()
 
-	  ReentrantReadWriteLock is an implementation of ReadWriteLock that provides separate read and write locks. Multiple threads can read concurrently, while writing is exclusive. It is reentrant, so the same thread can acquire the same lock multiple times.”
+   ReentrantReadWriteLock is an implementation of ReadWriteLock that provides separate read and write locks. Multiple threads
+   can read concurrently, while writing is exclusive. It is reentrant, so the same thread can acquire the same lock multiple times.”
 
 63. StampedLock
     StampedLock is another locking mechanism introduced in Java 8.
@@ -965,10 +1022,12 @@ get() and join()
    }
 
 64. what is volatile?
-    volatile is used to guarantee visibility of changes to a variable across threads and provides ordering guarantees for volatile reads and writes
+    volatile is used to guarantee visibility of changes to a variable across threads and provides ordering guarantees for
+    volatile reads and writes
 
 65.what is ForkJoinPool?
-   ForkJoinPool is a specialized thread pool designed for parallel execution of tasks that can be divided into smaller subtasks and then combined.
+   ForkJoinPool is a specialized thread pool designed for parallel execution of tasks that can be divided into smaller subtasks
+   and then combined.
    It uses a technique called Fork/Join.
    How it works
    Large Task
@@ -986,10 +1045,12 @@ Subtask   Subtask
 Final Result
 
 65. what is Work stealing?
-    Work stealing is a technique used by ForkJoinPool where an idle worker thread takes ("steals") tasks from the queue of another busy worker thread.
+    Work stealing is a technique used by ForkJoinPool where an idle worker thread takes ("steals") tasks from the queue of another
+    busy worker thread.
 
 66. Parallel streams
-    A parallel stream is a Java Stream that processes elements concurrently using multiple threads, allowing data processing to happen in parallel.
+    A parallel stream is a Java Stream that processes elements concurrently using multiple threads, allowing data processing to
+    happen in parallel.
 
 	List<Integer> numbers = List.of(1, 2, 3, 4, 5, 6);
 
@@ -998,8 +1059,9 @@ Final Result
 
 ⭐ Java 21 — Important Features
 
-1. Virtual THreads:-Virtual threads are lightweight threads designed to handle a large number of concurrent tasks, especially I/O-bound operations.
-   Virtual threads are lightweight threads designed to handle a large number of concurrent tasks, especially I/O-bound operations.
+1. Virtual Threads:-Virtual threads are lightweight threads designed to handle a large number of concurrent tasks, especially
+   I/O-bound operations. Virtual threads are lightweight threads designed to handle a large number of concurrent tasks, especially
+   I/O-bound operations.
 
 Thread.startVirtualThread(() -> {
     System.out.println("Running in virtual thread");

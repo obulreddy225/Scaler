@@ -1,47 +1,48 @@
 package com.jmp.dsa.slidingwindow;
 
 public class Main {
-    //1. Maximum Sum of Subarray of Size K — Easy
-    public static int maximumSum(int[] arr, int k){
-        int n =arr.length;
-        int windowSum =0;
-        int maxSum =0;
-        for(int i=0;i<k;i++){
-            windowSum+=arr[i];
-        }
-        maxSum=windowSum;
-        int si = 1; int ei= k;
-        while (ei<n){
-            windowSum+=arr[ei]-arr[si-1];
-            maxSum =Math.max(windowSum,maxSum);
+    //LongestUniformString
+   public static void uniformString(String str){
+       int currentLength = 1;
+       int currentStart = 0;
 
-            si++;
-            ei++;
-        }
-        return maxSum;
-    }
+       int maxLength = 1;
+       int maxStart = 0;
+       for(int i=1;i<str.length();i++){
+           if (str.charAt(i)==str.charAt(i-1)){
+               currentLength++;
+           }else {
+               currentStart=i;
+               currentLength =1;
+           }
+           if(currentLength>maxLength){
+               maxLength = currentLength;
+               maxStart = currentStart;
+           }
+       }
+   }
 
-    //2. Average of All Subarrays of Size K — Easy/Medium
-    public static double[] averageOfSubarrays(int[] arr, int k) {
-        int n = arr.length;
-        double[] result = new double[n - k + 1];
-        int windowSum = 0;
-        // First window
-        for (int i = 0; i < k; i++) {
-            windowSum += arr[i];
+    //Find the sum of minimum and maximum element of all subarrays of size K
+
+    public static int sumMinMax(int[] arr, int k) {
+        if (arr == null || k <= 0 || k > arr.length) {
+            return 0;
         }
-        result[0] = (double) windowSum / k;
-        // Remaining windows
-        int si = 1;
-        int ei = k;
-        int index = 1;
-        while (ei < n) {
-            windowSum += arr[ei] - arr[si - 1];
-            result[index] = (double) windowSum / k;
-            si++;
-            ei++;
-            index++;
+
+        int totalSum = 0;
+
+        for (int i = 0; i <= arr.length - k; i++) {
+            int min = arr[i];
+            int max = arr[i];
+
+            for (int j = i; j < i + k; j++) {
+                min = Math.min(min, arr[j]);
+                max = Math.max(max, arr[j]);
+            }
+
+            totalSum += min + max;
         }
-        return result;
+
+        return totalSum;
     }
 }

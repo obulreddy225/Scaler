@@ -36,7 +36,7 @@ public class MoveZeroes {
         return arr;
     }
 
-    public static int moveZerosToEndUsing2Pointer(int[] arr){
+    public static int[] moveZerosToEndUsing2Pointer(int[] arr){
         int left =0;
         int n = arr.length;
         for(int right =0;right<n;right++){
@@ -47,7 +47,7 @@ public class MoveZeroes {
                 left++;
             }
         }
-        return left;
+        return arr;
     }
     public static int[] moveZerosToStartUsing2Pointer(int[] arr){
         int left =arr.length-1;

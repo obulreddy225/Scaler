@@ -5,21 +5,17 @@ import java.util.PriorityQueue;
 public class KthSmallest {
     public static int findKthSmallest(int[] arr, int k) {
 
-        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
-
-        // Add all elements to Min Heap
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
         for (int num : arr) {
-            minHeap.add(num);
+            pq.offer(num);
         }
 
-        // Remove k - 1 smallest elements
-        for (int i = 1; i < k; i++) {
-            minHeap.poll();
+        for (int i = 0; i < k - 1; i++) {
+            pq.poll();
         }
-
-        // kth smallest element
-        return minHeap.peek();
+        return pq.peek();
     }
+
 
     public static void main(String[] args) {
 

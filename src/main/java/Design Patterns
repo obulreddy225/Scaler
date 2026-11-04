@@ -1,0 +1,36 @@
+1. what is Facade Design Pattern?
+   Facade Design Pattern is a Structural Design Pattern that provides a simplified interface to a complex subsystem.
+
+2. what is builder design pattern?
+   The Builder Design Pattern is a Creational Design Pattern used to create complex objects step by step.
+   It is especially useful when a class has multiple instance variables, including mandatory and optional fields.
+   Instead of creating multiple constructors with different parameter combinations, Builder Pattern allows us to set
+   only the required fields and optionally configure the remaining fields.
+
+3. what is Factory Design Pattern?
+   The Factory Design Pattern is a Creational Design Pattern used to encapsulate object creation logic.
+   Instead of allowing the client to create objects directly using the new keyword, we provide a Factory class that
+   decides which object needs to be created based on the given input.
+
+4. what is strategic design pattern?
+   The Strategy Design Pattern is a Behavioral Design Pattern that defines a family of algorithms, encapsulates each
+   algorithm into a separate implementation, and allows us to select one algorithm at runtime.
+
+   In simple words, we have one common interface and multiple implementations, and based on the requirement, we choose
+   which implementation to execute.
+
+5. what is Observer Design pattern?
+   The Observer Design Pattern is a Behavioral Design Pattern that establishes a one-to-many relationship between
+   objects.
+   When one object (Subject) changes its state, it automatically notifies all the registered dependent objects
+   (Observers)
+   In simple words, when one object undergoes a change, it notifies multiple interested objects.
+
+6. what is Decorator Design Pattern?
+   The Decorator Design Pattern is a Structural Design Pattern used to add additional functionality or responsibilities
+   to an existing object dynamically without modifying its original class.
+
+7. what is Adapter Design pattern?
+   The Adapter Design Pattern is a Structural Design Pattern that allows two incompatible interfaces to work together.
+
+

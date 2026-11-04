@@ -1,5 +1,7 @@
 package com.jmp.dsa.twoPointer;
 
+import java.security.PublicKey;
+
 public class ContainerSum {
 
     public static int containerProblem(int[] arr) {
@@ -11,7 +13,7 @@ public class ContainerSum {
             int height = Math.min(arr[left], arr[right]);
             int area = width * height;
             maxStorage = Math.max(maxStorage, area);
-            if (arr[left] < arr[right]) {
+            if (arr[left] <= arr[right]) {
                 left++;
             } else right--;
         }

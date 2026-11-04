@@ -1,0 +1,45 @@
+1. What is a Maven build?
+   A Maven build is the process of compiling our Java code, running tests, resolving dependencies, and packaging the
+   into an artifact such as a JAR or WAR file.
+   ---Maven is a Java build automation and project management tool. It uses the pom.xml file to manage dependencies,
+   plugins, and build configuration
+
+2. What does mvn clean install do?
+   “mvn clean install removes the previous build files, compiles the source code, runs tests, packages the application
+   into a JAR or WAR file, and installs the generated artifact into the local Maven repository.”
+   Remember the flow
+   clean → compile → test → package → install
+   Important: The install phase places the generated artifact in the local Maven repository, usually under
+   ~/.m2/repository, so other local projects can use it as a dependency.
+
+3. How do you push code to production?
+   Once I commit and push my code to Git, the CI/CD pipeline is triggered automatically. The pipeline builds the
+   application, runs automated tests, and performs the configured quality checks.
+
+   After successful validation, the application moves through the required environments, such as development, QA, and
+   UAT. Production deployment is performed after the required approvals, following the team's release process.
+   Development branch -- development deploy
+   Release branch -- UAT deploy
+   Master branch -- prod deploy
+
+   ---In our project, we followed a branch-based deployment strategy. The development branch was used for development
+   deployments, the release branch was used for UAT deployments, and the master branch was used for production
+   deployments.
+   ---When code was merged into the respective branch, the configured CI/CD pipeline was triggered to deploy the
+   application to the corresponding environment. Production deployment followed the required release approvals.
+
+4. What is code coverage and line coverage?
+   Code coverage is a metric that measures how much of our source code is executed when we run automated tests.
+   It helps us identify parts of the code that our tests are not exercising.
+   Line coverage measures the percentage of executable lines of code that are executed at least once during test
+   execution.
+
+5. How do you improve code coverage when build fails?
+   I will check the SonarQube report to identify the code that is not covered by unit tests. Then I will write or update
+   JUnit test cases to cover the uncovered lines and branches. Finally, I will rerun the build and verify that the
+   required code coverage threshold is met and the Quality Gate passes.”
+
+6.
+
+
+

@@ -1,0 +1,161 @@
+1. What is Bounded Context?
+   A Bounded Context is a concept in Domain-Driven Design (DDD). It defines a clear boundary around a particular
+   business area, including its responsibilities, business rules, and domain model.
+
+2. What is Domain-Driven Design (DDD)?
+   Domain-Driven Design, or DDD, is a software design approach where we design the application around the business
+   domain, business concepts, and business rules.
+
+3. Why should microservices generally be stateless?
+   We generally avoid a shared database because it creates tight coupling between microservices. If one microservice
+   changes the database schema, it may affect other microservices that depend on the same tables. It also makes
+   independent development and deployment more difficult.
+
+4. Difference between: REST & gRPC & Kafka & RabbitMQ    ------------------------check again
+      |                     | REST                              | gRPC                                   | Kafka                            | RabbitMQ                             |
+      | ------------------- | --------------------------------- | -------------------------------------- | -------------------------------- | ------------------------------------ |
+      | Type                | API communication                 | RPC communication                      | Event streaming                  | Message broker                       |
+      | Communication       | Usually synchronous               | Usually synchronous                    | Asynchronous                     | Asynchronous                         |
+      | Protocol            | HTTP                              | HTTP/2                                 | Kafka protocol over TCP          | AMQP / other protocols               |
+      | Data format         | Usually JSON                      | Protocol Buffers                       | Binary/serialized messages       | Messages                             |
+      | Best for            | Public APIs, simple service calls | Fast internal service-to-service calls | Event streaming, high throughput | Task queues, reliable messaging      |
+      | Communication model | Request → Response                | Request → Response                     | Producer → Topic → Consumer      | Producer → Queue/Exchange → Consumer |
+      | Coupling            | Request/response                  | Request/response                       | Event-based                      | Message-based                        |
+
+      a. RestTemplate                      2. WebClient                                         3. OpenFeign
+         Common methods:                      Common methods:                                      With Feign Client, you normally define the HTTP method using annotations:
+         restTemplate.getForObject()          webClient.get()                                      @GetMapping
+         restTemplate.getForEntity()          webClient.post()                                     @PostMapping
+         restTemplate.postForObject()         webClient.put()                                      @PutMapping
+         restTemplate.postForEntity()         webClient.patch()                                    @PatchMapping
+         restTemplate.put()                   webClient.delete()                                   @DeleteMapping
+         restTemplate.delete()                Then:
+         restTemplate.exchange()              .retrieve() is used to retrieve the response.
+
+5. What happens if Service A calls Service B and Service B is down?
+   “If Service A calls Service B and Service B is unavailable, the request may fail due to a connection timeout,
+   connection refusal, or a 503 Service Unavailable response. To handle this situation, I would use a Circuit Breaker
+   pattern with Resilience4j to prevent repeated calls to the failing service. Depending on the operation, I could also
+   configure timeouts, retries, and a fallback response.”
+   How do we handle it?
+   --->Timeout: Avoid waiting indefinitely for Service B.
+   --->Retry: Retry transient failures a limited number of times.
+   --->Circuit Breaker: Temporarily stop calls to Service B when failures exceed a threshold.
+   --->Fallback: Return a safe alternative response if one is appropriate.
+
+6. What is a timeout?
+   “A timeout is the maximum amount of time a service waits for an operation to complete. If the operation doesn't
+   complete within that time, it times out and the caller can handle the failure.”
+   Connection timeout: Maximum time allowed to establish a connection with another service.
+   Read/response timeout: Maximum time allowed to wait for a response after the connection is established.
+
+7. What is Bulkhead Pattern?
+   A Bulkhead Pattern is a design pattern used in microservices to isolate resources so that a failure or overload in one
+   service does not affect the entire application.
+
+8. How do you implement Circuit Breaker using Resilience4j?
+   In Spring Boot, we can use Resilience4j's @CircuitBreaker annotation.
+   a. Add Resilience4j dependency
+      For Spring Boot 3:
+      <dependency>
+         <groupId>org.springframework.cloud</groupId>
+         <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+     </dependency>
+
+   b. Add @CircuitBreaker
+      @CircuitBreaker(name = "paymentService", fallbackMethod = "paymentFallback")
+      public PaymentResponse callPayment() {
+         return paymentClient.getPayment();
+      }
+      Fallback:
+      public PaymentResponse paymentFallback(Exception ex) {
+          return new PaymentResponse("PAYMENT_PENDING");
+      }
+
+   c. Configure it
+      resilience4j:
+        circuitbreaker:
+          instances:
+            paymentService:
+              failureRateThreshold: 50
+              slidingWindowSize: 10
+              minimumNumberOfCalls: 5
+              waitDurationInOpenState: 10s
+
+      Meaning:
+      failureRateThreshold: 50 → circuit opens when failure rate reaches 50%.
+      minimumNumberOfCalls: 5 → start calculating failure rate after at least 5 calls.
+      slidingWindowSize: 10 → monitor the latest 10 calls.
+      waitDurationInOpenState: 10s → stay OPEN for 10 seconds before moving toward HALF_OPEN.
+       Flow
+       Order Service
+            ↓
+       Payment Service
+            ↓
+       Failures increase
+            ↓
+       Circuit Breaker OPEN
+            ↓
+       Don't call Payment
+            ↓
+       Fallback
+
+   After the wait period:
+      OPEN
+        ↓
+      HALF_OPEN
+        ↓
+      Test call
+       ├── SUCCESS → CLOSED
+       └── FAILURE → OPEN
+   ⭐ Interview answer
+
+   "I implement Circuit Breaker using Resilience4j's @CircuitBreaker annotation. I configure the failure threshold,
+   sliding window, minimum number of calls, and wait duration. When failures cross the threshold, the circuit changes
+   from CLOSED to OPEN and calls fail fast instead of hitting the unhealthy service. After the configured wait period,
+   it moves to HALF_OPEN and allows test calls. If the service recovers, it returns to CLOSED; otherwise, it goes back
+   to OPEN. I can also configure a fallback for graceful handling."
+
+9. How do you implement Rate Limiting in Spring Boot?
+   "I would implement rate limiting at the API Gateway so that excessive traffic is rejected before it reaches the
+   downstream services. In Spring Cloud Gateway, we can use the RequestRateLimiter filter, commonly backed by Redis,
+   to maintain the request count in a distributed environment."
+
+  ⭐ Remember
+    Rate Limiting → API Gateway
+    Distributed Rate Limiting → API Gateway + Redis
+    Too many requests → HTTP 429
+
+10. Why is 2PC generally avoided in Microservices?
+    2PC (Two-Phase Commit) is a distributed transaction protocol that ensures multiple services or databases either
+    commit a transaction together or roll it back.
+
+    It is generally avoided in microservices for three main reasons:
+    --Tight coupling: Multiple services must participate in the same transaction.
+    --Performance: Resources may remain locked while the transaction coordinator waits for all participants.
+    --Availability: If the coordinator or a participant fails during the protocol, transactions can be delayed and
+    resources may remain blocked.
+
+11. How do you achieve eventual consistency? What happens if the compensation itself fails?
+    Eventual consistency is a consistency model in distributed systems where data across multiple services may not be
+    immediately consistent, but it will become consistent over time if no new updates occur and the system successfully
+    processes pending operations.
+
+    “In microservices, we achieve eventual consistency using event-driven communication, message queues such as Kafka or
+     IBM MQ, and the Saga Pattern. Each service commits its local transaction and publishes an event. Other services
+     consume these events and update their own data. We use retries, idempotent processing, and the Transactional Outbox
+     pattern to ensure events are processed reliably.”
+
+     For example, payment succeeds, inventory reservation fails, and the refund request also fails because the Payment
+     Service is temporarily unavailable
+     How do we handle it?
+      1. Retry: Retry transient failures with exponential backoff and jitter.
+      2. Persist the state: Store the Saga status, such as COMPENSATION_PENDING, so a restart does not lose the workflow.
+      3. Ensure idempotency: Use a unique refund or idempotency key so retries do not issue duplicate refunds.
+      4. Monitor and alert: If retries are exhausted, alert the support team and keep the compensation pending for recovery.
+      5. Reconcile: Verify the actual payment/refund status with the payment provider before retrying uncertain operations.
+
+12.
+
+
+

@@ -1,519 +1,631 @@
-1. @Transaction
+--RestClient || webclient || OpenFiegn
+1. @Transactional
+   @Transactional is a Spring annotation used to manage database transactions declaratively. It ensures that a group of
+   database operations executes within a transaction, so they can be committed together or rolled back when an eligible
+   failure occurs.
 | Propagation       | If transaction exists | If no transaction |
 | ----------------- | --------------------- | ----------------- |
 | **REQUIRED**      | Join                  | Create new        |
 | **REQUIRES_NEW**  | Suspend + create new  | Create new        |
 | **SUPPORTS**      | Join                  | No transaction    |
-| **MANDATORY**     | Join                  | ❌ Exception       |
-| **NESTED**        | Create savepoint      | New transaction*  |
 | **NOT_SUPPORTED** | Suspend               | No transaction    |
-| **NEVER**         | ❌ Exception           | No transaction    |
+| **NEVER**         | ❌ Exception           | No transaction   |
+| **MANDATORY**     | Join                  | ❌ Exception      |
+| **NESTED**        | Create savepoint      | New transaction*  |
+
+
+REQUIRED Propagation realtime scenario:-
+Suppose an application owner requests the READ role for a user. The system needs to save the role assignment and its
+approval details.
+Ex:-
+    @Transactional
+    public void assignRole() {
+        roleRepository.save(roleAssignment);
+        saveApproval();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void saveApproval() {
+        approvalRepository.save(approval);
+    }
+    Assuming saveApproval() is called through the Spring transactional proxy, both methods participate in the same
+    transaction.
+
 
 2. Notification system
 Retry + DLQ + Idempotency + Monitoring
 
+3. What is the difference between client-side and server-side service discovery?
+   Client-side service discovery: The client queries the service registry to discover available service instances and
+   selects an instance to send the request to.
+   Server-side service discovery: The client sends the request to a load balancer or router, which discovers or identifies
+   an available service instance and forwards the request to it.
 
-Absolutely. For UBS, S&P, and Goldman Sachs client rounds, I would prepare Microservices in a progression from fundamentals → design → distributed systems → production problems → hard architecture scenarios.
+4. Difference b/n Bounded context and MicroServices?
+   Bounded Context: Groups business rules and responsibilities within a clearly defined business area.
+   Microservice: A small, independently deployable service focused on a specific business capability.
 
-Since you have a Java/Spring background, I’d especially focus on Spring Boot, REST, Kafka, DB, transactions, resilience, security, observability, and deployment.
+
 
 🟢 Level 1 — Microservices Basics
 1. What is Microservices Architecture?
-"Microservices Architecture is an architectural style where a large application is divided into small, loosely coupled, independently deployable services. In a banking application, for example, we can have separate Customer, Account, Payment, Loan, and Notification services. Each service is responsible for a specific business capability, can be developed and deployed independently, and typically owns its own data. These services communicate with each other using mechanisms such as REST, gRPC, or Kafka."
+   "Microservices Architecture is an architectural style where a large application is divided into small, loosely coupled,
+    independently deployable services. In a banking application, for example, we can have separate Customer, Account,
+    Payment, Loan, and Notification services. Each service is responsible for a specific business capability, can be
+    developed and deployed independently, and typically owns its own data. These services communicate with each other
+    using mechanisms such as REST, gRPC, or Kafka."
 
 2. What is the difference between Monolith and Microservices?
-| Monolith                                | Microservices                              |
-| --------------------------------------- | ------------------------------------------ |
-| One large application                   | Multiple independent services              |
-| Usually one deployment unit             | Each service can be deployed independently |
-| Modules are tightly coupled             | Services are loosely coupled               |
-| Usually one shared DB                   | Usually database per service               |
-| Scale entire application                | Scale individual services                  |
-| Failure can affect entire application   | Better fault isolation                     |
-| Simple to develop initially             | More complex operationally                 |
-| Simple communication inside application | Network communication between services     |
-| Simple deployment                       | More complex deployment                    |
-| Easier transaction management           | Distributed transactions are challenging   |
+   | Monolith                                | Microservices                              |
+   | --------------------------------------- | ------------------------------------------ |
+   | One large application                   | Multiple independent services              |
+   | Usually one deployment unit             | Each service can be deployed independently |
+   | Modules are tightly coupled             | Services are loosely coupled               |
+   | Usually one shared DB                   | Usually database per service               |
+   | Scale entire application                | Scale individual services                  |
+   | Failure can affect entire application   | Better fault isolation                     |
+   | Simple to develop initially             | More complex operationally                 |
+   | Simple communication inside application | Network communication between services     |
+   | Simple deployment                       | More complex deployment                    |
+   | Easier transaction management           | Distributed transactions are challenging   |
 
 3. What are the advantages of Microservices?
-"The main advantages of Microservices are scalability, loose coupling, independent development, independent deployment, and technology flexibility.
+   "The main advantages of Microservices are scalability, loose coupling, High availability and fault isolation,
+   independent development, independent deployment, and technology flexibility"
 
-For example, in a banking application, if the Payment Service receives high traffic, we can scale only that service without scaling the entire application. Services are loosely coupled because they communicate through well-defined contracts. Different teams can independently develop Account, Payment, and Loan services, and each service can be deployed independently. Microservices also provide technology flexibility, so different services can use different technologies when required. Additionally, they provide better fault isolation and allow faster release cycles."
+   For example, in a banking application, if the Payment Service receives high traffic, we can scale only that service
+   without scaling the entire application. Services are loosely coupled because they communicate through well-defined
+   contracts. Different teams can independently develop Account, Payment, and Loan services, and each service can be
+   deployed independently. Microservices also provide technology flexibility, so different services can use different
+   technologies when required. Additionally, they provide better fault isolation and allow faster release cycles."
 
 4. What are the disadvantages/challenges of Microservices?
-Microservices Challenges
-
-1. Infrastructure complexity
-2. Multiple databases → Data consistency
-3. Network failures
-4. Distributed transactions
-5. Debugging & monitoring
-6. Deployment complexity
-7. Security between services
-8. More distributed-system patterns
-
+   Microservices Challenges
+     1. Infrastructure complexity
+     2. Multiple databases → Data consistency
+     3. Network failures
+     4. Distributed transactions
+     5. Debugging & monitoring
+     6. Deployment complexity
+     7. Security between services
+     8. More distributed-system patterns
 
 5. When would you choose Microservices over a Monolith?
-"I would choose Microservices over a Monolith when the application is large and has multiple independent business capabilities, and when we need independent scaling, deployment, and development. For example, in a banking application, Payment, Account, Loan, and Notification can be separate services. If Payment receives high traffic, we can scale only the Payment Service. Multiple teams can also develop and deploy services independently. Microservices also provide technology flexibility and loose coupling between services. Additionally, with proper fault isolation and deployment strategies, we can improve availability and reduce the impact of failures or deployments."
+   "I would choose Microservices over a Monolith when the application is large and has multiple independent business
+   capabilities, and when we need independent scaling, deployment, and development. For example, in a banking application,
+   Payment, Account, Loan, and Notification can be separate services. If Payment receives high traffic, we can scale only
+   the Payment Service. Multiple teams can also develop and deploy services independently. Microservices also provide
+   technology flexibility and loose coupling between services. Additionally, with proper fault isolation and deployment
+   strategies, we can improve availability and reduce the impact of failures or deployments."
 
 6. What is Service Decomposition?
-"Service decomposition is the process of breaking a large application into smaller, independently manageable services based on business capabilities. For example, in a banking application, instead of having one large application handling customers, accounts, payments, and loans, we can create separate Customer, Account, Payment, and Loan services. Each service owns its business logic and can be developed, deployed, and scaled independently."
+   "Service decomposition is the process of breaking a large application into smaller, independently manageable services
+   based on business capabilities. For example, in a banking application, instead of having one large application handling
+   customers, accounts, payments, and loans, we can create separate Customer, Account, Payment, and Loan services. Each
+   service owns its business logic and can be developed, deployed, and scaled independently."
 
 7. How do you decide the boundaries of a microservice?
-Important rule
+   Important rule
 
-A good microservice should generally have:
+   A good microservice should generally have:
 
-High Cohesion
-      +
-Loose Coupling
-      +
-Clear Data Ownership
-      +
-Clear Business Responsibility
+   High Cohesion
+         +
+   Loose Coupling
+         +
+   Clear Data Ownership
+         +
+   Clear Business Responsibility
 
-"I decide microservice boundaries primarily based on business capabilities and bounded contexts. First, I identify independent business domains such as Account, Payment, Loan, and Customer Management. Within each service, I keep highly related functionality together to maintain high cohesion. I also ensure loose coupling between services and clear ownership of data. I consider whether a business capability needs to change, deploy, or scale independently. Finally, I consider transaction boundaries so that we don't unnecessarily create distributed transactions. The goal is to create services that are cohesive, loosely coupled, independently deployable, and have clear business and data ownership."
+   "I decide microservice boundaries primarily based on business capabilities and bounded contexts. First, I identify
+   independent business domains such as Account, Payment, Loan, and Customer Management. Within each service, I keep highly
+   related functionality together to maintain high cohesion. I also ensure loose coupling between services and clear
+   ownership of data. I consider whether a business capability needs to change, deploy, or scale independently. Finally,
+   I consider transaction boundaries so that we don't unnecessarily create distributed transactions. The goal is to create
+   services that are cohesive, loosely coupled, independently deployable, and have clear business and data ownership."
 
 8. What is Bounded Context?----------------------------------check again
-"A Bounded Context is a clearly defined boundary within a business domain where a particular domain model, terminology, and business rules have a specific meaning. For example, in a banking system, Account Management, Payment Processing, and Loan Management can be different bounded contexts. The term Account may have different meanings and rules in each context. Bounded Contexts help us avoid a large shared domain model and help us identify appropriate boundaries for microservices."
-
+    --->"A Bounded Context is a concept in Domain-Driven Design (DDD) where we define a clear boundary within which a
+      domain model and its related business rules have a specific meaning.
+   "A Bounded Context is a clearly defined boundary within a business domain where a particular domain model, terminology,
+   and business rules have a specific meaning. For example, in a banking system, Account Management, Payment Processing,
+   and Loan Management can be different bounded contexts. The term Account may have different meanings and rules in each
+   context. Bounded Contexts help us avoid a large shared domain model and help us identify appropriate boundaries for
+   microservices."
 
 9. What is Domain-Driven Design (DDD)?
-   Domain-Driven Design, or DDD, is a software design approach where we design the application around the business domain, business concepts, and business rules.
-For example, in a banking application, concepts such as Customer, Account, Transaction, Payment, and Loan represent different parts of the business domain.
-In microservices, DDD helps us identify business boundaries called bounded contexts. Each bounded context can become a separate microservice with its own business logic and data ownership.
-The main goal is to keep the software model closely aligned with the actual business requirements and make the system easier to understand and evolve.
-
+   --->Domain-Driven Design, or DDD, is a software design approach where we design the application around the business
+   domain, business concepts, and business rules.
+   Example:- in a banking application, concepts such as Customer,Account, Transaction, Payment, and Loan represent
+   different parts of the business domain.In microservices, DDD helps us identify business boundaries called bounded
+   contexts. Each bounded context can become a separate microservice with its own business logic and data ownership.The
+   main goal is to keep the software model closely aligned with the actual business requirements and make the system
+   easier to understand and evolve.
 
 10. What is the difference between Microservices and SOA?
 
 11. What is a stateless service?
-A stateless service is a service that does not store client/session information between requests.
-Each request contains all the information needed to process it.
-
+    A stateless service is a service that does not store client/session information between requests.Each request
+    contains all the information needed to process it.
 
 12. Why should microservices generally be stateless?
-Microservices are generally made stateless because it makes them easier to scale, recover, and load balance.
-1. Easy horizontal scaling
-2. If one instance crashes
-3. Better load balancing
-4. Easier deployment
-5. Easier auto-scaling
-
+    Microservices are generally made stateless because it makes them easier to scale, recover, and load balance.
+    1. Easy horizontal scaling
+    2. Better load balancing
+    3. High Availability and fault recovery
+    4. Easier deployment and auto-scaling
 
 13. Can two microservices share the same database?
-Generally, two microservices should not share the same database. Each microservice should own its data and database. This provides loose coupling, independent deployment, independent scaling, and better service autonomy.
+    Generally, two microservices should not share the same database. Each microservice should own its data and database.
+    This provides loose coupling, independent deployment, independent scaling, and better service autonomy.
 
 14. Why avoid a shared database?
+    We generally avoid a shared database because it creates tight coupling between microservices. If one microservice
+    changes the database schema, it may affect other microservices that depend on the same tables. It also makes
+    independent development and deployment more difficult.
 
-If PaymentService directly accesses AccountService's tables:
+    If PaymentService directly accesses AccountService's tables:
+    PaymentService → Account DB
+    then PaymentService becomes tightly coupled to AccountService's database schema.
+    If AccountService changes:
+    account_table
+    PaymentService may break.
 
-PaymentService → Account DB
+    How should they communicate?
+    Use APIs or events:
+    PaymentService
+          |
+          | REST/gRPC
+          ↓
+    AccountService
+          |
+          ↓
+    Account DB
 
-then PaymentService becomes tightly coupled to AccountService's database schema.
-
-If AccountService changes:
-
-account_table
-
-PaymentService may break.
-
-How should they communicate?
-
-Use APIs or events:
-
-PaymentService
-      |
-      | REST/gRPC
-      ↓
-AccountService
-      |
-      ↓
-Account DB
-
-or asynchronously:
-
-PaymentService
-      |
-    Kafka
-      |
-      ↓
-AccountService
-      |
-      ↓
-Account DB
-
+    or asynchronously:
+    PaymentService
+          |
+        Kafka
+          |
+          ↓
+    AccountService
+          |
+          ↓
+    Account DB
 
 14. Why is a database per service recommended?
-Database per service is recommended because it gives each microservice ownership of its data, reduces coupling, enables independent deployment and scaling, provides better failure isolation, and allows each service to choose the appropriate persistence technology. Other services should access that data through APIs or events rather than directly accessing another service's database.
+    Database per service is recommended because it gives each microservice ownership of its data, reduces coupling,
+    enables independent deployment and scaling, provides better failure isolation, and allows each service to choose
+    the appropriate persistence technology. Other services should access that data through APIs or events rather than
+    directly accessing another service's database.
 
 15. What is API Gateway?
-API Gateway is a single entry point for clients to access multiple microservices in a microservices architecture.
-
-It routes client requests to the appropriate microservice and is a good place to implement cross-cutting concerns such as authentication, authorization, rate limiting, logging, monitoring, and request validation.
-
-Since a single API Gateway instance could become a single point of failure, in production we typically run multiple API Gateway instances behind a load balancer. If one instance fails, the load balancer routes traffic to another healthy instance.
+    -->API Gateway is a single entry point for clients to access multiple microservices in a microservices architecture.
+    -->It routes client requests to the appropriate microservice and is a good place to implement cross-cutting concerns
+    such as authentication, authorization, rate limiting, logging, monitoring, and request validation.
+    -->Since a single API Gateway instance could become a single point of failure, in production we typically run
+    multiple API Gateway instances behind a load balancer. If one instance fails, the load balancer routes traffic to
+    another healthy instance.
 
 16. Why do we need an API Gateway?
-API Gateway provides a single entry point for clients to access multiple microservices. It routes client requests to the appropriate microservice and centralizes cross-cutting concerns such as authentication, authorization, rate limiting, logging, monitoring, and request/response transformation. It also hides the internal microservice architecture from clients.
-
-In production, we typically deploy multiple API Gateway instances behind a load balancer for high availability and scalability. If one Gateway instance goes down, the load balancer routes traffic to another healthy instance.
-
+    API Gateway provides a single entry point for clients to access multiple microservices. It routes client requests
+    to the appropriate microservice and centralizes cross-cutting concerns such as authentication, authorization, rate
+    limiting, logging, monitoring, and request/response transformation. It also hides the internal microservice
+    architecture from clients.
+    --->In production, we typically deploy multiple API Gateway instances behind a load balancer for high availability
+    and scalability. If one Gateway instance goes down, the load balancer routes traffic to another healthy instance.
 
 17. API Gateway vs Load Balancer?
-“An API Gateway is responsible for API-level concerns such as routing requests to the appropriate microservice, authentication, authorization, rate limiting, logging, and transformation.
- A load balancer distributes traffic across healthy instances of a service or gateway to provide scalability and high availability.”
-
+    “An API Gateway is responsible for API-level concerns such as routing requests to the appropriate microservice,
+    authentication, authorization, rate limiting, logging, and transformation.A load balancer distributes traffic across
+    healthy instances of a service or gateway to provide scalability and high availability.”
 
 18. What is Service Discovery?
-“Service Discovery allows services to dynamically find each other without hardcoding IP addresses and port numbers. Each service registers itself with a Service Registry such as Eureka Server. When the API Gateway or another service needs to communicate with a service, it queries the registry to get the available instances and routes the request accordingly.”
-
+    “Service Discovery allows services to dynamically find each other without hardcoding IP addresses and port numbers.
+    Each service registers itself with a Service Registry such as Eureka Server. When the API Gateway or another service
+    needs to communicate with a service, it queries the registry to get the available instances and routes the request
+    accordingly.”
 
 19. Why do we need Service Discovery?
-We need Service Discovery so that microservices can communicate with each other without hardcoding IP addresses and port numbers. Services register themselves with a Service Registry, and when another service needs to communicate with them, it can discover the available instances dynamically.
-
+    We need Service Discovery so that microservices can communicate with each other without hardcoding IP addresses and
+    port numbers. Services register themselves with a Service Registry, and when another service needs to communicate
+    with them, it can discover the available instances dynamically.
 
 20. What is the difference between client-side and server-side service discovery?
+    In client-side service discovery, the client queries the service registry, gets the available service instances, and
+    selects one itself. In server-side service discovery, the client sends the request to a load balancer or gateway, and
+    that component queries the registry and routes the request to an appropriate service instance.
 
-In client-side service discovery, the client queries the service registry, gets the available service instances, and selects one itself. In server-side service discovery, the client sends the request to a load balancer or gateway, and that component queries the registry and routes the request to an appropriate service instance.
-
-|                          | Client-Side | Server-Side             |
-| ------------------------ | ----------- | ----------------------- |
-| Who discovers service?   | Client      | Load Balancer / Gateway |
-| Client knows registry?   | Yes         | No                      |
-| Client chooses instance? | Yes         | No                      |
-| Load balancing           | Client-side | Server-side             |
-| Client complexity        | Higher      | Lower                   |
+    |                          | Client-Side | Server-Side             |
+    | ------------------------ | ----------- | ----------------------- |
+    | Who discovers service?   | Client      | Load Balancer / Gateway |
+    | Client knows registry?   | Yes         | No                      |
+    | Client chooses instance? | Yes         | No                      |
+    | Load balancing           | Client-side | Server-side             |
+    | Client complexity        | Higher      | Lower                   |
 
 
 🟢 Level 2 — REST & Communication
 1. How do microservices communicate with each other?
-“Microservices can communicate synchronously or asynchronously. For synchronous communication, we commonly use REST APIs or gRPC, where the caller waits for a response. For asynchronous communication, we use messaging systems such as Kafka or RabbitMQ, where services communicate through events or messages without requiring an immediate response.”
+   “Microservices can communicate synchronously or asynchronously. For synchronous communication, we commonly use REST
+   APIs or gRPC, where the caller waits for a response. For asynchronous communication, we use messaging systems such
+   as Kafka or RabbitMQ, where services communicate through events or messages without requiring an immediate response.”
 
-2.Difference between:  ------------------------check again
-REST
-gRPC
-Kafka
-RabbitMQ
-|                     | REST                              | gRPC                                   | Kafka                            | RabbitMQ                             |
-| ------------------- | --------------------------------- | -------------------------------------- | -------------------------------- | ------------------------------------ |
-| Type                | API communication                 | RPC communication                      | Event streaming                  | Message broker                       |
-| Communication       | Usually synchronous               | Usually synchronous                    | Asynchronous                     | Asynchronous                         |
-| Protocol            | HTTP                              | HTTP/2                                 | Kafka protocol over TCP          | AMQP / other protocols               |
-| Data format         | Usually JSON                      | Protocol Buffers                       | Binary/serialized messages       | Messages                             |
-| Best for            | Public APIs, simple service calls | Fast internal service-to-service calls | Event streaming, high throughput | Task queues, reliable messaging      |
-| Communication model | Request → Response                | Request → Response                     | Producer → Topic → Consumer      | Producer → Queue/Exchange → Consumer |
-| Coupling            | Request/response                  | Request/response                       | Event-based                      | Message-based                        |
+2. Difference between: REST & gRPC & Kafka & RabbitMQ    ------------------------check again
+   |                     | REST                              | gRPC                                   | Kafka                            | RabbitMQ                             |
+   | ------------------- | --------------------------------- | -------------------------------------- | -------------------------------- | ------------------------------------ |
+   | Type                | API communication                 | RPC communication                      | Event streaming                  | Message broker                       |
+   | Communication       | Usually synchronous               | Usually synchronous                    | Asynchronous                     | Asynchronous                         |
+   | Protocol            | HTTP                              | HTTP/2                                 | Kafka protocol over TCP          | AMQP / other protocols               |
+   | Data format         | Usually JSON                      | Protocol Buffers                       | Binary/serialized messages       | Messages                             |
+   | Best for            | Public APIs, simple service calls | Fast internal service-to-service calls | Event streaming, high throughput | Task queues, reliable messaging      |
+   | Communication model | Request → Response                | Request → Response                     | Producer → Topic → Consumer      | Producer → Queue/Exchange → Consumer |
+   | Coupling            | Request/response                  | Request/response                       | Event-based                      | Message-based                        |
 
-1. RestTemplate
+   a. RestTemplate                      2. WebClient                                         3. OpenFeign
+      Common methods:                      Common methods:                                      With Feign Client, you normally define the HTTP method using annotations:
+      restTemplate.getForObject()          webClient.get()                                      @GetMapping
+      restTemplate.getForEntity()          webClient.post()                                     @PostMapping
+      restTemplate.postForObject()         webClient.put()                                      @PutMapping
+      restTemplate.postForEntity()         webClient.patch()                                    @PatchMapping
+      restTemplate.put()                   webClient.delete()                                   @DeleteMapping
+      restTemplate.delete()                Then:
+      restTemplate.exchange()              .retrieve() is used to retrieve the response.
 
-Common methods:
+   We can use RestTemplate, WebClient, or OpenFeign for synchronous service-to-service communication. In newer Spring
+   Boot applications, WebClient or OpenFeign are commonly preferred depending on the requirement."
 
-restTemplate.getForObject()
-restTemplate.getForEntity()
+3. When would you use synchronous communication?
+   We use synchronous communication when the calling service needs an immediate response from another service to continue
+   its processing. For example, during a transaction, the Transaction Service may synchronously call the Account Service
+   to fetch the current balance. After receiving the balance, it can validate the transaction and proceed with the debit
+   or credit operation.”
 
-restTemplate.postForObject()
-restTemplate.postForEntity()
-
-restTemplate.put()
-
-restTemplate.delete()
-
-restTemplate.exchange()
-2. WebClient
-
-Common methods:
-
-webClient.get()
-webClient.post()
-webClient.put()
-webClient.patch()
-webClient.delete()
-
-Then:
-
-.retrieve()
-
-is used to retrieve the response.
-
-3. OpenFeign
-
-With Feign Client, you normally define the HTTP method using annotations:
-
-@GetMapping
-@PostMapping
-@PutMapping
-@PatchMapping
-@DeleteMapping
-
-We can use RestTemplate, WebClient, or OpenFeign for synchronous service-to-service communication. In newer Spring Boot applications, WebClient or OpenFeign are commonly preferred depending on the requirement."
+4. When would you use asynchronous communication?
+   We use asynchronous communication when the calling service does not need an immediate response from the other service
+   and we want to reduce tight coupling. The calling service can publish an event/message and continue its processing
+   without waiting for the consumer to finish.
 
 
+5. REST vs Kafka — when would you choose which?
+   |                    | REST                                   | Kafka                                    |
+   | ------------------ | -------------------------------------- | ---------------------------------------- |
+   | Communication      | Synchronous request/response           | Asynchronous event/message               |
+   | Caller waits?      | Usually yes                            | No                                       |
+   | Coupling           | Higher                                 | Lower                                    |
+   | Best for           | Getting data / performing an operation | Publishing events                        |
+   | Example            | Get account balance                    | Transaction completed event              |
+   | Multiple consumers | Caller must call each service          | Multiple consumers can consume the event |
 
-3.When would you use synchronous communication?
-We use synchronous communication when the calling service needs an immediate response from another service to continue its processing. For example, during a transaction, the Transaction Service may synchronously call the Account Service to fetch the current balance. After receiving the balance, it can validate the transaction and proceed with the debit or credit operation.”
-
-4.When would you use asynchronous communication?
-We use asynchronous communication when the calling service does not need an immediate response from the other service and we want to reduce tight coupling. The calling service can publish an event/message and continue its processing without waiting for the consumer to finish.
-
-
-5.REST vs Kafka — when would you choose which?
-|                    | REST                                   | Kafka                                    |
-| ------------------ | -------------------------------------- | ---------------------------------------- |
-| Communication      | Synchronous request/response           | Asynchronous event/message               |
-| Caller waits?      | Usually yes                            | No                                       |
-| Coupling           | Higher                                 | Lower                                    |
-| Best for           | Getting data / performing an operation | Publishing events                        |
-| Example            | Get account balance                    | Transaction completed event              |
-| Multiple consumers | Caller must call each service          | Multiple consumers can consume the event |
-
-6.What happens if Service A calls Service B and Service B is down?
-“If Service A synchronously calls Service B and B is down, the request will fail or timeout. We handle this using resilience patterns such as timeouts, limited retries, circuit breakers, and fallbacks where appropriate. For asynchronous communication using Kafka, Service A can publish an event without waiting for Service B, and Service B can process the event when it becomes available.”
+6. What happens if Service A calls Service B and Service B is down?
+   “If Service A synchronously calls Service B and B is down, the request will fail or timeout. We handle this using
+   resilience patterns such as timeouts, limited retries, circuit breakers, and fallbacks where appropriate. For
+   asynchronous communication using Kafka, Service A can publish an event without waiting for Service B, and Service B
+   can process the event when it becomes available.”
 
 7. How do you prevent cascading failures?
-“To prevent cascading failures, we use resilience patterns such as Circuit Breaker, timeouts, controlled retries with backoff, bulkheads, rate limiting, and fallbacks. The Circuit Breaker is particularly important because it stops calling an unhealthy downstream service after repeated failures, allowing the rest of the system to remain available.”
+   “To prevent cascading failures, we use resilience patterns such as Circuit Breaker, timeouts, controlled retries
+   with backoff, bulkheads, rate limiting, and fallbacks. The Circuit Breaker is particularly important because it stops
+   calling an unhealthy downstream service after repeated failures, allowing the rest of the system to remain available.”
 
-8.What is a timeout?
-A timeout is a maximum amount of time that a service waits for a response from a downstream service. If the response is not received within that configured time, the request is terminated and treated as a failure.
+8. What is a timeout?
+   A timeout is a maximum amount of time that a service waits for a response from a downstream service. If the response
+   is not received within that configured time, the request is terminated and treated as a failure.
 
-9.What is connection timeout vs read timeout?------------------------check again
-“Connection timeout is the maximum time allowed to establish a connection with a downstream service. Read timeout is the maximum time the client waits for data or a response after the connection has been established.”
+9. What is connection timeout vs read timeout?------------------------check again
+   Connection timeout:- is the maximum time allowed to establish a connection with a downstream service.
+   Read timeout:- is the maximum time the client waits for data or a response after the connection has been established.
 
-10.What is retry?
-Retry means attempting the same request again when a downstream service call fails, usually because of a temporary failure such as a network issue or brief service unavailability. We should configure a limited number of retries with a delay/backoff between attempts.
+10. What is retry?
+    Retry means attempting the same request again when a downstream service call fails, usually because of a temporary
+    failure such as a network issue or brief service unavailability. We should configure a limited number of retries with
+    a delay/backoff between attempts.
 
-11.When should you NOT retry?
-"I would not retry permanent failures such as validation errors, authentication failures, authorization failures, or business failures like insufficient funds. I would generally retry only transient failures such as timeouts, temporary network errors, or temporary 5xx errors, and for payment operations I would use idempotency to prevent duplicate transactions."
+11. When should you NOT retry?
+    "I would not retry permanent failures such as validation errors, authentication failures, authorization failures,
+    or business failures like insufficient funds. I would generally retry only transient failures such as timeouts,
+    temporary network errors, or temporary 5xx errors, and for payment operations I would use idempotency to prevent
+    duplicate transactions."
 
-
-12.What is exponential backoff?---------check again
-Exponential backoff means increasing the time gap between each retry attempt instead of retrying immediately.
+12. What is exponential backoff?---------check again
+    Exponential backoff means increasing the time gap between each retry attempt instead of retrying immediately.
 
 13. What is jitter?
-"Jitter adds randomness to the exponential backoff delay so that multiple clients or service instances don't retry simultaneously. This prevents synchronized retry spikes and reduces additional load on an unhealthy service
+   "Jitter adds randomness to the exponential backoff delay so that multiple clients or service instances don't retry
+   simultaneously. This prevents synchronized retry spikes and reduces additional load on an unhealthy service
 
-What is Circuit Breaker?
-Explain Circuit Breaker states:
-CLOSED
-OPEN
-HALF_OPEN
-What is Bulkhead Pattern?====================chceck again
-What is Rate Limiting?
-Where would you implement Rate Limiting?
-API Gateway vs Application-level Rate Limiting?
-What is Idempotency?
-An operation is idempotent if performing the same operation multiple times has the same final effect as performing it once.
+14. What is Circuit Breaker?
+15. Explain Circuit Breaker states:
+    Suppose the Order Service calls the Payment Service, but the Payment Service repeatedly fails.
+    - CLOSED: Requests are allowed, and failures are monitored.
+    - OPEN: Calls are temporarily blocked to give the Payment Service time to recover.
+    - HALF-OPEN: A limited number of test requests are allowed to check whether the Payment Service has recovered.
+
+16. What is Bulkhead Pattern?====================chceck again
+    A Bulkhead Pattern is a design pattern used in microservices to isolate resources so that a failure or overload in
+    one service does not affect the entire application.
+
+17. What is Rate Limiting?
+    “Rate limiting is a technique used to control the number of requests a client can make within a specific time period.
+     We commonly implement it at the API Gateway to protect backend services from excessive traffic and ensure fair usage
+     of resources.”
+
+18. Where would you implement Rate Limiting?
+    “I would implement rate limiting at the API Gateway to control the number of requests from each client, user, or IP
+    address within a specific time window. If the limit is exceeded, the gateway returns HTTP 429 Too Many Requests and
+    prevents excessive traffic from reaching backend microservices.”
+
+19. API Gateway vs Application-level Rate Limiting?
+    Feature        API Gateway	                                            Application-level
+    Where?	       Before requests reach microservices	                    Inside an individual microservice
+    Purpose	       Protect the overall system and control incoming traffic	Protect specific business operations
+    Scope	       Multiple routes or services                           	Specific APIs or business logic
+    Example	       Limit a client to 100 requests/minute                 	Limit money transfers to 5/minute per user
+    Technologies	Spring Cloud Gateway, Redis	                            Resilience4j or custom logic with Redis
+
+20. What is Idempotency?
+    An operation is idempotent if performing the same operation multiple times has the same final effect as performing
+    it once.
 
 
 🟡 Level 3 — Spring Boot Microservices
 1. How do you create a Microservice using Spring Boot?
-"I create an independent Spring Boot application for each bounded business capability. Each service owns its business logic and preferably its own database. I expose REST APIs for synchronous communication and Kafka for asynchronous communication. Then I add cross-cutting components such as API Gateway, service discovery, security, timeout, retry, circuit breaker, centralized configuration, logging, and monitoring based on the enterprise requirements."
-
+   "I create an independent Spring Boot application for each bounded business capability. Each service owns its business
+   logic and preferably its own database. I expose REST APIs for synchronous communication and Kafka for asynchronous
+   communication. Then I add cross-cutting components such as API Gateway, service discovery, security, timeout, retry,
+   circuit breaker, centralized configuration, logging, and monitoring based on the enterprise requirements."
 
 2. How do services communicate using RestTemplate?
-"RestTemplate allows one Spring Boot microservice to communicate synchronously with another over HTTP. We configure a RestTemplate bean and use methods such as getForObject() or postForObject() to call the downstream service. Since it's blocking, we should configure appropriate timeouts and resilience mechanisms such as retry and circuit breaker."
-
+   "RestTemplate allows one Spring Boot microservice to communicate synchronously with another over HTTP. We configure
+   a RestTemplate bean and use methods such as getForObject() or postForObject() to call the downstream service. Since
+   it's blocking, we should configure appropriate timeouts and resilience mechanisms such as retry and circuit breaker."
 
 3. Why is WebClient preferred over RestTemplate in modern Spring applications?
-"WebClient is preferred over RestTemplate in modern Spring applications because WebClient supports non-blocking and reactive communication. It allows the application to handle many concurrent requests without blocking a thread while waiting for the downstream service response. It also supports streaming and reactive programming through Project Reactor."
-
-"WebClient is preferred because it provides non-blocking HTTP communication and integrates with Spring WebFlux and Project Reactor. This improves resource utilization and scalability when handling many concurrent requests. RestTemplate is synchronous and blocking, so it is mainly seen in existing Spring MVC applications."
+   "WebClient is preferred over RestTemplate in modern Spring applications because WebClient supports non-blocking and
+   reactive communication. It allows the application to handle many concurrent requests without blocking a thread while
+   waiting for the downstream service response. It also supports streaming and reactive programming through Project
+   Reactor."
+   -->"WebClient is preferred because it provides non-blocking HTTP communication and integrates with Spring WebFlux and
+   Project Reactor. This improves resource utilization and scalability when handling many concurrent requests.
+   RestTemplate is synchronous and blocking, so it is mainly seen in existing Spring MVC applications."
 
 
 4. What is OpenFeign?
-
-OpenFeign is a declarative HTTP client used in Spring Boot microservices to simplify communication between services.
-
-Instead of writing RestTemplate or WebClient code manually, you define an interface, and Feign generates the HTTP client implementation for you.
+   OpenFeign is a declarative HTTP client used in Spring Boot microservices to simplify communication between services.
+   -->Instead of writing RestTemplate or WebClient code manually, you define an interface, and Feign generates the HTTP
+   client implementation for you.
 
 
 5. Feign Client vs RestTemplate vs WebClient?
-| Feature                  | RestTemplate             | WebClient                      | OpenFeign                                 |
-| ------------------------ | ------------------------ | ------------------------------ | ----------------------------------------- |
-| Style                    | Imperative               | Reactive                       | Declarative                               |
-| Blocking                 | Yes                      | Non-blocking by design         | Typically blocking                        |
-| Code                     | More boilerplate         | Moderate                       | Very little                               |
-| Reactive support         | ❌                        | ✅                              | ❌                                         |
-| Easy to use              | Yes                      | Moderate                       | **Very easy**                             |
-| Best for                 | Existing/simple MVC apps | High concurrency/reactive apps | Simple microservice-to-microservice calls |
-| Spring Cloud integration | Limited                  | Good                           | **Excellent**                             |
+   | Feature                  | RestTemplate             | WebClient                      | OpenFeign                                 |
+   | ------------------------ | ------------------------ | ------------------------------ | ----------------------------------------- |
+   | Style                    | Imperative               | Reactive                       | Declarative                               |
+   | Blocking                 | Yes                      | Non-blocking by design         | Typically blocking                        |
+   | Code                     | More boilerplate         | Moderate                       | Very little                               |
+   | Reactive support         | ❌                       | ✅                            | ❌                                       |
+   | Easy to use              | Yes                      | Moderate                       | **Very easy**                             |
+   | Best for                 | Existing/simple MVC apps | High concurrency/reactive apps | Simple microservice-to-microservice calls |
+   | Spring Cloud integration | Limited                  | Good                           | **Excellent**                             |
 
 
 6. How do you configure timeout for Feign?
-Per-service configuration
-spring:
-  cloud:
-    openfeign:
-      client:
-        config:
-          payment-service:
-            connectTimeout: 2000
-            readTimeout: 5000
-          inventory-service:
-            connectTimeout: 1000
-            readTimeout: 3000
-Interview answer
+   Per-service configuration
+   spring:
+     cloud:
+       openfeign:
+         client:
+           config:
+             payment-service:
+               connectTimeout: 2000
+               readTimeout: 5000
+             inventory-service:
+               connectTimeout: 1000
+               readTimeout: 3000
+   Interview answer
+   "For OpenFeign, I configure connectTimeout and readTimeout under spring.cloud.openfeign.client.config. Connect timeout
+   controls how long we wait to establish the connection, while read timeout controls how long we wait for the response."
 
-"For OpenFeign, I configure connectTimeout and readTimeout under spring.cloud.openfeign.client.config. Connect timeout controls how long we wait to establish the connection, while read timeout controls how long we wait for the response."
-===========================================================================================================
-7.  How do you implement retry in Spring Boot?
-In Spring Boot, a common approach is Spring Retry or Resilience4j. For modern microservices, Resilience4j is commonly used, especially when you also need Circuit Breaker, Timeout, and Rate Limiter.
+7. How do you implement retry in Spring Boot?
+   In Spring Boot, a common approach is Spring Retry or Resilience4j. For modern microservices, Resilience4j is commonly
+   used, especially when you also need Circuit Breaker, Timeout, and Rate Limiter.
 
-Using Resilience4j
-@Retry(name = "paymentService")
-public PaymentResponse callPayment() {
-    return paymentClient.getPayment();
-}
+   Using Resilience4j
+   @Retry(name = "paymentService")
+   public PaymentResponse callPayment() {
+       return paymentClient.getPayment();
+   }
 
-Configuration:
+   Configuration:
+   resilience4j:
+     retry:
+       instances:
+         paymentService:
+           maxAttempts: 3
+           waitDuration: 2s
 
-resilience4j:
-  retry:
-    instances:
-      paymentService:
-        maxAttempts: 3
-        waitDuration: 2s
+   This means:
+   Call Payment
+       ↓
+   Failure
+       ↓
+   Wait 2 sec
+       ↓
+   Retry 1
+       ↓
+   Failure
+       ↓
+   Wait 2 sec
+       ↓
+   Retry 2
 
-This means:
+   maxAttempts: 3 means 3 total attempts, including the initial call.
+   Exponential backoff
+   For exponential backoff, configure an interval function, for example:
+   resilience4j:
+     retry:
+       instances:
+         paymentService:
+         maxAttempts: 3
+         enableExponentialBackoff: true
+         exponentialBackoffMultiplier: 2
+         waitDuration: 500ms
 
-Call Payment
-    ↓
-Failure
-    ↓
-Wait 2 sec
-    ↓
-Retry 1
-    ↓
-Failure
-    ↓
-Wait 2 sec
-    ↓
-Retry 2
-
-maxAttempts: 3 means 3 total attempts, including the initial call.
-
-Exponential backoff
-
-For exponential backoff, configure an interval function, for example:
-
-resilience4j:
-  retry:
-    instances:
-      paymentService:
-        maxAttempts: 3
-        enableExponentialBackoff: true
-        exponentialBackoffMultiplier: 2
-        waitDuration: 500ms
-
-Conceptually:
-
-Attempt 1 → immediate
-Attempt 2 → ~500ms
-Attempt 3 → ~1000ms
-Interview answer
-
-"I can implement retries in Spring Boot using Resilience4j. I configure the maximum number of attempts and wait duration, and for transient failures I can enable exponential backoff. I would avoid retrying permanent errors, and for payment operations I would combine retries with idempotency to prevent duplicate transactions
-
+   Conceptually:
+   Attempt 1 → immediate
+   Attempt 2 → ~500ms
+   Attempt 3 → ~1000ms
+   Interview answer
+   "I can implement retries in Spring Boot using Resilience4j. I configure the maximum number of attempts and wait
+   duration, and for transient failures I can enable exponential backoff. I would avoid retrying permanent errors, and
+   for payment operations I would combine retries with idempotency to prevent duplicate transactions
 
 8. How do you implement Circuit Breaker using Resilience4j?
-In Spring Boot, we can use Resilience4j's @CircuitBreaker annotation.
+   In Spring Boot, we can use Resilience4j's @CircuitBreaker annotation.
+   a. Add Resilience4j dependency
+      For Spring Boot 3:
+      <dependency>
+         <groupId>org.springframework.cloud</groupId>
+         <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+     </dependency>
 
-1. Add Resilience4j dependency
+   b. Add @CircuitBreaker
+      @CircuitBreaker(name = "paymentService", fallbackMethod = "paymentFallback")
+      public PaymentResponse callPayment() {
+         return paymentClient.getPayment();
+      }
+      Fallback:
+      public PaymentResponse paymentFallback(Exception ex) {
+          return new PaymentResponse("PAYMENT_PENDING");
+      }
 
-For Spring Boot 3:
+   c. Configure it
+      resilience4j:
+        circuitbreaker:
+          instances:
+            paymentService:
+              failureRateThreshold: 50
+              slidingWindowSize: 10
+              minimumNumberOfCalls: 5
+              waitDurationInOpenState: 10s
 
-<dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
-</dependency>
-2. Add @CircuitBreaker
-@CircuitBreaker(name = "paymentService", fallbackMethod = "paymentFallback")
-public PaymentResponse callPayment() {
-    return paymentClient.getPayment();
-}
+      Meaning:
+      failureRateThreshold: 50 → circuit opens when failure rate reaches 50%.
+      minimumNumberOfCalls: 5 → start calculating failure rate after at least 5 calls.
+      slidingWindowSize: 10 → monitor the latest 10 calls.
+      waitDurationInOpenState: 10s → stay OPEN for 10 seconds before moving toward HALF_OPEN.
+       Flow
+       Order Service
+            ↓
+       Payment Service
+            ↓
+       Failures increase
+            ↓
+       Circuit Breaker OPEN
+            ↓
+       Don't call Payment
+            ↓
+       Fallback
 
-Fallback:
+   After the wait period:
+      OPEN
+        ↓
+      HALF_OPEN
+        ↓
+      Test call
+       ├── SUCCESS → CLOSED
+       └── FAILURE → OPEN
+   ⭐ Interview answer
 
-public PaymentResponse paymentFallback(Exception ex) {
-    return new PaymentResponse("PAYMENT_PENDING");
-}
-3. Configure it
-resilience4j:
-  circuitbreaker:
-    instances:
-      paymentService:
-        failureRateThreshold: 50
-        slidingWindowSize: 10
-        minimumNumberOfCalls: 5
-        waitDurationInOpenState: 10s
-
-Meaning:
-
-failureRateThreshold: 50 → circuit opens when failure rate reaches 50%.
-minimumNumberOfCalls: 5 → start calculating failure rate after at least 5 calls.
-slidingWindowSize: 10 → monitor the latest 10 calls.
-waitDurationInOpenState: 10s → stay OPEN for 10 seconds before moving toward HALF_OPEN.
-Flow
-Order Service
-     ↓
-Payment Service
-     ↓
-Failures increase
-     ↓
-Circuit Breaker OPEN
-     ↓
-Don't call Payment
-     ↓
-Fallback
-
-After the wait period:
-
-OPEN
- ↓
-HALF_OPEN
- ↓
-Test call
- ├── SUCCESS → CLOSED
- └── FAILURE → OPEN
-⭐ Interview answer
-
-"I implement Circuit Breaker using Resilience4j's @CircuitBreaker annotation. I configure the failure threshold, sliding window, minimum number of calls, and wait duration. When failures cross the threshold, the circuit changes from CLOSED to OPEN and calls fail fast instead of hitting the unhealthy service. After the configured wait period, it moves to HALF_OPEN and allows test calls. If the service recovers, it returns to CLOSED; otherwise, it goes back to OPEN. I can also configure a fallback for graceful handling."
+   "I implement Circuit Breaker using Resilience4j's @CircuitBreaker annotation. I configure the failure threshold,
+   sliding window, minimum number of calls, and wait duration. When failures cross the threshold, the circuit changes
+   from CLOSED to OPEN and calls fail fast instead of hitting the unhealthy service. After the configured wait period,
+   it moves to HALF_OPEN and allows test calls. If the service recovers, it returns to CLOSED; otherwise, it goes back
+   to OPEN. I can also configure a fallback for graceful handling."
 
 9. How do you implement Rate Limiting in Spring Boot?
-"I would implement rate limiting at the API Gateway so that excessive traffic is rejected before it reaches the downstream services. In Spring Cloud Gateway, we can use the RequestRateLimiter filter, commonly backed by Redis, to maintain the request count in a distributed environment."
+   "I would implement rate limiting at the API Gateway so that excessive traffic is rejected before it reaches the
+   downstream services. In Spring Cloud Gateway, we can use the RequestRateLimiter filter, commonly backed by Redis,
+   to maintain the request count in a distributed environment."
 
-⭐ Remember
-
-Rate Limiting → API Gateway
-
-Distributed Rate Limiting → API Gateway + Redis
-
-Too many requests → HTTP 429
+  ⭐ Remember
+    Rate Limiting → API Gateway
+    Distributed Rate Limiting → API Gateway + Redis
+    Too many requests → HTTP 429
 
 10. How do you handle exceptions consistently across microservices?
-"I would use a global exception-handling mechanism in each microservice using @RestControllerAdvice and @ExceptionHandler. I would define a common error-response format so all services return errors consistently. For distributed tracing, I would also include a correlation ID and log the exception centrally."
-
-"I use @RestControllerAdvice with @ExceptionHandler in each microservice to handle exceptions globally. I define a standard error-response structure containing fields like error code, message, timestamp, and correlation ID. I also use centralized logging and distributed tracing so exceptions can be tracked across services. For business exceptions, I return appropriate 4xx responses, while unexpected technical exceptions return 5xx responses."
-
+    "I would use a global exception-handling mechanism in each microservice using @RestControllerAdvice and
+    @ExceptionHandler. I would define a common error-response format so all services return errors consistently. For
+    distributed tracing, I would also include a correlation ID and log the exception centrally."
+    -->"I use @RestControllerAdvice with @ExceptionHandler in each microservice to handle exceptions globally. I define
+    a standard error-response structure containing fields like error code, message, timestamp, and correlation ID. I
+    also use centralized logging and distributed tracing so exceptions can be tracked across services. For business
+    exceptions, I return appropriate 4xx responses, while unexpected technical exceptions return 5xx responses."
 
 11. What is @ControllerAdvice?
-"@ControllerAdvice is a class-level annotation in Spring MVC used to provide centralized exception handling across multiple controllers. We define exception handler methods inside it using @ExceptionHandler."
+    "@ControllerAdvice is a class-level annotation in Spring MVC used to provide centralized exception handling across
+    multiple controllers. We define exception handler methods inside it using @ExceptionHandler."
 
 12. How do you implement centralized configuration?
-"In a microservices architecture, instead of keeping configuration separately in every service, we can use Spring Cloud Config Server as a centralized configuration server. All microservices retrieve their configuration from the Config Server."
+    "In a microservices architecture, instead of keeping configuration separately in every service, we can use Spring
+    Cloud Config Server as a centralized configuration server. All microservices retrieve their configuration from the
+    Config Server."
 
 13. What is Spring Cloud Config?
-"Spring Cloud Config provides centralized and externalized configuration management for microservices. Instead of keeping configuration inside each microservice, we store it in a central configuration repository and let services retrieve their configuration from the Config Server. It can provide both common and service-specific, environment-specific configuration."
+    "Spring Cloud Config provides centralized and externalized configuration management for microservices. Instead of
+    keeping configuration inside each microservice, we store it in a central configuration repository and let services
+    retrieve their configuration from the Config Server. It can provide both common and service-specific, environment
+    specific configuration."
 
 14. How do you manage environment-specific configuration?
-"We manage environment-specific configuration using Spring Profiles. We maintain separate configuration files for each environment, such as application-dev.yml, application-test.yml, and application-prod.yml. At runtime, we activate the required profile."
+    "We manage environment-specific configuration using Spring Profiles. We maintain separate configuration files for
+    each environment, such as application-dev.yml, application-test.yml, and application-prod.yml. At runtime, we
+    activate the required profile."
 
-How do you secure microservices?
-How does JWT work?
-OAuth2 vs JWT?
-Where should authentication happen?
-Should every microservice validate JWT?
-How do you propagate authentication information between services?
+15. How do you secure microservices?
+    “In our application, we used JWT-based authentication with Spring Security to secure our microservices. After a user
+    is authenticated, the application uses the JWT to identify the user and validate subsequent requests. We also enforce
+    authorization based on user roles and permissions to ensure that users can access only the resources they are allowed
+    to access.”
+
+16. How does JWT work?
+    JWT (JSON Web Token) is a token used to securely transmit information about a user between a client and a server. In
+    microservices, we commonly use it for authentication and authorization.
+    -->“JWT works by authenticating the user and issuing a digitally signed token. The client sends that token with
+    subsequent API requests in the Authorization header. Spring Security validates the token's signature and expiration,
+    then checks the user's authorities before allowing access. This supports stateless authentication because the server
+    does not need to maintain a session for every user.”
+
+17. OAuth2 vs JWT?
+    This is a very common Java Spring Security interview question. The key point is: OAuth 2.0 is an authorization
+    framework, whereas JWT is a token format. They are not alternatives to each other.
+    1. OAuth 2.0 vs JWT
+    Feature	                      OAuth 2.0	                                       JWT
+    What is it?	                 Authorization framework	                      Token format
+    Purpose	           |Defines how a client obtains and uses access tokens  |	Defines how claims are represented in a token
+    How does it work?  |Defines flows involving clients, authorization       |	Carries claims and can be digitally signed
+                        servers, and resource servers
+    Must it use JWT?   |No, access tokens can be opaque or JWTs              |	No, JWT can be used outside OAuth 2.0
+    Example	           Allowing an application to access a user's resources	 |A signed token containing user identity and permissions
+
+18. Where should authentication happen?
+    “Authentication can be performed at the API Gateway level, where the gateway validates the JWT token before routing
+    the request to the appropriate microservice.
+    -->However, for defense in depth, microservices should also validate the token or verify the trusted identity passed
+    through a secure mechanism. Authorization checks should be enforced by the services for their own business operations.
+    This prevents unauthorized access even if a service is accessed directly.”
+
+19. Should every microservice validate JWT?
+    Yes, ideally every microservice that handles protected endpoints should validate the JWT independently
+    “In a microservices architecture, the API Gateway can validate the JWT as the first layer of security. However, each
+    microservice should also validate the JWT independently using Spring Security. This ensures that even if someone
+    bypasses the API Gateway and directly accesses a microservice, unauthorized requests are rejected.
+
+20. How do you propagate authentication information between services?
+    In a microservices architecture, we can propagate authentication information by passing the JWT token in the
+    Authorization header using the Bearer scheme.
+    --> When Service A calls Service B, it forwards the token in the outgoing request. Service B validates the token and
+    performs the necessary authorization checks using Spring Security.
+
 
 
 🟡 Level 4 — Database & Transactions
@@ -521,85 +633,158 @@ How do you propagate authentication information between services?
 This is very important for client rounds.
 
 1. Why should each microservice have its own database?
-"Each microservice should ideally have its own database to maintain data ownership and loose coupling. This allows services to be independently developed, deployed, and scaled, and prevents one service from becoming tightly coupled to another service's database schema. If one service needs another service's data, it should communicate through APIs or events rather than directly accessing the other service's database."
+   "Each microservice should ideally have its own database to maintain data ownership and loose coupling. This allows
+   services to be independently developed, deployed, and scaled, and prevents one service from becoming tightly coupled
+   to another service's database schema. If one service needs another service's data, it should communicate through APIs
+   or events rather than directly accessing the other service's database."
 
 2. What problems occur when multiple services share one database?
-"When multiple microservices share the same database, they become tightly coupled to the database schema. Schema changes require coordination between multiple teams and can prevent independent deployments. It also creates a shared scalability and performance bottleneck because all services compete for the same database resources. In addition, one service's heavy queries or failures can affect other services, and services have less flexibility to choose the appropriate database technology."
+   "When multiple microservices share the same database, they become tightly coupled to the database schema. Schema
+   changes require coordination between multiple teams and can prevent independent deployments. It also creates a shared
+   scalability and performance bottleneck because all services compete for the same database resources. In addition, one c
+   service's heavy queries or failures can affect other services, and services have less flexibility to choose the
+   appropriate database technology."
 
-3.  do you maintain consistency between two databases?
-"When two microservices have separate databases, we can maintain consistency using the Saga pattern. We divide the business transaction into multiple local transactions. If one transaction fails, we execute compensating transactions to undo the effects of previously successful transactions. For reliable event delivery between the services, we can use the Outbox Pattern with Kafka. This gives us eventual consistency rather than a traditional distributed ACID transaction.
+3. How do you maintain consistency between two databases?
+   "When two microservices have separate databases, we can maintain consistency using the Saga pattern. We divide the
+   business transaction into multiple local transactions. If one transaction fails, we execute compensating transactions
+   to undo the effects of previously successful transactions. For reliable event delivery between the services, we can
+   use the Outbox Pattern with Kafka. This gives us eventual consistency rather than a traditional distributed ACID
+   transaction.
 
 4. What is a distributed transaction?
-A distributed transaction is a transaction that involves operations across multiple independent resources, such as databases or services, and requires those operations to be coordinated as part of one logical transaction.
-
-"A distributed transaction is a transaction where a single logical business operation involves multiple independent services or databases. Since the operations span multiple resources, they need to be coordinated to maintain consistency. In microservices, instead of traditional distributed transactions, we commonly use patterns such as Saga and eventual consistency."
-
-
-What is 2-Phase Commit (2PC)?
-2-Phase Commit (2PC) is a distributed transaction protocol used when one transaction involves multiple databases/services and we want all participants to either commit or rollback together.
-
-Why is 2PC generally avoided in Microservices?
-What is the Saga Pattern?
-Saga Orchestration vs Choreography?
-Give a real-world example of Saga.
-Suppose:
-Order Service
-     ↓
-Payment Service
-     ↓
-Inventory Service
-
-Payment succeeds but Inventory fails.
-
-How do you handle this?
-
-What is a compensating transaction?
-
-How do you achieve eventual consistency? What happens if the compensation itself fails?
-
-What is CQRS?
-"Yes, in a CQRS architecture with separate read and write stores, we can synchronize the read model using events. After a successful write transaction, the system publishes a domain event to Kafka. A consumer processes that event and updates the read database. This allows the read side to be independently scaled and optimized, but it introduces eventual consistency between the write and read models.
-
-CQRS vs normal CRUD?
-"In normal CRUD, the same application model and usually the same database are used for both read and write operations. In CQRS, we separate commands that modify data from queries that only read data. The read and write models can be optimized and scaled independently, and in larger systems they can use separate data stores synchronized through events."
-
-When would you use CQRS?
-"I would use CQRS when the read and write requirements are significantly different, especially in read-heavy systems where we need to scale and optimize the read side independently. It is also useful when read models require different data structures or when the system is already event-driven. I wouldn't use CQRS for simple CRUD applications because it introduces additional complexity and eventual consistency."
-
-What is Event Sourcing?
-CQRS:
-
-Separates commands (writes) and queries (reads).
-
-Event Sourcing:
-
-Stores the state changes as events instead of storing only the current state.
-
-Event Sourcing vs CQRS?
-CQRS:
-
-Separates commands (writes) and queries (reads).
-
-Event Sourcing:
-
-Stores the state changes as events instead of storing only the current state.
+   A distributed transaction is a transaction that involves operations across multiple independent resources, such as
+   databases or services, and requires those operations to be coordinated as part of one logical transaction.
+   -->"A distributed transaction is a transaction where a single logical business operation involves multiple independent
+   services or databases. Since the operations span multiple resources, they need to be coordinated to maintain consistency.
+   In microservices, instead of traditional distributed transactions, we commonly use patterns such as Saga and eventual
+   consistency."
 
 
+5. Why is 2PC generally avoided in Microservices?
+       2PC (Two-Phase Commit) is a distributed transaction protocol that ensures multiple services or databases either
+       commit a transaction together or roll it back.
+
+       It is generally avoided in microservices for three main reasons:
+       --Tight coupling: Multiple services must participate in the same transaction.
+       --Performance: Resources may remain locked while the transaction coordinator waits for all participants.
+       --Availability: If the coordinator or a participant fails during the protocol, transactions can be delayed and
+       resources may remain blocked.
+
+6. What is the Saga Pattern?
+   The Saga Pattern is a design pattern used to manage distributed transactions in microservices without using a single
+   distributed transaction such as 2PC
+   It breaks a business transaction into multiple local transactions, where each microservice manages its own database
+   transaction. If a step fails, the system executes compensating transactions to undo the business effects of previously
+   completed steps.
+
+7. Saga Orchestration vs Choreography?
+   a.Choreography
+   In choreography, there is no central coordinator. Each microservice performs its local transaction and publishes an
+   event. Other services listen for events and decide what action to perform next.
+
+   b.Orchestration
+   In orchestration, a central Saga orchestrator controls the workflow by telling each microservice which action to
+   execute and deciding what happens when a step fails.
+
+8. Give a real-world example of Saga.
+   Suppose:
+   Order Service
+        ↓
+   Payment Service
+        ↓
+   Inventory Service
+
+   Payment succeeds but Inventory fails.How do you handle this?
+   Instead of calling the refund operation directly, the Inventory Service can publish an event such as
+   InventoryReservationFailed. The Payment Service or a dedicated workflow handler consumes that event and initiates the
+   refund.
+   Interview point: In orchestration, the orchestrator initiates compensation. In choreography, a failure event triggers
+   the relevant compensating action.
+
+9. What is a compensating transaction?
+   A compensating transaction is a new business operation that reverses the effect of a previously completed transaction
+   when a later step in a Saga fails.
+
+10. How do you achieve eventual consistency? What happens if the compensation itself fails?
+    Eventual consistency is a consistency model in distributed systems where data across multiple services may not be
+    immediately consistent, but it will become consistent over time if no new updates occur and the system successfully
+    processes pending operations.
+
+    “In microservices, we achieve eventual consistency using event-driven communication, message queues such as Kafka or
+    IBM MQ, and the Saga Pattern. Each service commits its local transaction and publishes an event. Other services
+    consume these events and update their own data. We use retries, idempotent processing, and the Transactional Outbox
+    pattern to ensure events are processed reliably.”
+
+    For example, payment succeeds, inventory reservation fails, and the refund request also fails because the Payment
+    Service is temporarily unavailable
+    How do we handle it?
+    1. Retry: Retry transient failures with exponential backoff and jitter.
+    2. Persist the state: Store the Saga status, such as COMPENSATION_PENDING, so a restart does not lose the workflow.
+    3. Ensure idempotency: Use a unique refund or idempotency key so retries do not issue duplicate refunds.
+    4. Monitor and alert: If retries are exhausted, alert the support team and keep the compensation pending for recovery.
+    5. Reconcile: Verify the actual payment/refund status with the payment provider before retrying uncertain operations.
+
+11. What is CQRS?
+    CQRS stands for Command Query Responsibility Segregation.
+    It is an architectural pattern that separates write operations (Commands) from read operations (Queries) so that each
+    can be handled and optimized independently.
+
+
+12. CQRS vs normal CRUD?
+    "In normal CRUD, the same application model and usually the same database are used for both read and write operations.
+    In CQRS, we separate commands that modify data from queries that only read data. The read and write models can be
+    optimized and scaled independently, and in larger systems they can use separate data stores synchronized through
+    events."
+
+13. When would you use CQRS?
+    "I would use CQRS when the read and write requirements are significantly different, especially in read-heavy systems
+    where we need to scale and optimize the read side independently. It is also useful when read models require different
+    data structures or when the system is already event-driven. I wouldn't use CQRS for simple CRUD applications because
+    it introduces additional complexity and eventual consistency."
+
+14. What is Event Sourcing?
+    Event Sourcing is an architectural pattern in which we store every important state change as an event instead of
+    storing only the latest state of an entity.
+
+15. Event Sourcing vs CQRS?
+    CQRS:Separates commands (writes) and queries (reads).
+    Event Sourcing:Stores the state changes as events instead of storing only the current state.
+    CQRS:
+    Separates commands (writes) and queries (reads).
+    Event Sourcing:
+    Stores the state changes as events instead of storing only the current state.
 
 🔥 Level 5 — Kafka & Event-Driven Microservices
+1. Why use Kafka in Microservices?
+   “Apache Kafka is a distributed event streaming platform used for asynchronous communication between microservices. It
+   helps us build loosely coupled and fault-tolerant applications. It also allows services to exchange events without
+   directly depending on each other, and consumers can process those events independently.”
 
-For UBS/S&P/Goldman-type interviews, I would consider this an important area.
+2. Kafka vs REST?
+   Kafka: Used for asynchronous communication, such as notification systems.
+   REST: Used for synchronous communication when an immediate response is required.
+   Practical example: Fetching roles from the Roles Service before proceeding with further operations is a good REST use
+   case.
 
-Why use Kafka in Microservices?
-Kafka vs REST?
-What is a Kafka Topic?
-A Kafka Topic is a logical category used to store and organize messages or events in Kafka.
-What is a Partition?
-A Kafka Partition is a sub-unit of a Kafka Topic where messages are stored in an ordered sequence.
-What is Consumer Group?
-A Consumer Group is a group of consumer instances that work together to consume messages from a Kafka topic.
-How does Kafka achieve scalability?
-How does Kafka achieve fault tolerance?
+3. What is a Kafka Topic?
+   A Kafka Topic is a logical category used to store and organize messages or events in Kafka.
+
+4. What is a Partition?
+   A Kafka Partition is a sub-unit of a Kafka Topic where messages are stored in an ordered sequence.
+
+5. What is Consumer Group?
+   A Consumer Group is a group of consumer instances that work together to consume messages from a Kafka topic.
+
+6. How does Kafka achieve scalability?
+   “Kafka achieves scalability by increasing the number of partitions and distributing them across multiple brokers. We
+   can also increase the number of consumer instances within a consumer group to process messages in parallel. However,
+   the maximum parallelism for a consumer group is limited by the number of partitions.”
+
+7. How does Kafka achieve fault tolerance?
+   “Kafka achieves fault tolerance through replication. Each partition has a leader and follower replicas distributed
+   across multiple brokers. If the leader broker fails, Kafka can elect an eligible in-sync replica as the new leader.
+
 What is an Offset?
 An offset is the sequential position or number assigned to each message within a Kafka partition.
 It helps Kafka consumers keep track of which messages they have already processed and where they should continue reading.
@@ -1354,4 +1539,161 @@ Docker / Kubernetes
 If you can
 explain this architecture and defend why each component is there, you'll be in a much stronger position for the UBS/S&P/Goldman client rounds.
 
-I can also take these one by one as an interview simulation, starting from Question 1 (basic) and gradually moving you to hard scenario-based questions, without giving the answer until you attempt it.
+I can also take these one by one as an interview simulation, starting from Question 1 (basic) and gradually moving you to hard
+scenario-based questions, without giving the answer until you attempt it.
+
+RealTime Scenario Questions:-
+1. What happens if a microservice fails? How do you handle it?
+   If a microservice fails, we may receive connection timeouts, failed responses, or a 503 Service Unavailable error.
+   To handle these failures, we can use the following mechanisms:
+   1. Retry: Retry the request when a temporary failure occurs.
+   2. Exponential backoff: Increase the waiting time between retries to avoid overloading the failed service.
+   3. Circuit Breaker: Stop sending requests temporarily when a service experiences repeated failures, allowing it time to recover.
+   4. Bulkhead: Isolate resources so that a failure in one service or operation does not exhaust resources needed by other operations.
+   5. Timeout: Stop waiting when a downstream service takes too long to respond.
+   6. Fallback: Return an alternative response when the service is unavailable, if the business requirement allows it.
+
+2. Can you tell me about API gateway? Which features are supported?
+3. How do you handle authentication? What’s the structure for JWT token?
+   ->“We used Spring Security with JWT (JSON Web Token) for authentication.
+   ->First, the client sends its username and password to the authentication API. The server validates the credentials and
+   generates a JWT token.
+   ->The client sends this token in the Authorization header using the Bearer scheme for subsequent API requests.
+   ->Spring Security validates the token's signature and expiration before allowing access to protected APIs. It also checks
+   the user's roles and permissions for authorization.”
+   1. What’s the structure for JWT token?
+      A JWT consists of three parts:
+      1. Header
+      Specifies the signing algorithm and token type.
+      2. Payload
+      Contains claims such as the user ID, role, and expiration time.
+      3. Signature
+      Verifies the token's integrity and authenticity using the configured signing algorithm and key.
+
+4. How does signature validation work?
+   ->The server generates the signature when creating the token.
+   ->The client sends the token with each protected API request.
+   ->Spring Security verifies the signature using the appropriate key.
+   ->If the payload is modified, signature verification fails.
+   ->The server also checks expiration and applies authorization rules.
+
+5. How do you implement a circuit breaker? How do you set up thresholds?
+   ->I implement the Circuit Breaker pattern using Resilience4j in Spring Boot.
+   ->First, I add the Resilience4j dependency to the pom.xml. Then, I use the @CircuitBreaker annotation on the method that calls
+    the downstream service and define a fallback method to handle failures.
+   ->I configure the circuit breaker thresholds in application.yml or application.properties, such as the failure rate threshold,
+   sliding window size, and wait duration in the open state.
+   ->When failures exceed the configured threshold, the circuit breaker opens and temporarily blocks calls to the downstream
+   service. After the configured wait duration, it allows trial requests in the half-open state to check whether the service
+   has recovered.
+
+   Example:-
+   resilience4j:
+     circuitbreaker:
+       instances:
+         paymentService:
+           slidingWindowType: COUNT_BASED
+           slidingWindowSize: 10
+           minimumNumberOfCalls: 5
+           failureRateThreshold: 50
+           waitDurationInOpenState: 10s
+           permittedNumberOfCallsInHalfOpenState: 3
+
+   Your answer is correct. You covered the dependency, `@CircuitBreaker`, fallback method, and configuration. Let's make it interview-ready and clarify how thresholds work.
+
+   ## 1. Interview-ready answer
+
+   “I implement the Circuit Breaker pattern using Resilience4j in Spring Boot.
+
+   First, I add the Resilience4j dependency to the `pom.xml`. Then, I use the `@CircuitBreaker` annotation on the method that calls the downstream service and define a fallback method to handle failures.
+
+   I configure the circuit breaker thresholds in `application.yml` or `application.properties`, such as the failure rate threshold, sliding window size, and wait duration in the open state.
+
+   When failures exceed the configured threshold, the circuit breaker opens and temporarily blocks calls to the downstream service. After the configured wait duration, it allows trial requests in the half-open state to check whether the service has recovered.”
+
+   ## 2. How do you configure thresholds?
+
+   Example `application.yml`:
+
+   ```
+   resilience4j:
+     circuitbreaker:
+       instances:
+         paymentService:
+           slidingWindowType: COUNT_BASED
+           slidingWindowSize: 10
+           minimumNumberOfCalls: 5
+           failureRateThreshold: 50
+           waitDurationInOpenState: 10s
+           permittedNumberOfCallsInHalfOpenState: 3
+
+   What these settings mean:
+
+   | Configuration                              | Meaning                                                                 |
+   | ------------------------------------------ | ----------------------------------------------------------------------- |
+   | `slidingWindowSize: 10`                    | Evaluates the latest 10 calls                                           |
+   | `minimumNumberOfCalls: 5`                  | Waits for at least 5 calls before calculating the failure rate          |
+   | `failureRateThreshold: 50`                 | Opens the circuit when the failure rate reaches 50% or more             |
+   | `waitDurationInOpenState: 10s`             | Keeps the circuit open for 10 seconds before transitioning to half-open |
+   | `permittedNumberOfCallsInHalfOpenState: 3` | Allows 3 trial calls to check recovery                                  |
+
+   These are example values; actual thresholds depend on service latency, traffic, and business requirements.
+
+   How do you implement it?
+
+   @CircuitBreaker(
+       name = "paymentService",
+       fallbackMethod = "paymentFallback"
+   )
+   public String callPaymentService() {
+       return paymentClient.processPayment();
+   }
+
+   public String paymentFallback(Exception ex) {
+       return "Payment service is temporarily unavailable";
+   }
+
+
+   The fallback method generally needs the same parameters as the original method, followed by an exception parameter. In this
+   example, the original method has no parameters, so the fallback accepts only the exception.
+
+   ### Remember for interviews
+   - Dependency: Resilience4j.
+   - Annotation: `@CircuitBreaker`.
+   - Fallback: Handles calls when failures occur.
+   - Thresholds: Configured in YAML or properties.
+   - States: Closed → Open → Half-Open.
+
+6. Have you worked on microservices? Can you explain the 12 factors of microservices?
+   1. codeBase:- One codebase tracked in version control, such as Git, with multiple deployments
+      (Example: Store a Spring Boot service's source code in GitHub.)
+   2. Dependencies:- Explicitly declare and isolate application dependencies.
+      Example: Declare Spring Boot and Resilience4j dependencies in pom.xml.
+   3. Config:- Keep environment-specific configuration separate from application code.
+      Example: Store database URLs in environment variables rather than hardcoding them.
+   4. Backing services
+      Treat databases, message brokers, and external APIs as attached resources.
+      Example: Connect to a database or Kafka through configurable connection details.
+   5. Build, release, run:- Separate compiling and packaging the application from configuring a release and running it.
+      Example: Jenkins builds a JAR, creates a release with configuration, and deploys it.
+   6. Processes:- Run the application as one or more stateless processes.
+      Example: Store persistent business data in a database instead of relying on local application memory.
+   7. Port binding:-Expose the service through a port and make it self-contained.
+      Example: A Spring Boot service exposes REST APIs on port 8080
+   8. Concurrency:- Scale the application by running multiple independent processes
+      Example: Run several instances of an Order Service to handle more traffic.
+   9. Disposability:-Start up quickly and shut down gracefully.
+      Example: Stop accepting new requests and finish in-flight work during a controlled shutdown.
+   10. Dev/prod parity:- Keep development, testing, and production environments as similar as practical.
+       Example: Use similar Java versions and deployment methods across environments.
+   11. Logs :- Treat logs as event streams and send them to a platform that collects and analyzes them
+       Example: Use Google Cloud Logging to investigate application failures.
+   12. Admin processes
+       Run administrative tasks as separate, one-off processes using the same code and configuration as the application.
+       Example: Run a one-time data migration or cleanup job.
+
+7. Can you explain the DRY principle?
+   It is a software development principle that says we should avoid duplicating the same logic in multiple places. Instead,
+   we should reuse common logic through methods, classes, or shared components.
+
+

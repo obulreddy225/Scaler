@@ -7,7 +7,7 @@ public class SumMinMax {
             return 0;
         }
 
-        int sum = 0;
+        int totalSum = 0;
 
         for (int i = 0; i <= arr.length - k; i++) {
             int min = arr[i];
@@ -18,10 +18,10 @@ public class SumMinMax {
                 max = Math.max(max, arr[j]);
             }
 
-            sum += min + max;
+            totalSum += min + max;
         }
 
-        return sum;
+        return totalSum;
     }
 
     public static void main(String[] args) {

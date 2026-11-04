@@ -1,0 +1,41 @@
+DSA Practice Session of EPAM Systems Sheet
+1. Find the missing number in a sorted array containing numbers from 1 to N
+2. Find the median of two sorted arrays-------------------------------------Hard
+3. peak Element
+4. Koko Eating Bananas
+5. BinarySearch
+6. Minimum Number of Days to Make m Bouquets-------------------------------------Hard
+7. Find the Smallest Divisor Given a Threshold
+8. Find the Index Where an Element Should Be Inserted
+   You are given a sorted array of distinct integers and a target value X.
+   If X exists in the array, return its index.
+   If it does not exist, return the index where it should be inserted to maintain sorted order.
+   The solution must use Binary Search
+
+9. Find the First Occurrence of a Number Using Binary Search
+   You are given a sorted array of integers that may contain duplicate values and a target number X.
+   Find the index of the first occurrence of X using Binary Search.
+   If the element is not present, return -1
+10. Find the Last Occurrence of a Number
+11. Search in a Rotated Sorted Array
+
+Choose your topic and practice style.
+
+1. Topic
+
+Arrays & Hashing
+Sliding Window
+Binary Search
+Linked List
+Stack & Queue
+Heap / Priority Queue
+Trees & Graphs
+Dynamic Programming
+Mixed interview questions
+
+2. Difficulty
+
+Easy
+Medium
+Hard
+

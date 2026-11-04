@@ -1,0 +1,21 @@
+1.Longest uniform subsequence - Find start index and length of longest repeating substring
+      Input : "aabbbcca"
+      Output: index = 2 and length = 3 ("bbb")
+
+      Input : "aaabbhhhhhbcca"
+      Output: index = 5 and length = 5 ("hhhhh")
+
+2. Find the sum of minimum and maximum element of all subarrays of size K
+3. Sliding window	Longest Repeating Substring (same character consecutive)
+4. Sliding window	"Given a string s, find the longest consecutive common subset of substring. Return a tuple of the
+   index and length Constraint:The solution should have time complexity of O(n) and space complexity of O(1)
+   Input - ""aabbbcdd"" Output - (2,3) ."
+5.Sliding window	https://leetcode.com/problems/minimum-size-subarray-sum/description/?envType=problem-list-v2&envId=prefix-sum
+6. Sliding window	Minimum number of moves required to move all 1s together  --------check again
+7. Sliding window	https://leetcode.com/problems/longest-substring-without-repeating-characters/description/
+
+
+Leetcode
+Maximum Average SubArray---------------------------634
+Longest substring without repeating characters-----3
+Minimum window String------------------------------76

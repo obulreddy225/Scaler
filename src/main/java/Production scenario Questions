@@ -1,17 +1,18 @@
 SOLID PRNICIPLES || ACID PRINICIPLE || CAP Theorem
 
 1. Explain a critical production issue you handled and how did you resolve it?
-   ->When I had recently joined the project, our team faced an issue with transaction pagination in the development environment.
-   ->The requirement was to fetch 100 transactions per page, but the API returned only 56 records, even though more eligible
-    records were available in the database. The functionality worked correctly with dummy data in the local environment.I took
-    ownership of the issue because my colleague was going on vacation.
+   ->When I had recently joined the project, our team faced an issue with transaction pagination in the development
+     environment.
+   ->The requirement was to fetch 100 transactions per page, but the API returned only 56 records, even though more
+     eligible records were available in the database. The functionality worked correctly with dummy data in the local
+     environment.I took ownership of the issue because my colleague was going on vacation.
    ->First, I compared the local and development database data and identified differences in the data. Then I traced the
-   service-layer logic and found that, after fetching records from the database, we were applying additional filtering in
-   the service layer. Because of this, the final response contained fewer than 100 eligible records.
+    service-layer logic and found that, after fetching records from the database, we were applying additional filtering
+    in the service layer. Because of this, the final response contained fewer than 100 eligible records.
    ->The initial workaround proposed by the team was to repeatedly call the same DAO methods until we collected 100 records.
-    I explained that this would introduce unnecessary database calls and increase latency.
+     I explained that this would introduce unnecessary database calls and increase latency.
    ->Instead, I suggested moving the filtering conditions into the database query so that the database would return the
-   eligible records directly, reducing unnecessary data retrieval and service-layer processing.
+     eligible records directly, reducing unnecessary data retrieval and service-layer processing.
 
    ->This approach addressed the root cause more efficiently and made the pagination logic easier to maintain.
    ->I implemented pagination at the database level using WHERE, LIMIT, and OFFSET.
@@ -19,6 +20,8 @@ SOLID PRNICIPLES || ACID PRINICIPLE || CAP Theorem
 2. your service suddenly receives 10X traffic  How would you handle?
    Remember this flow
    Scale → Balance → Cache → Protect → Monitor
+   “If my service suddenly receives 10 times its normal traffic, I would focus on maintaining availability, protecting
+   downstream services, and scaling the application.
    (Horizontal Scaling, Load balancing, Caching, Database optimization, Ratelimiting, asynchronus communication, Monitoring
 
    What if you use Kubernetes? and production level if it fails?
@@ -28,9 +31,9 @@ SOLID PRNICIPLES || ACID PRINICIPLE || CAP Theorem
 3. your payment API receives 10 duplication requests simultaneously? how would you prevent duplicate transactions?
    I would use an **idempotency key, database constraints, and transaction management** to prevent duplicate payments.
 
-   1. **Idempotency key:** The client sends a unique key for each payment operation. Retries for the same payment must reuse
-        the same key.
-   2. **Database uniqueness:** I create a unique constraint on the idempotency key so that concurrent requests cannot create
+   1. Idempotency key: The client sends a unique key for each payment operation. Retries for the same payment must
+      reuse the same key.
+   2. Database uniqueness: I create a unique constraint on the idempotency key so that concurrent requests cannot create
         duplicate payment records.
    3. **Atomic processing:** I use a database transaction to claim the key and create the payment record safely.
    4. **Handle concurrent requests:** If multiple requests arrive with the same key, only one can claim it successfully.
@@ -43,9 +46,9 @@ SOLID PRNICIPLES || ACID PRINICIPLE || CAP Theorem
 
 4. How will you do the routing to API's in Springboot application?
    ->In our application, we used Spring Cloud Gateway to route incoming requests to the appropriate microservices. We
-   configured routes in the application.yml file using a destination URI and route predicates.
+     configured routes in the application.yml file using a destination URI and route predicates.
    ->Predicates determine whether a request matches a route, based on conditions such as the request path, HTTP method, or
-   headers. The URI specifies the destination service.
+     headers. The URI specifies the destination service.
    ->For example, requests matching /api/orders/** are routed to the Order Service using lb://ORDER-SERVICE, which enables
    service discovery and load balancing.
 
@@ -60,11 +63,130 @@ SOLID PRNICIPLES || ACID PRINICIPLE || CAP Theorem
                - Path=/api/orders/**
 
 5. can you use @Repository in place of @Component?
-   ->Yes, we can use @Component instead of @Repository to register a DAO class as a Spring bean. However, @Repository is a
-   specialized stereotype annotation for the persistence layer.
+   ->Yes, we can use @Component instead of @Repository to register a DAO class as a Spring bean. However, @Repository is
+   a specialized stereotype annotation for the persistence layer.
    ->It provides persistence exception translation, which can convert technology-specific persistence exceptions into Spring's
     DataAccessException hierarchy when the appropriate exception-translation infrastructure is configured.
    ->Therefore, we prefer @Repository for DAO classes because it clearly identifies their responsibility and supports
    persistence exception translation.
 
+6. what is Exponentialbackoff? How do you implement retries?
+   Exponential backoff is a retry strategy in which the waiting time between consecutive retries increases exponentially when
+   a service call fails.
+   Ex:-
+   If Service A calls Service B and the call fails, instead of retrying immediately, Service A waits for 1 second before the
+   first retry, 2 seconds before the second retry, and 4 seconds before the third retry.
+   We can also add jitter, which introduces a random delay to prevent multiple services from retrying simultaneously.
+   ->In Spring Boot, we can implement retries using Resilience4j by configuring the maximum number of attempts, the initial
+   waiting duration, and the exponential backoff multiplier.
+
+7. Your Spring Boot API suddenly starts taking 5–6 seconds in production. How would you identify the actual bottleneck?
+   Interview-ready answer
+   “I would troubleshoot the issue systematically rather than immediately assuming that the problem is in the Java code.
+
+   Step 1: Check monitoring and logs.
+   --First, I would check the monitoring dashboard, such as Grafana or our APM tool or cloud Monitoring or NewRellic, to
+   understand when the latency started.I would compare the current response time with the normal baseline and check
+   whether all APIs or only a specific API are affected. in GCP (Cloud Monitoring, New Relic APM → How slow is the API?)
+   Step 2: Check distributed tracing.
+   --I would use a trace ID or correlation ID to trace the request across different microservices. This helps me identify
+   which operation is consuming the most time, such as a downstream API call, database query, or business logic execution.
+   Step 3: Analyze database performance.
+   If the database operation is taking more time, I would check slow query logs, query execution plans, missing indexes,
+   connection pool utilization, and database locks.
+   Step 4: Check downstream services.
+   If the API calls another microservice, I would check its response time, timeout settings, and error rate to determine
+   whether the latency originates from a downstream dependency.
+   Step 5: Check JVM and application resources.
+   If the database and downstream services are healthy, I would investigate JVM garbage collection, heap usage, CPU
+   utilization, thread dumps, thread contention, and connection pool exhaustion.
+   Step 6: Fix and validate.
+   After identifying the root cause, I would apply the appropriate fix and compare latency metrics before and after the
+   change. I would also monitor p95 and p99 response times to verify the improvement.”
+
+   follow up question?
+   --your analysis was correct but same code is working is fine in development ?
+     I would first compare the development and production environments because the same code can behave differently under
+     different workloads and configurations.
+   I would investigate the following areas:
+   1. Traffic and concurrency: Production may receive thousands of concurrent requests, whereas development has very
+      little traffic. This can cause thread pool exhaustion or database connection pool saturation.
+   2. Database differences: Production may contain millions of records, while development has only a few thousand. A
+      query that works quickly with a small dataset might become slow in production due to missing indexes or an
+      inefficient execution plan.
+   3. Downstream services: Production may experience network latency, slower external APIs, or increased load on
+      dependent microservices.
+   4. Configuration differences: I would compare connection pool sizes, timeout settings, JVM heap configuration, and
+      environment-specific properties.
+   5. JVM and resource utilization: I would investigate garbage collection pauses, CPU, memory, thread dumps, and
+   resource contention.
+
+8. A HashMap works perfectly in testing but causes unexpected behaviour under concurrent access. Why?
+   ---“HashMap is not thread-safe. It works perfectly in testing when we access it from a single thread, but under
+       concurrent access, multiple threads may read and modify the same HashMap simultaneously.
+   ---This can lead to race conditions, lost updates, and inconsistent or unexpected results. For example, if two
+      threads update the same key at the same time, one update may overwrite the other.
+   ---To solve this, depending on the requirement, I would use ConcurrentHashMap for concurrent access or Collections.
+      synchronizedMap() when synchronized access to the map is appropriate.”
+
+9. what is Garbage Collection in Java?
+   “Garbage Collection in Java is an automatic process of reclaiming heap memory by removing objects that are no longer
+   reachable by the application. It helps manage memory without requiring the developer to manually deallocate objects.”
+
+10. How do you debug and fix OutOfMemoryError?
+    Interview-ready answer
+    “If I encounter an OutOfMemoryError, I would follow these steps:
+    1. Enable heap dump: If a heap dump is not already available, configure the JVM to generate one when an OOM occurs,
+       using -XX:+HeapDumpOnOutOfMemoryError.
+    2. Analyze the heap dump: I would use tools such as Eclipse MAT to identify objects consuming the most memory and
+       inspect the dominator tree.
+    3. Identify the root cause: I would check for continuously created objects, large static collections, memory leaks
+       caused by retained references, or unexpectedly large caches.
+    4. Fix the issue: Based on the findings, I would remove unnecessary references, limit cache sizes, fix object
+       retention, or optimize memory usage.
+    5. Validate the fix: I would rerun tests and monitor heap usage to confirm that memory consumption remains stable.”
+
+11. What are atomic variables in Java?
+    “Atomic variables in Java are provided by the java.util.concurrent.atomic package. They support thread-safe
+    operations such as incrementing and updating values without requiring explicit synchronization. For example,
+    AtomicInteger provides methods like incrementAndGet() and compareAndSet(). They are useful when multiple threads
+    need to update a shared variable safely.”
+    ---Important: Atomic variables make their supported operations thread-safe, but they do not automatically make a
+    sequence of multiple operations atomic.
+    Ex:-
+    import java.util.concurrent.atomic.AtomicInteger;
+
+    public class Demo {
+        public static void main(String[] args) {
+            AtomicInteger count = new AtomicInteger(0);
+
+            count.incrementAndGet();
+            count.incrementAndGet();
+
+            System.out.println(count.get()); // 2
+        }
+    }
+    Suppose multiple threads execute count++ on a normal int. The operation is not atomic, so updates can be lost when
+    threads execute concurrently.
+    With AtomicInteger, incrementAndGet() performs the increment atomically, preventing lost updates for that operation
+
+12. What is the difference between AtomicInteger and volatile int in Java?
+    “AtomicInteger provides atomic, thread-safe operations on an integer variable, such as incrementing and
+    compare-and-set, without requiring explicit synchronization.
+    volatile ensures that changes made by one thread are visible to other threads and provides memory-ordering
+    guarantees. However, it does not guarantee atomicity for compound operations like count++.
+
+13. How do you avoid performance issues caused by synchronization?
+    “To avoid performance issues caused by synchronization, I would minimize the synchronized code block and synchronize
+    only the critical section that accesses shared mutable data. This reduces lock contention and allows other threads
+    to execute concurrently. Depending on the use case, I would also consider alternatives such as AtomicInteger,
+    ConcurrentHashMap, or ReadWriteLock.”
+
+14. What is ThreadLocal and where is it used?
+    ThreadLocal in Java is a class that provides a separate copy of a variable for each thread. Each thread can access
+    and modify its own value without interfering with other threads.
+
+15. what is Nexus Repository?
+    Nexus Repository is a repository manager used to store, manage, and distribute software artifacts such as JAR files,
+    WAR files, libraries, and dependencies.
 

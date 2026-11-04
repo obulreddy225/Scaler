@@ -1,0 +1,67 @@
+1. what is Record classes?
+   “A record class was introduced as a permanent feature in Java 16. It is used to represent data carriers, such as
+   request and response DTOs. Records reduce boilerplate code by automatically generating a constructor, accessor
+   methods, equals(), hashCode(), and toString(). Record components are final, so their references cannot be reassigned
+   after construction.”
+
+   Example:-
+   public record EmployeeRequest(
+       String name,
+       int age
+   ) {}
+   Usage:
+   EmployeeRequest request =
+       new EmployeeRequest("Ravi", 30);
+
+   System.out.println(request.name());
+   System.out.println(request.age());
+   Notice that we use request.name(), not request.getName().
+
+   ✅Note:-The Java Compiler (javac) automatically generates the constructor, accessor methods, equals(), hashCode(), and
+      toString() methods during compilation.
+   ✅records are immutable in terms of their component references, but a mutable object inside a record can still be
+   modified.
+   Use a defensive copy with List.copyOf():
+   record Employee(String name, List<String> skills) {
+       public Employee {
+           skills = List.copyOf(skills);
+       }
+   }
+
+2. Can a Java record extend another class or have additional methods?
+  “No, a record cannot extend another class because it implicitly extends java.lang.Record. However, a record can
+  implement interfaces and contain additional methods, constructors, and static members.”
+
+3. How to create immutable classes in Java
+   Rule	Reason
+   Declare class as final	                Prevents subclassing that could compromise immutability
+   Make fields private final	            Prevents direct access and reassignment
+   Initialize fields through constructor	Ensures fields are initialized once
+   Don't provide setters	                Prevents changing field references through setters
+   Use defensive copies	                    Prevents external code from modifying internal mutable objects
+
+4. what are sealed classes?
+   “Sealed classes were introduced as a permanent feature in Java 17 to control inheritance. We use the sealed keyword
+   to restrict which classes can extend a class or which classes can implement an interface. The permits keyword
+   specifies the permitted direct subclasses. Each permitted subclass must be declared as final, sealed, or non-sealed.”
+   sealed class Payment permits CardPayment, UpiPayment {
+   }
+
+   final class CardPayment extends Payment {
+   }
+
+   non-sealed class UpiPayment extends Payment {
+   }
+
+   class GooglePay extends UpiPayment {
+   }
+   sealed — restricts direct subclasses.
+   permits — lists the allowed direct subclasses.
+   final — prevents further inheritance.
+   non-sealed — allows unrestricted inheritance from that subclass.
+
+5. Can an abstract class be a sealed class in Java? Why would we use both together?
+   Yes, an abstract class can be a sealed class in Java
+   Why do we use both together?
+   - abstract prevents us from creating objects directly from the class.
+   - sealed restricts which classes can extend it.

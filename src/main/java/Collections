@@ -4,23 +4,333 @@
    ->IdentityHashMap: Uses == to compare keys, checking whether they are the exact same object.
 
 2. Concept of a cache map?
-   A cache map stores frequently accessed data in a map so that we can retrieve it quickly instead of repeatedly fetching it from
-   a database or another service.
-   Important: A normal HashMap is not automatically a complete caching solution. Real applications may need expiration (TTL),
-   eviction, thread safety, and cache invalidation. Libraries such as Caffeine or distributed caches such as Hazelcast can provide
-   these features.
+   A cache map stores frequently accessed data in a map so that we can retrieve it quickly instead of repeatedly
+   fetching it from a database or another service.
+   Important: A normal HashMap is not automatically a complete caching solution. Real applications may need expiration
+   (TTL),eviction, thread safety, and cache invalidation. Libraries such as Caffeine or distributed caches such as
+   Hazelcast can provide these features.
 
    Interview-ready answer:
-   “A cache map stores frequently accessed data as key-value pairs so that we can retrieve it quickly without repeatedly calling
-   the database or downstream APIs. It improves performance, reduces response time, and reduces backend load.”
+   “A cache map stores frequently accessed data as key-value pairs so that we can retrieve it quickly without repeatedly
+   calling the database or downstream APIs. It improves performance, reduces response time, and reduces backend load.”
 
 3. What are some benefits of using Streams?
-   Java Streams simplify collection processing by providing readable and concise operations for filtering, mapping, sorting, and
-   collecting data. They support functional programming and can also perform parallel processing when appropriate.”
+   Java Streams simplify collection processing by providing readable and concise operations for filtering, mapping,
+   sorting, and collecting data. They support functional programming and can also perform parallel processing when
+   appropriate.”
 
-   Remember: Streams do not store data themselves; they process data from a source such as a collection. Parallel Streams are not
-   always faster, especially for small tasks or workloads involving shared state.
+   Remember: Streams do not store data themselves; they process data from a source such as a collection. Parallel
+   Streams are not always faster, especially for small tasks or workloads involving shared state.
 
 4. How does HashMap work internally?
+
+
+5. What is the difference between HashMap and Hashtable?
+   “HashMap and Hashtable are both key-value data structures in Java, but they differ in synchronization, null handling,
+    and legacy status.
+   1. Synchronization: HashMap is not synchronized, whereas Hashtable is synchronized.
+   2. Performance: HashMap is generally faster in single-threaded use because it does not have built-in synchronization
+      overhead.
+   3. Null values: HashMap allows one null key and multiple null values. Hashtable does not allow null keys or values.
+   4. Legacy: HashMap was introduced in Java 1.2 as part of the Collections Framework. Hashtable is a legacy class.
+   5. Multithreading: For concurrent access, I would generally prefer ConcurrentHashMap over Hashtable.”
+
+6. What is load factor in HashMap?
+   he load factor in Java HashMap determines how full the map can become before its internal bucket array is resized.
+   The default load factor is 0.75, which is used to calculate the resize threshold
+   Default load factor is 75%
+
+7. What does the default load factor 0.75 mean?
+   "The default load factor of 0.75 means that the HashMap uses 75% of its capacity to calculate the resize threshold.
+   When the number of entries exceeds this threshold, the HashMap resizes its internal bucket array."
+
+Collections By Durga
+
+1. what is an Array?
+   "An array is an indexed collection of a fixed number of elements of the same data type"
+   Advantage of Arrays:-
+   1.Single variable: Stores multiple elements using one variable.
+   2.Fast access: Access elements directly using an index, typically in \(O(1)\) time.
+   3.Memory efficiency: Stores elements in a contiguous array structure.
+   4.Easy traversal: We can process elements easily using loops.
+
+   DisAdvantages:-
+   1. fixed in size. (we want use the arrays need know the size in advance)
+   2. Homogeneous elements: An array stores elements of a single declared type, although reference-type arrays can hold
+      objects of subclasses.
+   3. Limited built-in operations: Arrays do not provide methods for common operations such as adding or removing
+      elements dynamically. We can use utility methods from the Arrays class for sorting, searching, and other operations.
+
+2. What is the Java Collections Framework?
+   The Java Collections Framework is a unified architecture that provides interfaces, implementations, and algorithms to
+   store and manipulate a group of objects.
+   **Features of Collections:**
+   1. Growable in nature:** Collections can grow or shrink dynamically based on the number of elements.
+   2. Homogeneous and heterogeneous objects:** Collections can store objects of the same type or different types,
+      depending on the collection and its generic type declaration.
+   3. Ready-made methods:** The framework provides built-in methods to add, remove, search, sort, and manipulate
+      elements.
+   4. Standard data structures:** Collection implementations use data structures such as arrays, linked lists, hash
+      tables, and trees to meet different requirements.
+
+3. difference b/n arrays and collection?
+   Arrays	                                           Collections
+   1. Arrays are fixed in size.	                   || Collections like ArrayList can grow or shrink dynamically.
+   2. Arrays can store primitives and objects.	   || Collections store objects; primitives use wrapper classes through
+                                                      autoboxing.
+   3. Arrays can store elements of a declared type.|| Collections can store homogeneous or heterogeneous objects,
+                                                      depending on their generic type.
+   4. Arrays have a length property.	           || Collections use the size() method.
+   5. Arrays have limited built-in operations.	   || Collections provide methods to add, remove, search, and manipulate
+                                                      elements.
+   6. Arrays can be multidimensional.	           || Collections can be nested to represent similar structures.
+
+4. what is Collection?
+   "The Collection interface is the root interface of the Java Collections Framework hierarchy. It is used to represent
+   a group of individual objects as a single entity and provides methods to add, remove, and manipulate elements."
+
+5. what is Collection framework?
+   "The Java Collections Framework is a unified architecture that provides interfaces, their implementations, and
+   algorithms to store and manipulate a group of objects."
+
+6. Difference b/n collection and collections?
+   "The Collection interface is the root interface of the Java Collections Framework hierarchy. It is used to represent
+    a group of individual objects as a single entity and provides methods to add, remove, and manipulate elements."
+    Collections is an utility class present in java.util package to define several utility methods for collection objects.
+
+7. Collection Interface  related methods?
+   Method	                            Description
+   add(E e)	                      Adds an element to the collection.
+   addAll(Collection c)	          Adds all elements from another collection.
+   remove(Object o)	              Removes a specified element.
+   removeAll(Collection c)	      Removes elements that are also present in another collection.
+   retainAll(Collection c)    	  Retains only elements present in another collection.
+   contains(Object o)	          Checks whether an element exists.
+   containsAll(Collection c)	  Checks whether all specified elements exist.
+   size()	                      Returns the number of elements.
+   isEmpty()	                  Checks whether the collection is empty.
+   clear()	                      Removes all elements.
+
+   iterator()	                  Returns an iterator to traverse elements.
+   Ex:-
+   import java.util.*;
+
+   public class Main {
+       public static void main(String[] args) {
+
+           Collection<String> names = new ArrayList<>();
+
+           names.add("Java");
+           names.add("Spring Boot");
+           names.add("SQL");
+
+           Iterator<String> itr = names.iterator();
+
+           while (itr.hasNext()) {
+               String name = itr.next();
+               System.out.println(name);
+           }
+       }
+   }
+   toArray()	                  Converts the collection into an array.
+
+8. what is List?
+   List is the Child interface of collection interface. if we want to represent a group of individual objects as a
+   Single entity where duplicates are allowed and insertion order must be preserved Then we should go for list.
+   we can preserve insertion order via index and we can differentiate duplicate objects by using index. hence index will
+   play very important role in List.
+
+   Ex:-
+   “We can use a List to store dropdown options, such as available plans or categories or roles. A List maintains the
+   order of elements and allows duplicates when required. We can also access elements using their indexes.”
+
+   The interviewer asked It will allows duplicates right is it OK?
+   ---if dropdown values are fetched from the database using SELECT DISTINCT, the database returns unique
+   values, so your list will contain no duplicates from that query.
+
+9. List methods?
+   ## Java `List` methods — Purpose and Examples
+
+   | Method                         | Purpose                                                                 | Example                                  |
+   | ------------------------------ | ----------------------------------------------------------------------- | ---------------------------------------- |
+   | `add(E e)`                     | Adds an element to the end of the list.                                 | `list.add("Java");`                      |
+   | `add(int index, E e)`          | Inserts an element at a specific index.                                 | `list.add(1, "SQL");`                    |
+   | `addAll(Collection c)`         | Adds all elements from another collection.                              | `list.addAll(otherList);`                |
+   | `get(int index)`               | Retrieves an element at the specified index.                            | `list.get(0);`                           |
+   | `set(int index, E e)`          | Replaces an element at a specified index.                               | `list.set(0, "Spring");`                 |
+   | `remove(int index)`            | Removes the element at the specified index.                             | `list.remove(1);`                        |
+   | `remove(Object o)`             | Removes the first matching element.                                     | `list.remove("Java");`                   |
+   | `removeAll(Collection c)`      | Removes all elements that are also present in another collection.       | `list.removeAll(otherList);`             |
+   | `retainAll(Collection c)`      | Keeps only elements that are present in another collection.             | `list.retainAll(otherList);`             |
+   | `contains(Object o)`           | Checks whether an element exists.                                       | `list.contains("Java");`                 |
+   | `containsAll(Collection c)`    | Checks whether all elements of another collection exist in the list.    | `list.containsAll(otherList);`           |
+   | `indexOf(Object o)`            | Returns the index of the first occurrence; returns `-1` if absent.      | `list.indexOf("Java");`                  |
+   | `lastIndexOf(Object o)`        | Returns the index of the last occurrence; returns `-1` if absent.       | `list.lastIndexOf("Java");`              |
+   | `size()`                       | Returns the number of elements.                                         | `list.size();`                           |
+   | `isEmpty()`                    | Checks whether the list is empty.                                       | `list.isEmpty();`                        |
+   | `clear()`                      | Removes all elements from the list.                                     | `list.clear();`                          |
+   | `subList(int from, int to)`    | Returns a view of elements from `from` (inclusive) to `to` (exclusive). | `list.subList(0, 2);`                    |
+   | `iterator()`                   | Returns an iterator to traverse elements forward.                       | `list.iterator();`                       |
+   | `listIterator()`               | Returns a list iterator that supports forward and backward traversal.   | `list.listIterator();`                   |
+   | `toArray()`                    | Converts the list elements into an array.                               | `list.toArray();`                        |
+   | `replaceAll(UnaryOperator op)` | Replaces each element using the given operation.                        | `list.replaceAll(s -> s.toUpperCase());` |
+   | `sort(Comparator c)`           | Sorts the list using the specified comparator.                          | `list.sort(Comparator.naturalOrder());`  |
+
+   Interview tip: Focus first on `add()`, `get()`, `set()`, `remove()`, `contains()`, `indexOf()`, `size()`, `isEmpty()`, `clear()`, and `listIterator()`.
+
+   Remember: `remove(1)` removes the element at index `1`, while `remove(Integer.valueOf(1))` removes the element whose value is `1` from a `List<Integer>`.
+
+10. what is ArrayList?
+    ArrayList is a class in the Java Collections Framework that implements the List interface. It uses a resizable array
+    internally to store elements. It allows duplicate elements, maintains insertion order, and provides index-based access.
+    and null insertion is possible.
+
+    ArrayList is best suited for frequent retrieval operations because it supports index-based access in \(O(1)\)
+
+    ArrayList al = new ArrayList();
+    Default Capacity of arrayList is 10.
+
+11. Constructors of ArrayList
+    ArrayList al = new ArrayList();
+    ArrayList al = new ArrayList(int initialCapacity);
+    ArrayList al = new ArrayList(Collection c);
+
+12. ArrayList will Extend and implements what?
+    “ArrayList is a class that extends AbstractList and implements the List, RandomAccess, Cloneable, and Serializable
+    interfaces.”
+
+    | Interface      | Purpose                                                                    |
+    | -------------- | -------------------------------------------------------------------------- |
+    | `List`         | Supports an ordered collection, duplicates, and index-based operations.    |
+    | `RandomAccess` | Marker interface indicating fast, typically constant-time, indexed access. |
+    | `Cloneable`    | Indicates that the object supports cloning through `Object.clone()`.       |
+    | `Serializable` | Allows the object to be serialized into a byte stream.                     |
+
+13. what is Marker interface ?
+    “A marker interface is an interface that does not contain any methods or fields. It is used to mark a class to
+    indicate a specific capability or property.
+    Examples:- include Serializable, Cloneable, and RandomAccess.”
+
+14. what is serialization?
+    Serialization is the process of converting an object's state into a byte stream so that it can be saved to a file,
+    transferred over a network, or stored for later use.
+
+15. What is Deserialization in Java?
+    Deserialization is the process of converting a byte stream back into an object so that we can access and use the
+    object's data.
+
+16. What is the purpose of the transient keyword in Java serialization?
+    “The transient keyword in Java is used to prevent a particular instance variable from being serialized during Java's
+    default serialization process.”
+    Ex:-
+    class Employee implements Serializable {
+        int id = 101;
+        String name = "Ravi";
+        transient String password = "abc123";
+    }
+
+    During default serialization:
+    - id is serialized.
+    - name is serialized.
+    - password is not serialized because it is marked transient.
+
+    After deserialization, password will have its default value, which is null for a String.
+    Important: transient applies to instance variables, not static variables. Static variables belong to the class rather
+    than an individual object and are not serialized as part of the object's default serialized state.
+
+17. what is LinkedList?
+    LinkedList is a class in the Java Collections Framework that implements the List and Deque interfaces. It uses a
+    doubly linked list internally, where each node stores the element and references to the previous and next nodes.
+
+    --- “LinkedList can be a good choice when we frequently insert or remove elements at the beginning or end. For
+    middle insertions and deletions, it is efficient only when we already have a reference to the required node or
+    position. Otherwise, finding that position takes \(O(n)\) time.”
+
+
+    | Operation                   | `ArrayList`                                    | `LinkedList`                  |
+    | --------------------------- | ---------------------------------------------- | ------------------------------|
+    | Get by index                | \\(O(1)\\)                                     | \\(O(n)\\)                    |
+    | Add/remove at the beginning | \\(O(n)\\) / \\(O(1)\\) amortized for append;  | \\(O(1)\\)                    |
+                                    beginning insertion shifts elements
+    | Add/remove in the middle    | \\(O(n)\\)                                     | \\(O(n)\\) to find position;  |
+                                                                                     \\(O(1)\\) to modify links once
+                                                                                     located
+    | Add at the end              | \\(O(1)\\) amortized                           | \\(O(1)\\)                    |
+
+    --“LinkedList is a good choice when we frequently perform insertion and deletion operations at the beginning or end
+    of the list, because these operations typically take \(O(1)\) time.”
+
+    --For a LinkedList, insertion or deletion in the middle is generally \(O(n)\) when we must first traverse the list
+      to find the required position.
+      - Finding the position: \(O(n)\)
+      - Inserting or deleting after reaching the node: \(O(1)\), because only node references need to be updated.
+
+    Ex:-
+    --In our role-management application, we handled role-assignment requests that required approval.
+    --When a user submitted a request, we added it to a `LinkedList` with a pending status. Once the request was
+     approved, we removed it from the pending list.
+    --We considered `LinkedList` because it supports efficient insertion and deletion at the beginning or end, which
+      take O(1) time.
+    --However, if we need to search for a request by its ID before removing it, the search takes O(n) time. So, the
+      choice depends on the application's access pattern.
+
+18. what is Vector?
+    Vector is a legacy class in the Java Collections Framework that implements the List interface. It stores elements in
+    a dynamically resizable array, maintains insertion order, allows duplicates, and is synchronized by default.
+
+    Important features of Vector
+    - Resizable: Automatically grows when more elements are added.
+    - Insertion order: Maintains the order in which elements are added.
+    - Duplicates allowed: The same element can appear multiple times.
+    - Synchronized: Its individual methods are synchronized, providing basic thread safety.
+    - Index-based access: Retrieving an element by index is typically O(1).
+
+19. what is Stack?
+    A Stack is a data structure that follows LIFO (Last In, First Out), meaning the last element inserted is the first
+    element removed.
+    Method	                                 Purpose	                                                  Example
+    push(E item)	                     Adds an element to the top	                                    stack.push(10)
+    pop()	                             Removes and returns the top element	                        stack.pop()
+    peek()                            	Returns the top element without removing it	                    stack.peek()
+    empty()                           	Checks whether the stack is empty	                            stack.empty()
+    search(Object o)	     Returns the 1-based position from the top, or -1 if absent              	stack.search(10)
+
+     public static boolean isValid(String str) {
+            Stack<Character> stack = new Stack<>();
+            for (char ch : str.toCharArray()) {
+                // Opening bracket
+                if (ch == '(' || ch == '[' || ch == '{') {
+                    stack.push(ch);
+                } else {
+                    // No opening bracket available
+                    if (stack.isEmpty()) {
+                        return false;
+                    }
+                    char top = stack.pop()''
+                    if ((ch == ')' && top != '(') ||
+                            (ch == ']' && top != '[') ||
+                            (ch == '}' && top != '{')) {
+                        return false;
+                    }
+                }
+            }
+
+            return stack.isEmpty();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

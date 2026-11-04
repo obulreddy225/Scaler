@@ -17,4 +17,6 @@
    6. Modifying shared variables inside stream operations can introduce synchronization issues and make code harder to reason
       about.
 
-3.
+3. What is Lambda Expression?
+   “A lambda expression is an anonymous function introduced in Java 8. It allows us to represent behavior concisely and
+   pass it as an argument to a method. Lambda expressions are commonly used with functional interfaces such as Predicate, Function, and Consumer.”

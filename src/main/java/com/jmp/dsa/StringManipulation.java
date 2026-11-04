@@ -2,6 +2,62 @@ package com.jmp.dsa;
 
 public class StringManipulation {
 
+    public static String compressString(String str) {
+
+        StringBuilder builder = new StringBuilder();
+
+        int i = 0;
+
+        while (i < str.length()) {
+
+            char ch = str.charAt(i);
+            int count = 0;
+
+            while (i < str.length() && str.charAt(i) == ch) {
+                count++;
+                i++;
+            }
+
+            builder.append(ch).append(count);
+        }
+
+        return builder.toString();
+    }
+
+    public static String expandString(String str) {
+
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < str.length(); i += 2) {
+
+            char ch = str.charAt(i);
+            int count = Character.getNumericValue(str.charAt(i + 1));
+
+            while (count > 0) {
+                builder.append(ch);
+                count--;
+            }
+        }
+
+        return builder.toString();
+    }
+
+    public static String combinedString (String str1, String str2){
+        int i=0;
+        int j=0;
+        StringBuilder result = new StringBuilder();
+
+        while (i<str1.length() || j<str2.length()){
+            if(i< str1.length()){
+                result.append(str1.charAt(i++));
+            }
+            if(j<str2.length()){
+                result.append(str2.charAt(j++));
+            }
+        }
+        return result.toString();
+    }
+
 
 
     public static void longestUniformSubstring(String str) {

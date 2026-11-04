@@ -27,4 +27,97 @@
    | Focuses on providing test data. | Focuses on verifying how dependencies are used.          |
    | Example: Returns `"Test User"`. | Example: Verifies `getUserName()` was called once.       |
 
-6.
+6. Concept of parameterized testing in JUnit?
+   Parameterized testing in JUnit allows us to execute the same test method multiple times with different input values and expected
+   results, instead of writing separate test methods for each test case.
+    Ex:-
+    import org.junit.jupiter.params.ParameterizedTest;
+    import org.junit.jupiter.params.provider.CsvSource;
+
+    import static org.junit.jupiter.api.Assertions.assertEquals;
+
+    class CalculatorTest {
+
+        int add(int a, int b) {
+            return a + b;
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+            "2, 3, 5",
+            "4, 6, 10",
+            "0, 5, 5",
+            "-2, 2, 0"
+        })
+        void testAdd(int a, int b, int expected) {
+            assertEquals(expected, add(a, b));
+        }
+    }
+    How does it work?
+    - @ParameterizedTest tells JUnit to run the test with multiple sets of inputs.
+    - @CsvSource provides the input values and expected result for each test run.
+    - assertEquals() checks whether the actual result matches the expected result.
+    Remember: @Test generally runs a test method once per invocation, whereas @ParameterizedTest runs the same test logic with
+    multiple argument sets.
+
+7. difference b/n mock and spy?
+   Your answer is correct! Just one important clarification: `@Mock` and `@Spy` are Mockito annotations commonly used in JUnit tests.
+
+   ## Difference between `@Mock` and `@Spy`
+
+   | Feature         | `@Mock`                                          | `@Spy`                                            |
+   | --------------- | ------------------------------------------------ | ------------------------------------------------- |
+   | Object          | Creates a mock object                            | Wraps a real object                               |
+   | Method behavior | Methods return default values unless stubbed     | Real methods execute by default                   |
+   | Stubbing        | Defines behavior for mocked methods              | Can override selected method behavior             |
+   | Use case        | Isolate the class being tested from dependencies | Test a real object while mocking selected methods |
+
+   ### Example
+
+   ```
+   @Mock
+   PaymentService paymentService;
+
+   @Spy
+   Calculator calculator;
+   ```
+
+   With `@Mock`:
+
+   - `paymentService` is a mock object.
+   - Its real business logic does not execute by default.
+   - You can define behavior using `when(...).thenReturn(...)`.
+
+   With `@Spy`:
+
+   - `calculator` calls real methods by default.
+   - You can stub specific methods when needed.
+
+   ### Interview-ready answer
+
+   “`@Mock` creates a mock object whose methods do not execute real business logic by default. `@Spy` wraps a real object and calls its actual methods by default, while allowing us to stub selected methods.”
+
+   Remember: `@Mock` = fake behavior by default; `@Spy` = real behavior by default.
+
+8. How do you verify a method is called twice in Mockito?
+   In Mockito, we use verify() with times(2) to check whether a method was called exactly twice.
+   Ex:-
+   import static org.mockito.Mockito.*;
+   @Test
+   void testMethodCalledTwice() {
+       MyService service = mock(MyService.class);
+
+       service.process();
+       service.process();
+
+       verify(service, times(2)).process();
+   }
+   --->mock(MyService.class) creates a mock object.
+   --->service.process() is called twice.
+   --->verify(service, times(2)).process() verifies that the method was called exactly twice.
+
+9. In which situations do you use PowerMock?
+   “PowerMock is used when we need to mock static methods, constructors, or other methods that are difficult to mock
+   using traditional Mockito. It can also help access private methods. However, I prefer to test private methods
+   indirectly through public methods and use Mockito wherever possible.”
+
