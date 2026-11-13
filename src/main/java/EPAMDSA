@@ -1,0 +1,183 @@
+Incubation start date
+CI Status
+Topic	Problem Name
+
+Binary Search	Find the missing number in a sorted array containing numbers from 1 to N
+Binary Search	Find the median of two sorted arrays
+Greedy	Book Exchange Calculation
+	Your local Foyle's is running a scheme to promote reading amongst users. If you sign up for the scheme, you can buy any books from the store at a fixed cost of c. You can also exchange x number of books to get 1 new book. Write an algorithm to find the maximum number of books you can read for a given amount of money m.
+	Ex, given the cost of books, c =5, and exchange rate, x=2. If you spend £10, you can read a total of 3 books.
+	given the cost of books, c =1, and exchange rate, x=2. If you spend £5, you can read a total of 9 books.
+
+	And asked to provide different Edge Cases for Testing
+Greedy	https://www.geeksforgeeks.org/activity-selection-problem-greedy-algo-1/
+Two Pointers	Reverse string without changiacng position of special char
+	s = "ab#cd,e@f" output= fe#dc,b@a
+Arrays	Shuffle an Array Randomly
+	Problem Statement:
+	Write a Java program that takes an array of integers and shuffles its elements randomly. Each time the program runs, the order of elements in the array should be different.
+	Implement the shuffle without using built-in shuffle methods like Collections.shuffle()
+Sliding window	Longest uniform subsequence - Find start index and length of longest repeating substring
+	    Input : "aabbbcca"
+	    Output: index = 2 and length = 3 ("bbb")
+
+	    Input : "aaabbhhhhhbcca"
+	    Output: index = 5 and length = 5 ("hhhhh")
+Sliding window	Find the sum of minimum and maximum element of all subarrays of size K
+Sliding window	Longest Repeating Substring (same character consecutive)
+Sliding window	Given a string s, find the longest consecutive common subset of substring. Return a tuple of the index and length Constraint:The solution should have time complexity of O(n) and space complexity of O(1)
+	Input - "aabbbcdd" Output - (2,3) .
+Sliding window	https://leetcode.com/problems/minimum-size-subarray-sum/description/?envType=problem-list-v2&envId=prefix-sum
+Binary Search	Find Peak Element
+Binary Search	Koko Eating Bananas
+Binary Search	Binary Search
+Binary Search	Minimum Number of Days to Make m Bouquets
+Binary Search	Find the Smallest Divisor Given a Threshold
+Two Pointers	Two Sum II - Input Array Is Sorted
+Two Pointers	Valid Palindrome
+Two Pointers	3Sum
+Two Pointers	Container With Most Water
+Two Pointers	Trapping Rain Water
+Two Pointers	Remove Duplicates from Sorted Array
+Two Pointers	Move Zeroes
+Two Pointers	Sort Colors
+Greedy	Jump Game
+Greedy	Jump Game II
+Greedy	Gas Station
+Greedy	Non-overlapping Intervals
+Greedy	Boats to Save People
+Greedy	Candy
+Greedy	Partition Labels
+Two Pointers	Merge Two Sorted Arrays (With Extra Space)
+Monotonic Stack	https://leetcode.com/problems/next-greater-element-i/description/
+Monotonic Stack	https://leetcode.com/problems/daily-temperatures/
+Map,Set	First Non-Repeating Character
+	a. Input: apple -> a
+	b. Input: racecars-> e
+	c. Input: ababbc-> c
+LinkedList	https://leetcode.com/problems/add-two-numbers/description/?envType=problem-list-v2&envId=linked-list
+LinkedList	https://leetcode.com/problems/remove-nth-node-from-end-of-list/description/?envType=problem-list-v2&envId=linked-list
+LinkedList	https://leetcode.com/problems/remove-nth-node-from-end-of-list/description/?envType=problem-list-v2&envId=linked-list
+LinkedList	https://leetcode.com/problems/rotate-list/submissions/1449675502/?envType=problem-list-v2&envId=linked-list
+LinkedList	https://leetcode.com/problems/linked-list-cycle-ii/description/?envType=problem-list-v2&envId=linked-list
+LinkedList	https://leetcode.com/problems/merge-k-sorted-lists/description/?envType=problem-list-v2&envId=linked-list
+LinkedList	https://leetcode.com/problems/odd-even-linked-list/description/?envType=problem-list-v2&envId=linked-list
+LinkedList	https://leetcode.com/problems/middle-of-the-linked-list/description/?envType=problem-list-v2&envId=linked-list
+LinkedList	https://leetcode.com/problems/palindrome-linked-list/description/?envType=problem-list-v2&envId=linked-list
+Arrays	https://leetcode.com/problems/replace-elements-with-greatest-element-on-right-side/
+Map,Set	Group anagrams
+Sliding window	Minimum number of moves required to move all 1s together
+Sliding window	https://leetcode.com/problems/longest-substring-without-repeating-characters/description/
+Greedy	https://www.geeksforgeeks.org/problems/n-meetings-in-one-room-1587115620/1
+Greedy	Find Maximum Number of Non-overlapping Meetings
+Monotonic Stack	Create a new array by replacing each integer value with next greatest number and if not present than set it with default value i.e. -1.
+	int[] input1 = [5,10,6,8,6]
+	int[] output1 = [10,-1,8,-1,-1]
+Stack	https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string/description/
+Stack	Valid Parentheses - LeetCode
+Misc	Design a leader board (Link: https://leetcode.com/problems/design-a-leaderboard/description/)
+
+	The goal is to design a Leaderboard class that can perform three operations on the scores of players:
+	addScore(playerId, score): This updates the leaderboard by adding the specified score to a player's overall score, identified by playerId. If a player does not exist on the leaderboard, they are added with the initial score.
+	top(K): This operation calculates the sum of scores of the top K players on the leaderboard. The top players are the ones with the highest scores.
+	reset(playerId): This resets a player's score to 0, effectively erasing their score from the leaderboard. It is a pre-condition that the player was previously added to the leaderboard before this function is called.
+	The leaderboard is initially empty and becomes populated as players are added with their scores.
+	Note: for top(k) method sorting technique is not allowed. Solve it most efficient way.
+Heap	find the kth smallest element in a given array
+Misc	Task Scheduler
+
+
+
+	3
+
+	Problem Statement: You are given a list of tasks represented by uppercase English letters ('A' to 'Z'), and an integer n representing a cooldown interval between two same tasks. Each task takes exactly 1 CPU interval to complete. Tasks can be executed in any order, but identical tasks must be separated by at least n intervals, during which the CPU may remain idle or execute other tasks.
+	Return the minimum number of CPU intervals required to complete all the tasks .
+
+	Examples
+	Input :  tasks = ["A","A","A","B","B","B"], n = 2
+	Output :  8
+	Explanation : One valid execution order is:
+	A -> B -> idle -> A -> B -> idle -> A -> B
+	Total intervals = 8
+
+
+	Input :  tasks = ["A","C","A","B","D","B"], n = 1
+	Output : 6
+	 Explanation A possible execution:
+	A -> B -> C -> D -> A -> B
+	No idle interval is needed as cooldown = 1.
+Misc	https://leetcode.com/problems/asteroid-collision/description/
+Misc	Group Anagrams - LeetCode
+Misc	Merge Intervals - LeetCode
+Heap	https://leetcode.com/problems/find-median-from-data-stream/description/
+Binary Search	Find the First Occurrence of a Number Using Binary Search
+	You are given a sorted array of integers that may contain duplicate values and a target number X.
+	Find the index of the first occurrence of X using Binary Search.
+	If the element is not present, return -1
+Binary Search	Find the Index Where an Element Should Be Inserted
+	You are given a sorted array of distinct integers and a target value X.
+	If X exists in the array, return its index.
+	If it does not exist, return the index where it should be inserted to maintain sorted order.
+	The solution must use Binary Search
+Binary Search	Find the Last Occurrence of a Number
+Binary Search	Search in a Rotated Sorted Array
+Misc	Find Missing Alphabets to Make a Pangram
+
+	You are given a sentence consisting of English letters and other characters.
+	Your task is to find all the alphabets that are missing from the sentence so that it becomes a pangram.
+
+	A pangram is a sentence that contains every letter from a to z at least once.
+DP	cherry Pickup (Maximum Cherries Collection)
+DP	Unique Paths
+
+	You are given an m × n grid.
+	A robot is located at the top-left corner of the grid and wants to reach the bottom-right corner.
+
+	The robot can move only right or down at any point in time.
+
+	Your task is to determine the total number of unique paths the robot can take to reach the destination.
+DP	Unique Paths in Grid with Obstacles
+Misc	Minimum Swaps to Move Max to End and Min to Start
+Misc	Frequency Map (Last Removed Element)
+	Rule: Reduce each key by 1 per round; remove when 0; answer = last removed key.
+	Input {c=1, b=5, d=2} → A: b
+Misc	Find the second smallest number in a given array of integers
+Heap	https://leetcode.com/problems/last-stone-weight/description/
+Heap	https://leetcode.com/problems/top-k-frequent-elements/description/
+Heap	https://leetcode.com/problems/kth-largest-element-in-a-stream/description/
+Heap	https://leetcode.com/problems/kth-largest-element-in-an-array/description/
+Heap	https://leetcode.com/problems/reorganize-string/description/
+DP	https://leetcode.com/problems/house-robber/description/
+Prefix sum	https://leetcode.com/problems/subarray-sum-equals-k/description/
+Prefix sum	https://leetcode.com/problems/find-pivot-index/description/
+DP	https://leetcode.com/problems/climbing-stairs/description/
+Misc	https://leetcode.com/problems/remove-all-adjacent-duplicates-in-string/description/
+Misc	You are driving a vehicle that has capacity empty seats initially available for passengers.
+	The vehicle only drives east (ie. it cannot turn around and drive west.)
+
+	Given a list of trips, trip[i] = [num_passengers, start_location, end_location] contains information about the i-th trip:
+	the number of passengers that must be picked up, and the locations to pick them up and drop them off.
+	The locations are given as the number of kilometers due east from your vehicle's initial location.
+
+	Return true if and only if it is possible to pick up and drop off all passengers for all the given trips.
+
+
+	Input: trips = [[2,1,5],[3,3,7]], capacity = 4
+	FALSE
+
+	Input: trips = [[2,1,5],[3,3,7],[1,6,8]], capacity = 5
+	TRUE
+Interview question	LRU cache Implementation (they might give you basic structure of the program or ask to write everything from scratch)
+Interview question	Custom Hashset implementation add(), remove(), comtainsKey()
+Misc	You are given an input array of meeting time intervals, intervals, where each interval has a start time and an end time. Your task is to find the minimum number of meeting rooms required to hold these meetings.
+	Example:
+	Input: intervals = [ [1, 3], [2, 6], [8, 10], [9, 15], [12, 14] ]
+	Output:2
+DP	https://leetcode.com/problems/longest-increasing-subsequence/description/
+DP	Longest Increasing Subsequence in a String
+	Given a string s, find the longest subsequence of characters such that each character is lexicographically greater than the previous one.
+	Input: "abhkdfm"
+	Output: "abhkm"
+Misc	https://leetcode.com/problems/count-and-say/description/
+String	https://leetcode.com/problems/sort-vowels-in-a-string/description/
+Total
